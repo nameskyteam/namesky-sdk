@@ -8,6 +8,9 @@ import {
   parseNearWalletSelectorTransaction
 } from "../utils/transform";
 
+/**
+ * Hepler class for quickly creating transaction(s)
+ */
 export class NearTransaction {
   private readonly transactions: TransactionLike[]
 
@@ -108,7 +111,7 @@ export class NearTransaction {
 
   static fromTransactions(...transactions: TransactionLike[]): NearTransaction {
     if (transactions.length === 0) {
-      throw Error('Transaction not found')
+      throw Error('Bad transaction(s)')
     }
     let nearTransaction: NearTransaction
     transactions.forEach((transaction, index) => {
