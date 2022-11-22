@@ -6,12 +6,12 @@ import {
   REQUEST_ACCESS_PENDING_KEY_PREFIX
 } from "../utils/common";
 import {Network} from "@near-wallet-selector/core";
-import {Amount} from "../utils/wallet-selector-plus/utils/Amount";
-import {setupWalletSelectorPlus} from "../utils/wallet-selector-plus/WalletSelectorPlus";
 import {NiceNearNameComponent, NiceNearNameConfig} from "./types/config";
-import {NearTransaction} from "../utils/wallet-selector-plus/core/NearTransaction";
 import {Account} from "near-api-js";
 import {CleanStateArgs, InitArgs} from "./types/args/NftContract";
+import {NearTransaction} from "../utils/near-transaction/core/NearTransaction";
+import {Amount} from "../utils/near-transaction/utils/Amount";
+import {setupWalletSelectorPlus} from "../utils/wallet-selector-plus/core/WalletSelectorPlus";
 
 export class NiceNearName {
   selector: WalletSelectorPlus
