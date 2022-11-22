@@ -5,11 +5,8 @@ import {
   DeployContractOptions,
   StakeOptions,
   FunctionCallOptions,
-  TransferOptions,
-  BaseArgs
+  TransferOptions
 } from "../types/options";
-import {Gas} from "../utils/Gas";
-import {Amount} from "../utils/Amount";
 import {
   AddKeyActionLike,
   CreateAccountActionLike,
@@ -23,51 +20,6 @@ import {
 
 export class ActionFactory {
   private constructor() {}
-
-  static transfer({amount}: TransferOptions): TransferActionLike {
-    return {
-      type: "Transfer",
-      params: {
-        amount
-      }
-    }
-  }
-
-  static functionCall<Args extends BaseArgs>({
-    methodName,
-    args,
-    gas,
-    attachedDeposit
-}: FunctionCallOptions<Args>): FunctionCallActionLike {
-    return {
-      type: "FunctionCall",
-      params: {
-        methodName,
-        args: args ?? {},
-        gas: gas ?? Gas.DEFAULT,
-        attachedDeposit: attachedDeposit ?? Amount.ZERO,
-      }
-    }
-  }
-
-  static deployContract({code}: DeployContractOptions): DeployContractActionLike {
-    return {
-      type: "DeployContract",
-      params: {
-        code
-      }
-    }
-  }
-
-  static stake({amount, publicKey}: StakeOptions): StakeActionLike {
-    return {
-      type: "Stake",
-      params: {
-          amount,
-          publicKey
-      }
-    }
-  }
 
   static createAccount(): CreateAccountActionLike {
     return {
@@ -103,6 +55,51 @@ export class ActionFactory {
       type: "DeleteKey",
       params: {
         publicKey
+      }
+    }
+  }
+
+  static deployContract({code}: DeployContractOptions): DeployContractActionLike {
+    return {
+      type: "DeployContract",
+      params: {
+        code
+      }
+    }
+  }
+
+  static stake({amount, publicKey}: StakeOptions): StakeActionLike {
+    return {
+      type: "Stake",
+      params: {
+          amount,
+          publicKey
+      }
+    }
+  }
+
+  static functionCall({
+    methodName,
+    args,
+    gas,
+    attachedDeposit
+  }: FunctionCallOptions): FunctionCallActionLike {
+    return {
+      type: "FunctionCall",
+      params: {
+        methodName,
+        args,
+        gas,
+        attachedDeposit,
+      }
+    }
+  }
+
+  static transfer({amount}: TransferOptions): TransferActionLike {
+    return {
+      type: "Transfer",
+      params: {
+        amount
       }
     }
   }

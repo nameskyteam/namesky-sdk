@@ -23,15 +23,22 @@ export interface StakeOptions {
   publicKey: string
 }
 
-export interface FunctionCallOptions<Args extends BaseArgs> {
+export interface FunctionCallOptions {
   methodName: string
-  args?: Args
-  attachedDeposit?: string
-  gas?: string
+  args: object
+  attachedDeposit: string
+  gas: string
 }
 
 export interface TransferOptions {
   amount: string
+}
+
+export interface BaseFunctionCallOptions<Args extends BaseArgs> {
+  methodName: string
+  args?: Args
+  attachedDeposit?: string
+  gas?: string
 }
 
 export type BaseArgs = object

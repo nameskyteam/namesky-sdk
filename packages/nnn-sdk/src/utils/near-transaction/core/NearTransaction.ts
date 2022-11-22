@@ -1,12 +1,14 @@
 import {TransactionLike} from "../types/transaction";
 import {ActionFactory} from "./ActionFactory";
-import {FunctionCallOptions, BaseArgs, ReceiverIdOrOptions} from "../types/options";
+import {BaseArgs, BaseFunctionCallOptions, ReceiverIdOrOptions} from "../types/options";
 import {AccessKeyPermission, ActionLike} from "../types/action";
 import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike} from "../types/transform";
 import {
   parseNearApiJsTransaction,
   parseNearWalletSelectorTransaction
 } from "../utils/transform";
+import {Amount} from "../utils/Amount";
+import {Gas} from "../utils/Gas";
 
 /**
  * Hepler class for quickly creating transaction(s)
@@ -77,10 +79,18 @@ export class NearTransaction {
     return this.addAction(ActionFactory.stake({amount, publicKey}))
   }
 
-  functionCall<Args extends BaseArgs>(
-    options: FunctionCallOptions<Args>
-  ): this {
-    return this.addAction(ActionFactory.functionCall(options))
+  functionCall<Args extends BaseArgs>({
+    methodName,
+    args,
+    attachedDeposit,
+    gas
+  }: BaseFunctionCallOptions<Args>): this {
+    return this.addAction(ActionFactory.functionCall({
+      methodName,
+      args: args ?? {},
+      attachedDeposit: attachedDeposit ?? Amount.ZERO,
+      gas: gas ?? Gas.DEFAULT
+    }))
   }
 
   transfer(amount: string): this {
