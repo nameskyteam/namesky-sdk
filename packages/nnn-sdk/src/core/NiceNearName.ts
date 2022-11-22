@@ -122,7 +122,7 @@ export class NiceNearName {
         gas: options?.gasForInit
       })
 
-    publicKeys.map(publicKey => transaction.deleteKey(publicKey))
+    publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
     await this.selector.sendWithLocalKey(registrantId, transaction)
   }

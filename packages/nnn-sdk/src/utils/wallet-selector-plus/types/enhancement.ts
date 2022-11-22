@@ -9,7 +9,7 @@ import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
 export interface WalletSelectorEnhancement {
   near: Near;
   getAccountId(): string | undefined;
-  getKeyStore(): BrowserLocalStorageKeyStore
+  getKeyStore(): BrowserLocalStorageKeyStore;
   view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: ViewOptions<Args>): Promise<Value>;
   // Sign with key in selected wallet store and send transaction
   send<Value>(transaction: NearTransaction, callbackUrl?: string): Promise<Value>;
