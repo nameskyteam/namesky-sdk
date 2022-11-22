@@ -11,6 +11,11 @@ import {NearTransaction} from "../../near-transaction/core/NearTransaction";
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;
 
+/**
+ * Enhancement of `NearWalletSelector` based on `NearTransaction`
+ *
+ * @param config
+ */
 export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig): Promise<WalletSelectorPlus> {
   if (!walletSelectorPlus) {
     const selector = await setupWalletSelector({
