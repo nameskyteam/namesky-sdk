@@ -90,8 +90,8 @@ export class ActionFactory {
       params: {
         publicKey,
         accessKey: {
-            nonce,
-            permission
+          nonce,
+          permission
         }
       }
     }
