@@ -121,7 +121,7 @@ export class NiceNearName {
 
     publicKeys.map(publicKey => transaction.deleteKey(publicKey))
 
-    await this.selector.sendWithLocal(registrantId, transaction)
+    await this.selector.sendWithLocalKey(registrantId, transaction)
   }
 }
 

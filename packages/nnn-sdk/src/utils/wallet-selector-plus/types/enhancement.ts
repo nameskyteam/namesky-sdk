@@ -14,7 +14,7 @@ export interface WalletSelectorEnhancement {
   // Sign with key in selected wallet and send transaction
   send<Value>(transaction: NearTransaction, callbackUrl?: string): Promise<Value>;
   // Sign with key in `BrowserLocalStorageKeyStore` and send transaction, will ignore signerId in `NearTransaction`
-  sendWithLocal<Value>(signerId: string, transaction: NearTransaction): Promise<Value>;
+  sendWithLocalKey<Value>(signerId: string, transaction: NearTransaction): Promise<Value>;
 }
 
 export type WalletSelectorPlus = Modify<WalletSelector, WalletSelectorEnhancement>

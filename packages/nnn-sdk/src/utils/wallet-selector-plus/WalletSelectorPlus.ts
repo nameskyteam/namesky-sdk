@@ -59,7 +59,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return parseOutcomeValue(outcome!)
       },
 
-      async sendWithLocal<Value>(signerId: string, transaction: NearTransaction): Promise<Value> {
+      async sendWithLocalKey<Value>(signerId: string, transaction: NearTransaction): Promise<Value> {
         const account = (await this.near.account(signerId)) as unknown as MultiSendAccount
         const outcomes: FinalExecutionOutcome[] = []
         for (const {receiverId, actions} of transaction.toTransactions()) {

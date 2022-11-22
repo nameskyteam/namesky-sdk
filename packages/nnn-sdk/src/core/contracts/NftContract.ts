@@ -1,4 +1,4 @@
-import {BaseContract} from "./BaseContract";
+import {BaseContract} from "../../utils/BaseContract";
 import {NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs} from "../types/args/NftContract";
 import {NearTransaction} from "../../utils/wallet-selector-plus/core/NearTransaction";
 import {Amount} from "../../utils/wallet-selector-plus/utils/Amount";
@@ -22,7 +22,7 @@ export class NftContract extends BaseContract {
         methodName: 'nft_register',
         args
       })
-    await this.selector.sendWithLocal(signerId, transaction)
+    await this.selector.sendWithLocalKey(signerId, transaction)
   }
 
   async nft_redeem(args: NftRedeemArgs, options?: ContractCallOptions): Promise<boolean> {

@@ -1,4 +1,4 @@
-import {WalletSelectorPlus} from "../../utils/wallet-selector-plus/types/enhancement";
+import {WalletSelectorPlus} from "./wallet-selector-plus/types/enhancement";
 
 export class BaseContract {
   contractId: string
