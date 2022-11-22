@@ -15,14 +15,14 @@ export class NftContract extends BaseContract {
   }
 
   // signed by registrant
-  async nft_register(signerId: string, args: NftRegisterArgs, options?: ContractCallOptions) {
+  async nft_register(registrantId: string, args: NftRegisterArgs, options?: ContractCallOptions) {
     const transaction = new NearTransaction(this.contractId)
       .functionCall({
         ...options,
         methodName: 'nft_register',
         args
       })
-    await this.selector.sendWithLocalKey(signerId, transaction)
+    await this.selector.sendWithLocalKey(registrantId, transaction)
   }
 
   async nft_redeem(args: NftRedeemArgs, options?: ContractCallOptions): Promise<boolean> {

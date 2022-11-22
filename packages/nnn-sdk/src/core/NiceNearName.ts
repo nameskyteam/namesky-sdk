@@ -89,6 +89,7 @@ export class NiceNearName {
     await keystore.removeKey(networkId, pendingAccountId)
   }
 
+  // signed by registrant
   async setupController(
     registrantId: string,
     code: Uint8Array,
