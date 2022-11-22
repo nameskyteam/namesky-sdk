@@ -1,10 +1,10 @@
 import {Modify} from "@near-wallet-selector/core/lib/utils.types";
 import {WalletSelector} from "@near-wallet-selector/core";
 import {Near} from "near-api-js";
-import {NearTransaction} from "../core/NearTransaction";
 import {ViewOptions} from "./options";
-import {BaseArgs} from "./options";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
+import {BaseArgs} from "../../near-transaction/types/options";
+import {NearTransaction} from "../../near-transaction/core/NearTransaction";
 
 export interface WalletSelectorEnhancement {
   near: Near;
