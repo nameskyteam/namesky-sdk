@@ -4,20 +4,29 @@ import {ActionFactory} from "./ActionFactory";
 import {FunctionCall} from "../types/action";
 import {AddKeyPermission} from "@near-wallet-selector/core/lib/wallet/transactions.types";
 import {BaseArgs} from "../types/common";
+import {ReceiverIdOrOptions} from "../types/options";
 
 export class NearTransaction {
   private readonly transactions: Transaction[]
 
-  constructor(receiverId: string, signerId?: string) {
+  constructor(receiverIdOrOptions: ReceiverIdOrOptions) {
     this.transactions = []
-    this.nextTransaction(receiverId, signerId)
+    this.nextTransaction(receiverIdOrOptions)
   }
 
   private currentIndex(): number {
     return this.transactions.length - 1
   }
 
-  nextTransaction(receiverId: string, signerId?: string): this {
+  nextTransaction(receiverIdOrOptions: ReceiverIdOrOptions): this {
+    let signerId: string | undefined
+    let receiverId: string
+    if (typeof receiverIdOrOptions === 'string') {
+      receiverId = receiverIdOrOptions
+    } else {
+      signerId = receiverIdOrOptions.signerId
+      receiverId = receiverIdOrOptions.receiverId
+    }
     return this.addTransaction({
       signerId,
       receiverId,
@@ -96,7 +105,7 @@ export class NearTransaction {
     transactions.forEach((transaction, index) => {
       if (index === 0) {
         const {signerId, receiverId, actions} = transaction
-        nearTransaction = new NearTransaction(receiverId, signerId).addAction(...actions)
+        nearTransaction = new NearTransaction({signerId, receiverId}).addAction(...actions)
       } else {
         nearTransaction.addTransaction(transaction)
       }

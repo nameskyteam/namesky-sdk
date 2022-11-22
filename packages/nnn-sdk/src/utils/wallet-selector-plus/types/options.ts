@@ -6,3 +6,5 @@ export type ViewOptions<Args extends BaseArgs> = Merge<Pick<FunctionCall<Args>, 
   contractId: string
   blockQuery?: BlockReference
 }>
+
+export type ReceiverIdOrOptions = string | { signerId?: string, receiverId: string }
