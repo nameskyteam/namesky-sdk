@@ -1,34 +1,34 @@
 import {
-  AddKeyAction,
-  CreateAccountAction,
-  DeleteAccountAction,
-  DeleteKeyAction,
-  DeployContractAction,
-  FunctionCallAction,
-  StakeAction,
-  TransferAction
-} from "@near-wallet-selector/core";
-import {
-  AddKey,
-  DeleteAccount,
-  DeleteKey,
-  DeployContract,
-  FunctionCall,
-  Stake,
-  Transfer
-} from "../types/action";
+  DeleteAccountOptions,
+  AddKeyOptions,
+  DeleteKeyOptions,
+  DeployContractOptions,
+  StakeOptions,
+  FunctionCallOptions,
+  TransferOptions,
+  BaseArgs
+} from "../types/options";
 import {Gas} from "../utils/Gas";
 import {Amount} from "../utils/Amount";
-import {BaseArgs} from "../types/common";
+import {
+  AddKeyActionLike,
+  CreateAccountActionLike,
+  DeleteAccountActionLike,
+  DeleteKeyActionLike,
+  DeployContractActionLike,
+  FunctionCallActionLike,
+  StakeActionLike,
+  TransferActionLike
+} from "../types/action";
 
 export class ActionFactory {
   private constructor() {}
 
-  static transfer({amount}: Transfer): TransferAction {
+  static transfer({amount}: TransferOptions): TransferActionLike {
     return {
       type: "Transfer",
       params: {
-        deposit: amount
+        amount
       }
     }
   }
@@ -38,19 +38,19 @@ export class ActionFactory {
     args,
     gas,
     attachedDeposit
-}: FunctionCall<Args>): FunctionCallAction {
+}: FunctionCallOptions<Args>): FunctionCallActionLike {
     return {
       type: "FunctionCall",
       params: {
         methodName,
         args: args ?? {},
         gas: gas ?? Gas.DEFAULT,
-        deposit: attachedDeposit ?? Amount.ZERO,
+        attachedDeposit: attachedDeposit ?? Amount.ZERO,
       }
     }
   }
 
-  static deployContract({code}: DeployContract): DeployContractAction {
+  static deployContract({code}: DeployContractOptions): DeployContractActionLike {
     return {
       type: "DeployContract",
       params: {
@@ -59,23 +59,24 @@ export class ActionFactory {
     }
   }
 
-  static stake({amount, publicKey}: Stake): StakeAction {
+  static stake({amount, publicKey}: StakeOptions): StakeActionLike {
     return {
       type: "Stake",
       params: {
-          stake: amount,
+          amount,
           publicKey
       }
     }
   }
 
-  static createAccount(): CreateAccountAction {
+  static createAccount(): CreateAccountActionLike {
     return {
-      type: "CreateAccount"
+      type: "CreateAccount",
+      params: {}
     }
   }
 
-  static deleteAccount({beneficiaryId}: DeleteAccount): DeleteAccountAction {
+  static deleteAccount({beneficiaryId}: DeleteAccountOptions): DeleteAccountActionLike {
     return {
       type: "DeleteAccount",
       params: {
@@ -84,20 +85,20 @@ export class ActionFactory {
     }
   }
 
-  static addKey({publicKey, permission, nonce}: AddKey): AddKeyAction {
+  static addKey({publicKey, permission, nonce}: AddKeyOptions): AddKeyActionLike {
     return {
       type: "AddKey",
       params: {
         publicKey,
         accessKey: {
-          nonce,
           permission
-        }
+        },
+        nonce
       }
     }
   }
 
-  static deleteKey({publicKey}: DeleteKey): DeleteKeyAction {
+  static deleteKey({publicKey}: DeleteKeyOptions): DeleteKeyActionLike {
     return {
       type: "DeleteKey",
       params: {

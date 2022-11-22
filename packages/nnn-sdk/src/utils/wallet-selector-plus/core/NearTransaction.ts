@@ -1,13 +1,15 @@
-import {Action} from "@near-wallet-selector/core";
-import {Transaction} from "../types/transaction";
+import {TransactionLike} from "../types/transaction";
 import {ActionFactory} from "./ActionFactory";
-import {FunctionCall} from "../types/action";
-import {AddKeyPermission} from "@near-wallet-selector/core/lib/wallet/transactions.types";
-import {BaseArgs} from "../types/common";
-import {ReceiverIdOrOptions} from "../types/options";
+import {FunctionCallOptions, BaseArgs, ReceiverIdOrOptions} from "../types/options";
+import {AccessKeyPermission, ActionLike} from "../types/action";
+import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike} from "../types/transform";
+import {
+  parseNearApiJsTransaction,
+  parseNearWalletSelectorTransaction
+} from "../utils/transform";
 
 export class NearTransaction {
-  private readonly transactions: Transaction[]
+  private readonly transactions: TransactionLike[]
 
   constructor(receiverIdOrOptions: ReceiverIdOrOptions) {
     this.transactions = []
@@ -34,32 +36,14 @@ export class NearTransaction {
     })
   }
 
-  addTransaction(...transaction: Transaction[]): this {
+  addTransaction(...transaction: TransactionLike[]): this {
     this.transactions.push(...transaction)
     return this
   }
 
-  addAction(...action: Action[]): this {
+  addAction(...action: ActionLike[]): this {
     this.transactions[this.currentIndex()].actions.push(...action)
     return this
-  }
-
-  transfer(amount: string): this {
-    return this.addAction(ActionFactory.transfer({amount}))
-  }
-
-  functionCall<Args extends BaseArgs>(
-    _: FunctionCall<Args>
-  ): this {
-    return this.addAction(ActionFactory.functionCall(_))
-  }
-
-  deployContract(code: Uint8Array): this {
-    return this.addAction(ActionFactory.deployContract({code}))
-  }
-
-  stake(amount: string, publicKey: string): this {
-    return this.addAction(ActionFactory.stake({amount, publicKey}))
   }
 
   createAccount(): this {
@@ -72,7 +56,7 @@ export class NearTransaction {
 
   addKey(
     publicKey: string,
-    permission: AddKeyPermission,
+    permission: AccessKeyPermission,
     nonce?: number
   ): this {
     return this.addAction(ActionFactory.addKey({publicKey, permission, nonce}))
@@ -82,22 +66,47 @@ export class NearTransaction {
     return  this.addAction(ActionFactory.deleteKey({publicKey}))
   }
 
+  deployContract(code: Uint8Array): this {
+    return this.addAction(ActionFactory.deployContract({code}))
+  }
+
+  stake(amount: string, publicKey: string): this {
+    return this.addAction(ActionFactory.stake({amount, publicKey}))
+  }
+
+  functionCall<Args extends BaseArgs>(
+    options: FunctionCallOptions<Args>
+  ): this {
+    return this.addAction(ActionFactory.functionCall(options))
+  }
+
+  transfer(amount: string): this {
+    return this.addAction(ActionFactory.transfer({amount}))
+  }
+
   isMultiple(): boolean {
     return this.currentIndex() > 0
   }
 
-  toTransactions(): Transaction[] {
+  toTransactions(): TransactionLike[] {
     return this.transactions
   }
 
-  toTransaction(): Transaction {
-    if (this.isMultiple()) {
-      throw Error('Multiple transactions in NearTransaction')
-    }
-    return this.toTransactions()[0]
+  toNearApiJsTransactions(): NearApiJsTransactionLike[] {
+    const transactions = this.toTransactions()
+    return transactions.map(transaction => {
+      return parseNearApiJsTransaction(transaction)
+    })
   }
 
-  static fromTransaction(...transactions: Transaction[]): NearTransaction {
+  toNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
+    const transactions = this.toTransactions()
+    return transactions.map(transaction => {
+      return parseNearWalletSelectorTransaction(transaction)
+    })
+  }
+
+  static fromTransactions(...transactions: TransactionLike[]): NearTransaction {
     if (transactions.length === 0) {
       throw Error('Transaction not found')
     }

@@ -1,4 +1,7 @@
-import {Optional} from "@near-wallet-selector/core";
-import transactions from "@near-wallet-selector/core/lib/wallet/transactions.types";
+import {ActionLike} from "./action";
 
-export type Transaction = Optional<transactions.Transaction, 'signerId'>
+export interface TransactionLike {
+  signerId?: string
+  receiverId: string,
+  actions: ActionLike[]
+}

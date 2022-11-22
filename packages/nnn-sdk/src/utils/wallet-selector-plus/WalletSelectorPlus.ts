@@ -1,12 +1,11 @@
 import {setupWalletSelector} from "@near-wallet-selector/core";
-import {parseOutcomeValue, resolveNetwork, setupWalletModules, transformAction} from "./utils/common";
+import {parseOutcomeValue, resolveNetwork, setupWalletModules} from "./utils/common";
 import {InMemorySigner, keyStores, Near} from "near-api-js";
-import {ViewOptions} from "./types/options";
+import {BaseArgs, ViewOptions} from "./types/options";
 import {NearTransaction} from "./core/NearTransaction";
-import {FinalExecutionOutcome} from "near-api-js/lib/providers";
 import {WalletSelectorPlusConfig} from "./types/config";
 import {WalletSelectorPlus} from "./types/enhancement";
-import {BaseArgs, MultiSendAccount} from "./types/common";
+import {MultiSendAccount} from "./types/common";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;
@@ -49,27 +48,24 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
 
       async send<Value>(transaction: NearTransaction, callbackUrl?: string): Promise<Value> {
         const wallet = await this.wallet()
-        let outcome
+        const walletSelectorTransactions = transaction.toNearWalletSelectorTransactions()
+        let outcome = null
         if (transaction.isMultiple()) {
-          const outcomes = await wallet.signAndSendTransactions({transactions: transaction.toTransactions(), callbackUrl})
+          const outcomes = await wallet.signAndSendTransactions({transactions: walletSelectorTransactions , callbackUrl})
           outcome = outcomes!.pop()
         } else {
-          outcome = await wallet.signAndSendTransaction({...transaction.toTransaction(), callbackUrl})
+          outcome = await wallet.signAndSendTransaction({...walletSelectorTransactions[0], callbackUrl})
         }
         return parseOutcomeValue(outcome!)
       },
 
       async sendWithLocalKey<Value>(signerId: string, transaction: NearTransaction): Promise<Value> {
         const account = (await this.near.account(signerId)) as unknown as MultiSendAccount
-        const outcomes: FinalExecutionOutcome[] = []
-        for (const {receiverId, actions} of transaction.toTransactions()) {
-          const outcome = await account.signAndSendTransaction({
-            receiverId,
-            actions: actions.map(action => transformAction(action))
-          })
-          outcomes.push(outcome)
+        let outcome = null
+        for (const nearApiJsTransaction of transaction.toNearApiJsTransactions()) {
+          outcome = await account.signAndSendTransaction(nearApiJsTransaction)
         }
-        return parseOutcomeValue(outcomes.pop()!)
+        return parseOutcomeValue(outcome!)
       }
     }
   }

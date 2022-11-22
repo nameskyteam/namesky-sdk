@@ -5,6 +5,6 @@ import {Modify} from "@near-wallet-selector/core/lib/utils.types";
 
 export type Merge<T, U> = T & U
 
-export type BaseArgs = object
-
-export type MultiSendAccount = Modify<Account, { signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> }>
+export type MultiSendAccount = Modify<Account, {
+  signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome>
+}>

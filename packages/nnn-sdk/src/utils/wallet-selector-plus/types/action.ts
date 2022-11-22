@@ -1,40 +1,83 @@
-import {AddKeyPermission} from "@near-wallet-selector/core/lib/wallet/transactions.types";
-import {BaseArgs} from "./common";
-
-export interface FunctionCall<Args extends BaseArgs> {
-  methodName: string;
-  args?: Args;
-  attachedDeposit?: string;
-  gas?: string;
+export interface CreateAccountActionLike {
+  type: "CreateAccount"
+  params: Record<string, never>
 }
 
-export interface DeployContract {
-  code: Uint8Array;
+export interface DeleteAccountActionLike {
+  type: "DeleteAccount"
+  params: {
+    beneficiaryId: string
+  }
 }
 
-export interface Transfer {
-  amount: string;
+export interface AddKeyActionLike {
+  type: "AddKey"
+  params: {
+    publicKey: string
+    accessKey: {
+      permission: AccessKeyPermission
+    }
+    nonce?: number
+  }
 }
 
-export interface Stake {
-  amount: string;
-  publicKey: string;
+export interface DeleteKeyActionLike {
+  type: "DeleteKey"
+  params: {
+    publicKey: string
+  }
 }
 
-export interface AddKey {
-  publicKey: string;
-  permission: AddKeyPermission;
-  nonce?: number;
+export interface StakeActionLike {
+  type: "Stake"
+  params: {
+    amount: string
+    publicKey: string
+  }
 }
 
-export interface DeleteKey {
-  publicKey: string;
+export interface DeployContractActionLike {
+  type: "DeployContract"
+  params: {
+    code: Uint8Array
+  }
 }
 
-export interface DeleteAccount {
-  beneficiaryId: string;
+export interface FunctionCallActionLike {
+  type: "FunctionCall"
+  params: {
+    methodName: string
+    args: object
+    attachedDeposit: string
+    gas: string
+  }
 }
 
-export interface DeleteKey {
-  publicKey: string;
+export interface TransferActionLike {
+  type: "Transfer"
+  params: {
+    amount: string
+  }
 }
+
+export type ActionLike = 
+  | CreateAccountActionLike
+  | DeleteAccountActionLike
+  | AddKeyActionLike
+  | DeleteKeyActionLike
+  | DeployContractActionLike
+  | StakeActionLike
+  | FunctionCallActionLike
+  | TransferActionLike
+
+export type AccessKeyPermission = FullAccess | FunctionCallAccess
+
+export type FullAccess = 'FullAccess'
+
+export interface FunctionCallAccess {
+  receiverId: string
+  methodNames: string[]
+  allowance?: string
+}
+
+export type ActionType = ActionLike['type']
