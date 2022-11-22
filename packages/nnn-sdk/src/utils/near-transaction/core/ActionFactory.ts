@@ -6,7 +6,7 @@ import {
   StakeOptions,
   FunctionCallOptions,
   TransferOptions
-} from "../types/options";
+} from "../types/action-factory";
 import {
   AddKeyActionLike,
   CreateAccountActionLike,

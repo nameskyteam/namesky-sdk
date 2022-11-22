@@ -1,5 +1,5 @@
-import {BaseContract} from "../../utils/BaseContract";
+import {Contract} from "../../utils/Contract";
 
-export class MarketContract extends BaseContract {
+export class MarketContract extends Contract {
 
 }

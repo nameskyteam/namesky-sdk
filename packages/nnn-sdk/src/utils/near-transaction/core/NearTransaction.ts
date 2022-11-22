@@ -1,6 +1,6 @@
 import {TransactionLike} from "../types/transaction";
 import {ActionFactory} from "./ActionFactory";
-import {BaseArgs, BaseFunctionCallOptions, ReceiverIdOrOptions} from "../types/options";
+import {BaseArgs, FunctionCallOptions, ReceiverIdOrOptions} from "../types/common";
 import {AccessKeyPermission, ActionLike} from "../types/action";
 import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike} from "../types/transform";
 import {
@@ -84,7 +84,7 @@ export class NearTransaction {
     args,
     attachedDeposit,
     gas
-  }: BaseFunctionCallOptions<Args>): this {
+  }: FunctionCallOptions<Args>): this {
     return this.addAction(ActionFactory.functionCall({
       methodName,
       args: args ?? {},

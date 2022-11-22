@@ -1,10 +1,10 @@
-import {BaseContract} from "../../utils/BaseContract";
+import {Contract} from "../../utils/Contract";
 import {NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs} from "../types/args/NftContract";
 import {ContractCallOptions, ContractViewOptions} from "../types/common";
 import {NearTransaction} from "../../utils/near-transaction/core/NearTransaction";
 import {Amount} from "../../utils/near-transaction/utils/Amount";
 
-export class NftContract extends BaseContract {
+export class NftContract extends Contract {
   async nft_is_registered(args: NftIsRegisteredArgs, options?: ContractViewOptions): Promise<string | null> {
     return this.selector.view({
       ...options,

@@ -1,12 +1,12 @@
 import {setupWalletSelector} from "@near-wallet-selector/core";
 import {parseOutcomeValue, resolveNetwork, setupWalletModules} from "../utils/common";
 import {InMemorySigner, keyStores, Near} from "near-api-js";
-import {ViewOptions} from "../types/options";
+import {ViewOptions} from "../types/common";
 import {WalletSelectorPlusConfig} from "../types/config";
 import {WalletSelectorPlus} from "../types/enhancement";
 import {MultiSendAccount} from "../types/common";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
-import {BaseArgs} from "../../near-transaction/types/options";
+import {BaseArgs} from "../../near-transaction/types/common";
 import {NearTransaction} from "../../near-transaction/core/NearTransaction";
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;

@@ -33,14 +33,3 @@ export interface FunctionCallOptions {
 export interface TransferOptions {
   amount: string
 }
-
-export interface BaseFunctionCallOptions<Args extends BaseArgs> {
-  methodName: string
-  args?: Args
-  attachedDeposit?: string
-  gas?: string
-}
-
-export type BaseArgs = object
-
-export type ReceiverIdOrOptions = string | { signerId?: string, receiverId: string }

@@ -5,7 +5,7 @@
   "scripts": {
     "start:testnet": "react-scripts start",
     "build:testnet": "react-scripts build",
-    "lint": "yarn eslint --fix src/**/*.ts"
+    "lint": "yarn eslint --fix packages/**/*.ts"
   },
   "dependencies": {
     "@near-wallet-selector/core": "^7.2.0",
