@@ -27,7 +27,9 @@ export class NiceNearName {
     this.nftContract = nftContract
     this.marketContract = marketContract
 
-    this.onRequestFullAccess().then(() => {})
+    this.onRequestFullAccess()
+      .then(() => console.log('onRequestFullAccess Success'))
+      .catch((reason) => console.error('onRequestFullAccess Failed', reason))
   }
 
   getNetwork(): Network {
@@ -68,6 +70,7 @@ export class NiceNearName {
     window.location.assign(newUrl.toString());
   }
 
+  // auto callback
   private async onRequestFullAccess() {
     const currentUrl = new URL(window.location.href)
     const publicKey = currentUrl.searchParams.get('public_key')
