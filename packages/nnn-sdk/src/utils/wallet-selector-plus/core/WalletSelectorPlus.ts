@@ -54,13 +54,13 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
 
       async send<Value>(transaction: NearTransaction, callbackUrl?: string): Promise<Value> {
         const wallet = await this.wallet()
-        const walletSelectorTransactions = transaction.toNearWalletSelectorTransactions()
+        const nearWalletSelectorTransactions = transaction.toNearWalletSelectorTransactions()
         let outcome = null
         if (transaction.isMultiple()) {
-          const outcomes = await wallet.signAndSendTransactions({transactions: walletSelectorTransactions , callbackUrl})
+          const outcomes = await wallet.signAndSendTransactions({transactions: nearWalletSelectorTransactions , callbackUrl})
           outcome = outcomes!.pop()
         } else {
-          outcome = await wallet.signAndSendTransaction({...walletSelectorTransactions[0], callbackUrl})
+          outcome = await wallet.signAndSendTransaction({...nearWalletSelectorTransactions[0], callbackUrl})
         }
         return parseOutcomeValue(outcome!)
       },
