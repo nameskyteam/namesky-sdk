@@ -6,8 +6,9 @@ import {AccountView} from "../types/data";
 import Big from "big.js";
 
 export class MarketContract extends Contract {
-  // If simple offering, user needs to deposit with the same price
-  // If pro offering, we recommend user to deposit insufficient balance
+  // We have two type of offers, Simple Offer & Pro Offer
+  // If Simple Offer, user needs to deposit with the same price
+  // If Pro Offer, we recommend user to deposit insufficient balance
   async create_offering({args, gas}: ContractCallOptions<CreateOfferingArgs>) {
     const transaction = new MultiTransaction(this.contractId)
       // first user needs to deposit for storage of new offer
