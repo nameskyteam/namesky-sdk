@@ -1,4 +1,4 @@
-import {setupWalletSelector} from "@near-wallet-selector/core";
+import {AccountState, setupWalletSelector} from "@near-wallet-selector/core";
 import {resolveNetwork, setupWalletModules} from "../utils";
 import {InMemorySigner, keyStores, Near} from "near-api-js";
 import {ViewOptions ,WalletSelectorPlusConfig, WalletSelectorPlus} from "../types";
@@ -28,16 +28,20 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
       ...selector,
       near,
 
-      currentAccountId(): string | undefined {
+      getActiveAccountId(): string | undefined {
         return this.store.getState().accounts.find(accountState => accountState.active)?.accountId
       },
 
-      getKeyStoredAccount(accountId: string): MultiSendAccount {
-        return new MultiSendAccount(this.near.connection, accountId)
+      getAccountIds(): string[] {
+        return this.store.getState().accounts.map(accountState => accountState.accountId)
       },
 
       keyStore(): BrowserLocalStorageKeyStore {
         return (this.near.connection.signer as InMemorySigner).keyStore as BrowserLocalStorageKeyStore
+      },
+
+      keyStoredAccount(accountId: string): MultiSendAccount {
+        return new MultiSendAccount(this.near.connection, accountId)
       },
 
       async view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: ViewOptions<Args>): Promise<Value> {

@@ -8,9 +8,10 @@ import {MultiSendAccount} from "../../multi-send-account";
 
 export interface WalletSelectorEnhancement {
   near: Near;
-  currentAccountId(): string | undefined;
-  getKeyStoredAccount(accountId: string): MultiSendAccount;
+  getActiveAccountId(): string | undefined;
+  getAccountIds(): string[];
   keyStore(): BrowserLocalStorageKeyStore;
+  keyStoredAccount(accountId: string): MultiSendAccount;
   view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: ViewOptions<Args>): Promise<Value>;
   multiSend<Value>(transaction: MultiTransaction, callbackUrl?: string): Promise<Value>;
 }

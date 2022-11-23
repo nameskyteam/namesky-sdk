@@ -5,7 +5,7 @@ import {KeyPairEd25519, PublicKey} from "near-api-js/lib/utils";
 import {
   REQUEST_ACCESS_PENDING_KEY_PREFIX
 } from "../utils";
-import {Network} from "@near-wallet-selector/core";
+import {Network, Wallet} from "@near-wallet-selector/core";
 import {NiceNearNameComponent, NiceNearNameConfig} from "./types/config";
 import {Account} from "near-api-js";
 import {CleanStateArgs, InitArgs} from "./types/args";
@@ -125,7 +125,7 @@ export class NiceNearName {
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
-    await this.selector.getKeyStoredAccount(registrantId).multiSend(transaction)
+    await this.selector.keyStoredAccount(registrantId).multiSend(transaction)
   }
 }
 
@@ -135,5 +135,5 @@ export async function initNiceNearName(
   const selector = await setupWalletSelectorPlus(config.selector)
   const nftContract = new NftContract(config.contracts.nftContractId, selector)
   const marketContract = new MarketContract(config.contracts.marketContractId, selector)
-  return new NiceNearName({selector, nftContract, marketContract})
+  return new NiceNearName({selector,  nftContract, marketContract})
 }
