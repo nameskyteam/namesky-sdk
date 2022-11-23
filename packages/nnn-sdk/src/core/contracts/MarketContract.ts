@@ -1,7 +1,7 @@
 import {Contract} from "../../utils/Contract";
-import {ContractCallOptions} from "../types/common";
+import {ContractCallOptions, ContractViewOptions} from "../types/common";
 import {CreateOfferingArgs, GetAccountViewOfArgs, NearDepositArgs, StorageDepositArgs} from "../types/args";
-import {Amount, DEFAULT_STORAGE_DEPOSIT, MultiTransaction} from "../../utils";
+import {Amount, DEFAULT_STORAGE_DEPOSIT, MultiTransaction, subGteZero} from "../../utils";
 import {AccountView} from "../types/data";
 import Big from "big.js";
 
@@ -29,22 +29,19 @@ export class MarketContract extends Contract {
           gas
         })
     } else {
-      const accountView = await this.selector.view<AccountView, GetAccountViewOfArgs>({
-        contractId: this.contractId,
-        methodName: 'get_account_view_of',
+      const accountView = await this.get_account_view_of({
         args: {
           account_id: this.selector.getActiveAccountId()!
         }
       })
 
-      let insufficientBalance = Big(args.price).sub(accountView.near_balance)
-      insufficientBalance = insufficientBalance.gte(0) ? insufficientBalance : Big(0)
+      const insufficientBalance = subGteZero(Big(args.price), Big(accountView.near_balance)).toFixed()
 
       transaction
         // deposit insufficient balance
         .functionCall<NearDepositArgs>({
           methodName: 'near_deposit',
-          attachedDeposit: insufficientBalance.toFixed()
+          attachedDeposit: insufficientBalance
         })
         // create new offer
         .functionCall({
@@ -56,5 +53,13 @@ export class MarketContract extends Contract {
     }
 
     await this.selector.multiSend(transaction)
+  }
+
+  async get_account_view_of({args}: ContractViewOptions<GetAccountViewOfArgs>): Promise<AccountView> {
+    return  this.selector.view<AccountView, GetAccountViewOfArgs>({
+      contractId: this.contractId,
+      methodName: 'get_account_view_of',
+      args
+    })
   }
 }
