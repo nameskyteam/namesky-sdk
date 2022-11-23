@@ -1,4 +1,4 @@
-import {BaseArgs} from "../../near-transaction/types/common";
+import {BaseArgs} from "../../multi-transaction/types/common";
 import {BlockReference} from "near-api-js/lib/providers/provider";
 
 export interface ViewOptions<Args extends BaseArgs> {

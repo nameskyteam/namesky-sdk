@@ -11,9 +11,9 @@ import {Amount} from "../utils/Amount";
 import {Gas} from "../utils/Gas";
 
 /**
- * Hepler class for quickly creating transaction(s)
+ * Helper class for creating transaction(s)
  */
-export class NearTransaction implements Transform {
+export class MultiTransaction implements Transform {
   private readonly transactions: TransactionLike[]
 
   constructor(receiverIdOrOptions: ReceiverIdOrOptions) {
@@ -100,20 +100,20 @@ export class NearTransaction implements Transform {
     return this.currentIndex() > 0
   }
 
-  static fromTransactions(...transactions: TransactionLike[]): NearTransaction {
+  static fromTransactions(...transactions: TransactionLike[]): MultiTransaction {
     if (transactions.length === 0) {
       throw Error('Bad transaction(s)')
     }
-    let nearTransaction: NearTransaction
+    let multiTransaction: MultiTransaction
     transactions.forEach((transaction, index) => {
       if (index === 0) {
         const {signerId, receiverId, actions} = transaction
-        nearTransaction = new NearTransaction({signerId, receiverId}).addAction(...actions)
+        multiTransaction = new MultiTransaction({signerId, receiverId}).addAction(...actions)
       } else {
-        nearTransaction.addTransaction(transaction)
+        multiTransaction.addTransaction(transaction)
       }
     })
-    return nearTransaction!
+    return multiTransaction!
   }
 
   toTransactions(): TransactionLike[] {

@@ -9,8 +9,8 @@ import {Network} from "@near-wallet-selector/core";
 import {NiceNearNameComponent, NiceNearNameConfig} from "./types/config";
 import {Account} from "near-api-js";
 import {CleanStateArgs, InitArgs} from "./types/args/NftContract";
-import {NearTransaction} from "../utils/near-transaction/core/NearTransaction";
-import {Amount} from "../utils/near-transaction/utils/Amount";
+import {MultiTransaction} from "../utils/multi-transaction/core/MultiTransaction";
+import {Amount} from "../utils/multi-transaction/utils/Amount";
 import {setupWalletSelectorPlus} from "../utils/wallet-selector-plus/core/WalletSelectorPlus";
 
 export class NiceNearName {
@@ -104,7 +104,7 @@ export class NiceNearName {
     const accessKeys = await account.getAccessKeys()
     const publicKeys = accessKeys.map(accessKey => accessKey.public_key)
 
-    const transaction = new NearTransaction(registrantId)
+    const transaction = new MultiTransaction(registrantId)
       .deployContract(code)
       .functionCall<CleanStateArgs>({
         methodName: 'clean_state',
@@ -125,7 +125,7 @@ export class NiceNearName {
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
-    await this.selector.sendWithLocalKey(registrantId, transaction)
+    await this.selector.multiSendWithLocalKey(registrantId, transaction)
   }
 }
 

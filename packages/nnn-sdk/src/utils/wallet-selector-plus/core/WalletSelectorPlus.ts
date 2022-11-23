@@ -5,18 +5,13 @@ import {ViewOptions} from "../types/common";
 import {WalletSelectorPlusConfig} from "../types/config";
 import {WalletSelectorPlus} from "../types/enhancement";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
-import {BaseArgs} from "../../near-transaction/types/common";
-import {NearTransaction} from "../../near-transaction/core/NearTransaction";
-import {MultiSendAccount} from "../../multi-send-account/MultiSendAccount";
-import {parseOutcomeValue} from "../../near-transaction/utils/outcome";
+import {BaseArgs} from "../../multi-transaction/types/common";
+import {MultiTransaction} from "../../multi-transaction/core/MultiTransaction";
+import {MultiSendAccount} from "../../multi-send-account/core/MultiSendAccount";
+import {parseOutcomeValue} from "../../multi-transaction/utils/outcome";
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;
 
-/**
- * Enhancement of `NearWalletSelector` based on `NearTransaction`
- *
- * @param config
- */
 export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig): Promise<WalletSelectorPlus> {
   if (!walletSelectorPlus) {
     const selector = await setupWalletSelector({
@@ -53,7 +48,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         })
       },
 
-      async send<Value>(transaction: NearTransaction, callbackUrl?: string): Promise<Value> {
+      async multiSend<Value>(transaction: MultiTransaction, callbackUrl?: string): Promise<Value> {
         const wallet = await this.wallet()
         const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions()
         let outcome = null
@@ -66,9 +61,9 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return parseOutcomeValue(outcome!)
       },
 
-      async sendWithLocalKey<Value>(localSignerId: string, transaction: NearTransaction): Promise<Value> {
+      async multiSendWithLocalKey<Value>(localSignerId: string, transaction: MultiTransaction): Promise<Value> {
         const account = new MultiSendAccount(this.near.connection, localSignerId)
-        return account.send(transaction)
+        return account.multiSend(transaction)
       }
     }
   }
