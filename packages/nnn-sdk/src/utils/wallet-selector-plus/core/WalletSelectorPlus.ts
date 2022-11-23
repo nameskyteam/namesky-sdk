@@ -28,11 +28,15 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
       ...selector,
       near,
 
-      getAccountId(): string | undefined {
+      currentAccountId(): string | undefined {
         return this.store.getState().accounts.find(accountState => accountState.active)?.accountId
       },
 
-      getKeyStore(): BrowserLocalStorageKeyStore {
+      getKeyStoredAccount(accountId: string): MultiSendAccount {
+        return new MultiSendAccount(this.near.connection, accountId)
+      },
+
+      keyStore(): BrowserLocalStorageKeyStore {
         return (this.near.connection.signer as InMemorySigner).keyStore as BrowserLocalStorageKeyStore
       },
 
@@ -58,11 +62,6 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
           outcome = outcome as FinalExecutionOutcome
         }
         return parseOutcomeValue(outcome!)
-      },
-
-      async multiSendWithLocalKey<Value>(localSignerId: string, transaction: MultiTransaction): Promise<Value> {
-        const account = new MultiSendAccount(this.near.connection, localSignerId)
-        return account.multiSend(transaction)
       }
     }
   }

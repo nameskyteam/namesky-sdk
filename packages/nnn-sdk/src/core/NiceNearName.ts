@@ -48,8 +48,8 @@ export class NiceNearName {
     return this.marketContract.contractId
   }
 
-  account(accountId?: string): Promise<Account> {
-    return this.selector.near.account(accountId ?? '')
+  account(accountId: string): Promise<Account> {
+    return this.selector.near.account(accountId)
   }
 
   async requestFullAccess(
@@ -60,7 +60,7 @@ export class NiceNearName {
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey
-    const keystore = this.selector.getKeyStore()
+    const keystore = this.selector.keyStore()
     const networkId = this.getNetworkId()
     await keystore.setKey(networkId, pendingAccountId, keyPair)
     const newUrl = new URL(webWalletBaseUrl + '/login/');
@@ -79,7 +79,7 @@ export class NiceNearName {
       return
     }
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString()
-    const keystore = this.selector.getKeyStore()
+    const keystore = this.selector.keyStore()
     const networkId = this.getNetworkId()
     const keyPair = await keystore.getKey(networkId, pendingAccountId)
     if (!keyPair) {
@@ -125,7 +125,7 @@ export class NiceNearName {
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
-    await this.selector.multiSendWithLocalKey(registrantId, transaction)
+    await this.selector.getKeyStoredAccount(registrantId).multiSend(transaction)
   }
 }
 
