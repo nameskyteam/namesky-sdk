@@ -14,7 +14,7 @@ import {Gas} from "../utils/Gas";
  * Helper class for creating transaction(s)
  */
 export class MultiTransaction implements Transform {
-  private readonly transactions: TransactionLike[]
+  transactions: TransactionLike[]
 
   constructor(receiverIdOrOptions: ReceiverIdOrOptions) {
     this.transactions = []
