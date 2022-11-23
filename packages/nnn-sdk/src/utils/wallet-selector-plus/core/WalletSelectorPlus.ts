@@ -54,7 +54,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
 
       async send<Value>(transaction: NearTransaction, callbackUrl?: string): Promise<Value> {
         const wallet = await this.wallet()
-        const nearWalletSelectorTransactions = transaction.toNearWalletSelectorTransactions()
+        const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions()
         let outcome = null
         if (transaction.isMultiple()) {
           const outcomes = await wallet.signAndSendTransactions({transactions: nearWalletSelectorTransactions , callbackUrl})
@@ -68,7 +68,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
       async sendWithLocalKey<Value>(signerId: string, transaction: NearTransaction): Promise<Value> {
         const account = (await this.near.account(signerId)) as unknown as MultiSendAccount
         let outcome = null
-        for (const nearApiJsTransaction of transaction.toNearApiJsTransactions()) {
+        for (const nearApiJsTransaction of transaction.parseNearApiJsTransactions()) {
           outcome = await account.signAndSendTransaction(nearApiJsTransaction)
         }
         return parseOutcomeValue(outcome!)

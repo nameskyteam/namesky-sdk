@@ -69,17 +69,7 @@ export function parseNearWalletSelectorAction(action: ActionLike): NearWalletSel
       return action
     }
     case "AddKey": {
-      const {publicKey, accessKey, nonce} = params
-      return {
-        type,
-        params: {
-          publicKey,
-          accessKey: {
-            permission: accessKey.permission,
-            nonce
-          }
-        }
-      }
+      return action
     }
     case "DeleteKey": {
       return action

@@ -1,35 +1,34 @@
-import {AccessKeyPermission} from "./action";
+import {AccessKey} from "./action";
 
-export interface DeleteAccountOptions {
+export interface DeleteAccountParams {
   beneficiaryId: string
 }
 
-export interface AddKeyOptions {
+export interface AddKeyParams {
   publicKey: string
-  permission: AccessKeyPermission
-  nonce?: number
+  accessKey: AccessKey
 }
 
-export interface DeleteKeyOptions {
+export interface DeleteKeyParams {
   publicKey: string
 }
 
-export interface DeployContractOptions {
+export interface DeployContractParams {
   code: Uint8Array
 }
 
-export interface StakeOptions {
+export interface StakeParams {
   amount: string
   publicKey: string
 }
 
-export interface FunctionCallOptions {
+export interface FunctionCallParams {
   methodName: string
   args: object
   attachedDeposit: string
   gas: string
 }
 
-export interface TransferOptions {
+export interface TransferParams {
   amount: string
 }

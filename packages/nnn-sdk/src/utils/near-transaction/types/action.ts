@@ -14,10 +14,7 @@ export interface AddKeyActionLike {
   type: "AddKey"
   params: {
     publicKey: string
-    accessKey: {
-      permission: AccessKeyPermission
-    }
-    nonce?: number
+    accessKey: AccessKey
   }
 }
 
@@ -70,9 +67,12 @@ export type ActionLike =
   | FunctionCallActionLike
   | TransferActionLike
 
-export type AccessKeyPermission = FullAccess | FunctionCallAccess
+export interface AccessKey {
+  permission: AccessKeyPermission,
+  nonce?: number
+}
 
-export type FullAccess = 'FullAccess'
+export type AccessKeyPermission = 'FullAccess' | FunctionCallAccess
 
 export interface FunctionCallAccess {
   receiverId: string

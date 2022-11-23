@@ -1,8 +1,8 @@
 import {TransactionLike} from "../types/transaction";
 import {ActionFactory} from "./ActionFactory";
 import {BaseArgs, FunctionCallOptions, ReceiverIdOrOptions} from "../types/common";
-import {AccessKeyPermission, ActionLike} from "../types/action";
-import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike} from "../types/transform";
+import {AccessKey, ActionLike} from "../types/action";
+import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike, Transform} from "../types/transform";
 import {
   parseNearApiJsTransaction,
   parseNearWalletSelectorTransaction
@@ -13,7 +13,7 @@ import {Gas} from "../utils/Gas";
 /**
  * Hepler class for quickly creating transaction(s)
  */
-export class NearTransaction {
+export class NearTransaction implements Transform {
   private readonly transactions: TransactionLike[]
 
   constructor(receiverIdOrOptions: ReceiverIdOrOptions) {
@@ -61,10 +61,9 @@ export class NearTransaction {
 
   addKey(
     publicKey: string,
-    permission: AccessKeyPermission,
-    nonce?: number
+    accessKey: AccessKey
   ): this {
-    return this.addAction(ActionFactory.addKey({publicKey, permission, nonce}))
+    return this.addAction(ActionFactory.addKey({publicKey, accessKey}))
   }
 
   deleteKey(publicKey: string): this {
@@ -101,24 +100,6 @@ export class NearTransaction {
     return this.currentIndex() > 0
   }
 
-  toTransactions(): TransactionLike[] {
-    return this.transactions
-  }
-
-  toNearApiJsTransactions(): NearApiJsTransactionLike[] {
-    const transactions = this.toTransactions()
-    return transactions.map(transaction => {
-      return parseNearApiJsTransaction(transaction)
-    })
-  }
-
-  toNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
-    const transactions = this.toTransactions()
-    return transactions.map(transaction => {
-      return parseNearWalletSelectorTransaction(transaction)
-    })
-  }
-
   static fromTransactions(...transactions: TransactionLike[]): NearTransaction {
     if (transactions.length === 0) {
       throw Error('Bad transaction(s)')
@@ -133,5 +114,23 @@ export class NearTransaction {
       }
     })
     return nearTransaction!
+  }
+
+  toTransactions(): TransactionLike[] {
+    return [...this.transactions]
+  }
+
+  parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
+    const transactions = this.toTransactions()
+    return transactions.map(transaction => {
+      return parseNearApiJsTransaction(transaction)
+    })
+  }
+
+  parseNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
+    const transactions = this.toTransactions()
+    return transactions.map(transaction => {
+      return parseNearWalletSelectorTransaction(transaction)
+    })
   }
 }

@@ -1,11 +1,11 @@
 import {
-  DeleteAccountOptions,
-  AddKeyOptions,
-  DeleteKeyOptions,
-  DeployContractOptions,
-  StakeOptions,
-  FunctionCallOptions,
-  TransferOptions
+  DeleteAccountParams,
+  AddKeyParams,
+  DeleteKeyParams,
+  DeployContractParams,
+  StakeParams,
+  FunctionCallParams,
+  TransferParams
 } from "../types/action-factory";
 import {
   AddKeyActionLike,
@@ -28,79 +28,52 @@ export class ActionFactory {
     }
   }
 
-  static deleteAccount({beneficiaryId}: DeleteAccountOptions): DeleteAccountActionLike {
+  static deleteAccount(params: DeleteAccountParams): DeleteAccountActionLike {
     return {
       type: "DeleteAccount",
-      params: {
-        beneficiaryId
-      }
+      params
     }
   }
 
-  static addKey({publicKey, permission, nonce}: AddKeyOptions): AddKeyActionLike {
+  static addKey(params: AddKeyParams): AddKeyActionLike {
     return {
       type: "AddKey",
-      params: {
-        publicKey,
-        accessKey: {
-          permission
-        },
-        nonce
-      }
+      params
     }
   }
 
-  static deleteKey({publicKey}: DeleteKeyOptions): DeleteKeyActionLike {
+  static deleteKey(params: DeleteKeyParams): DeleteKeyActionLike {
     return {
       type: "DeleteKey",
-      params: {
-        publicKey
-      }
+      params
     }
   }
 
-  static deployContract({code}: DeployContractOptions): DeployContractActionLike {
+  static deployContract(params: DeployContractParams): DeployContractActionLike {
     return {
       type: "DeployContract",
-      params: {
-        code
-      }
+      params
     }
   }
 
-  static stake({amount, publicKey}: StakeOptions): StakeActionLike {
+  static stake(params: StakeParams): StakeActionLike {
     return {
       type: "Stake",
-      params: {
-          amount,
-          publicKey
-      }
+      params
     }
   }
 
-  static functionCall({
-    methodName,
-    args,
-    gas,
-    attachedDeposit
-  }: FunctionCallOptions): FunctionCallActionLike {
+  static functionCall(params: FunctionCallParams): FunctionCallActionLike {
     return {
       type: "FunctionCall",
-      params: {
-        methodName,
-        args,
-        gas,
-        attachedDeposit,
-      }
+      params
     }
   }
 
-  static transfer({amount}: TransferOptions): TransferActionLike {
+  static transfer(params: TransferParams): TransferActionLike {
     return {
       type: "Transfer",
-      params: {
-        amount
-      }
+      params
     }
   }
 }
