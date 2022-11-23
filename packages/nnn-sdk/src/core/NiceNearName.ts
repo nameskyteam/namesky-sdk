@@ -5,7 +5,7 @@ import {KeyPairEd25519, PublicKey} from "near-api-js/lib/utils";
 import {
   REQUEST_ACCESS_PENDING_KEY_PREFIX
 } from "../utils";
-import {Network, Wallet} from "@near-wallet-selector/core";
+import {Network} from "@near-wallet-selector/core";
 import {NiceNearNameComponent, NiceNearNameConfig} from "./types/config";
 import {Account} from "near-api-js";
 import {CleanStateArgs, InitArgs} from "./types/args";
