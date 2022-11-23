@@ -104,7 +104,7 @@ export class NiceNearName {
     const accessKeys = await account.getAccessKeys()
     const publicKeys = accessKeys.map(accessKey => accessKey.public_key)
 
-    const transaction = new MultiTransaction({receiverId: registrantId})
+    const transaction = new MultiTransaction(registrantId)
       .deployContract(code)
       .functionCall<CleanStateArgs>({
         methodName: 'clean_state',

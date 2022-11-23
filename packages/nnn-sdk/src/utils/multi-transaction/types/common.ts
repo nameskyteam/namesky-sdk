@@ -6,8 +6,3 @@ export interface FunctionCallOptions<Args extends BaseArgs> {
 }
 
 export type BaseArgs = object
-
-export interface MultiTransactionOptions {
-  signerId?: string
-  receiverId: string
-}

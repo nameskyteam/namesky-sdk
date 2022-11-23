@@ -1,6 +1,6 @@
 import {TransactionLike} from "../types/transaction";
 import {ActionFactory} from "./ActionFactory";
-import {BaseArgs, FunctionCallOptions, MultiTransactionOptions} from "../types/common";
+import {BaseArgs, FunctionCallOptions} from "../types/common";
 import {AccessKey, ActionLike} from "../types/action";
 import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike, Transform} from "../types/transform";
 import {
@@ -16,16 +16,16 @@ import {Gas} from "../utils/Gas";
 export class MultiTransaction implements Transform {
   transactions: TransactionLike[]
 
-  constructor(options: MultiTransactionOptions) {
+  constructor(receiverId: string, signerId?: string) {
     this.transactions = []
-    this.nextTransaction(options)
+    this.nextTransaction(receiverId, signerId)
   }
 
   private currentIndex(): number {
     return this.transactions.length - 1
   }
 
-  nextTransaction({signerId, receiverId}: MultiTransactionOptions): this {
+  nextTransaction(receiverId: string, signerId?: string): this {
     return this.addTransaction({
       signerId,
       receiverId,
@@ -100,7 +100,7 @@ export class MultiTransaction implements Transform {
     transactions.forEach((transaction, index) => {
       if (index === 0) {
         const {signerId, receiverId, actions} = transaction
-        multiTransaction = new MultiTransaction({signerId, receiverId}).addAction(...actions)
+        multiTransaction = new MultiTransaction(receiverId, signerId).addAction(...actions)
       } else {
         multiTransaction.addTransaction(transaction)
       }
