@@ -1,14 +1,14 @@
-import {TransactionLike} from "../types/transaction";
+import {TransactionLike} from "../types";
 import {ActionFactory} from "./ActionFactory";
-import {BaseArgs, FunctionCallOptions} from "../types/common";
-import {AccessKey, ActionLike} from "../types/action";
-import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike, Transform} from "../types/transform";
+import {BaseArgs, FunctionCallOptions} from "../types";
+import {AccessKey, ActionLike} from "../types";
+import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike, Transform} from "../types";
 import {
   parseNearApiJsTransaction,
   parseNearWalletSelectorTransaction
-} from "../utils/transform";
-import {Amount} from "../utils/Amount";
-import {Gas} from "../utils/Gas";
+} from "../utils";
+import {Amount} from "../utils";
+import {Gas} from "../utils";
 
 /**
  * Helper class for creating transaction(s)

@@ -1,5 +1,5 @@
 import {SignAndSendTransactionOptions} from "near-api-js/lib/account";
-import {MultiTransaction} from "../../multi-transaction/core/MultiTransaction";
+import {MultiTransaction} from "../../multi-transaction";
 
 export interface SignAndSendTransactionParams extends SignAndSendTransactionOptions {}
 

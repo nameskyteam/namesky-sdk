@@ -1,14 +1,13 @@
 import {setupWalletSelector} from "@near-wallet-selector/core";
-import {resolveNetwork, setupWalletModules} from "../utils/common";
+import {resolveNetwork, setupWalletModules} from "../utils";
 import {InMemorySigner, keyStores, Near} from "near-api-js";
-import {MultiSendOptions, ViewOptions} from "../types/common";
-import {WalletSelectorPlusConfig} from "../types/config";
-import {WalletSelectorPlus} from "../types/enhancement";
+import {ViewOptions ,WalletSelectorPlusConfig, WalletSelectorPlus} from "../types";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
-import {BaseArgs} from "../../multi-transaction/types/common";
-import {MultiTransaction} from "../../multi-transaction/core/MultiTransaction";
-import {MultiSendAccount} from "../../multi-send-account/core/MultiSendAccount";
-import {parseOutcomeValue} from "../../multi-transaction/utils/outcome";
+import {BaseArgs} from "../../multi-transaction";
+import {MultiTransaction, parseOutcomeValue} from "../../multi-transaction";
+import {MultiSendAccount} from "../../multi-send-account";
+import {MultiSendOptions} from "../types/common";
+import {FinalExecutionOutcome} from "near-api-js/lib/providers";
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;
 
@@ -51,12 +50,13 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
       async multiSend<Value>({transaction, callbackUrl}: MultiSendOptions): Promise<Value> {
         const wallet = await this.wallet()
         const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions()
-        let outcome = null
+        let outcome
         if (transaction.isMultiple()) {
           const outcomes = await wallet.signAndSendTransactions({transactions: nearWalletSelectorTransactions , callbackUrl})
-          outcome = outcomes!.pop()
+          outcome = (outcomes as FinalExecutionOutcome[]).pop()
         } else {
           outcome = await wallet.signAndSendTransaction({...nearWalletSelectorTransactions[0], callbackUrl})
+          outcome = outcome as FinalExecutionOutcome
         }
         return parseOutcomeValue(outcome!)
       },

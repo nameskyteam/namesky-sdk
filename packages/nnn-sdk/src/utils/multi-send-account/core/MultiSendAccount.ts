@@ -1,7 +1,8 @@
 import {Account} from "near-api-js";
-import {parseOutcomeValue} from "../../multi-transaction/utils/outcome";
+import {parseOutcomeValue} from "../../multi-transaction";
 import {FinalExecutionOutcome} from "near-api-js/lib/providers";
-import {MultiSendOptions, SignAndSendTransactionParams, SignAndSendTransactionsParams} from "../types/common";
+import {SignAndSendTransactionParams, SignAndSendTransactionsParams} from "../types";
+import {MultiSendOptions} from "../types/common";
 
 /**
  * Enhancement of `Account` based on `MultiTransaction`

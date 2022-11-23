@@ -1,8 +1,8 @@
 import {Contract} from "../../utils/Contract";
-import {NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs} from "../types/args/NftContract";
+import {NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs} from "../types/args";
 import {ContractCallOptions, ContractViewOptions} from "../types/common";
-import {MultiTransaction} from "../../utils/multi-transaction/core/MultiTransaction";
-import {Amount} from "../../utils/multi-transaction/utils/Amount";
+import {MultiTransaction} from "../../utils";
+import {Amount} from "../../utils";
 
 export class NftContract extends Contract {
   async nft_is_registered(args: NftIsRegisteredArgs, options?: ContractViewOptions): Promise<string | null> {

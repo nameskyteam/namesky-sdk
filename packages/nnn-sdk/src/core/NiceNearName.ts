@@ -4,14 +4,14 @@ import {MarketContract} from "./contracts/MarketContract";
 import {KeyPairEd25519, PublicKey} from "near-api-js/lib/utils";
 import {
   REQUEST_ACCESS_PENDING_KEY_PREFIX
-} from "../utils/common";
+} from "../utils";
 import {Network} from "@near-wallet-selector/core";
 import {NiceNearNameComponent, NiceNearNameConfig} from "./types/config";
 import {Account} from "near-api-js";
-import {CleanStateArgs, InitArgs} from "./types/args/NftContract";
-import {MultiTransaction} from "../utils/multi-transaction/core/MultiTransaction";
-import {Amount} from "../utils/multi-transaction/utils/Amount";
-import {setupWalletSelectorPlus} from "../utils/wallet-selector-plus/core/WalletSelectorPlus";
+import {CleanStateArgs, InitArgs} from "./types/args";
+import {MultiTransaction} from "../utils";
+import {Amount} from "../utils";
+import {setupWalletSelectorPlus} from "../utils";
 
 export class NiceNearName {
   selector: WalletSelectorPlus

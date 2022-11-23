@@ -6,7 +6,7 @@ import {
   StakeParams,
   FunctionCallParams,
   TransferParams
-} from "../types/action";
+} from "../types";
 import {
   AddKeyActionLike,
   CreateAccountActionLike,
@@ -16,7 +16,7 @@ import {
   FunctionCallActionLike,
   StakeActionLike,
   TransferActionLike
-} from "../types/action";
+} from "../types";
 
 export class ActionFactory {
   private constructor() {}

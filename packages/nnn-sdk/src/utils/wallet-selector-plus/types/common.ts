@@ -1,6 +1,5 @@
-import {BaseArgs} from "../../multi-transaction/types/common";
+import {BaseArgs, MultiTransaction} from "../../multi-transaction";
 import {BlockReference} from "near-api-js/lib/providers/provider";
-import {MultiTransaction} from "../../multi-transaction/core/MultiTransaction";
 
 export interface ViewOptions<Args extends BaseArgs> {
   contractId: string

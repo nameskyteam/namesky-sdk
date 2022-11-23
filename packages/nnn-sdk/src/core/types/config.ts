@@ -1,7 +1,7 @@
-import {WalletSelectorPlus} from "../../utils/wallet-selector-plus/types/enhancement";
-import {NftContract} from "../contracts/NftContract";
-import {MarketContract} from "../contracts/MarketContract";
-import {WalletSelectorPlusConfig} from "../../utils/wallet-selector-plus/types/config";
+import {WalletSelectorPlus} from "../../utils";
+import {NftContract} from "../contracts";
+import {MarketContract} from "../contracts";
+import {WalletSelectorPlusConfig} from "../../utils";
 
 export interface NiceNearNameComponent {
   selector: WalletSelectorPlus

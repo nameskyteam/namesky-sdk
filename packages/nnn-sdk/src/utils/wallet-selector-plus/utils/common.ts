@@ -1,4 +1,4 @@
-import {WalletModule} from "../types/wallet";
+import {WalletModule} from "../types";
 import {Network, NetworkId, WalletModuleFactory} from "@near-wallet-selector/core";
 import {setupNearWallet} from "@near-wallet-selector/near-wallet";
 import {setupMyNearWallet} from "@near-wallet-selector/my-near-wallet";
