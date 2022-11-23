@@ -6,7 +6,7 @@ import {
   StakeParams,
   FunctionCallParams,
   TransferParams
-} from "../types/action-factory";
+} from "../types/action";
 import {
   AddKeyActionLike,
   CreateAccountActionLike,
