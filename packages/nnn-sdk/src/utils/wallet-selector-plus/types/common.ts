@@ -1,4 +1,4 @@
-import {BaseArgs, MultiTransaction} from "../../multi-transaction";
+import {BaseArgs} from "../../multi-transaction";
 import {BlockReference} from "near-api-js/lib/providers/provider";
 
 export interface ViewOptions<Args extends BaseArgs> {
@@ -6,14 +6,4 @@ export interface ViewOptions<Args extends BaseArgs> {
   methodName: string
   args: Args
   blockQuery?: BlockReference
-}
-
-export interface MultiSendOptions {
-  transaction: MultiTransaction
-  callbackUrl?: string
-}
-
-export interface MultiSendWithLocalKeyOptions {
-  localSignerId: string
-  transaction: MultiTransaction
 }

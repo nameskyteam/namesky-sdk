@@ -1,8 +1,7 @@
 import {Account} from "near-api-js";
-import {parseOutcomeValue} from "../../multi-transaction";
+import {MultiTransaction, parseOutcomeValue} from "../../multi-transaction";
 import {FinalExecutionOutcome} from "near-api-js/lib/providers";
 import {SignAndSendTransactionParams, SignAndSendTransactionsParams} from "../types";
-import {MultiSendOptions} from "../types/common";
 
 /**
  * Enhancement of `Account` based on `MultiTransaction`
@@ -12,16 +11,16 @@ export class MultiSendAccount extends Account {
     return super.signAndSendTransaction(params)
   }
 
-  async signAndSendTransactions({transactions}: SignAndSendTransactionsParams): Promise<FinalExecutionOutcome[]> {
+  async signAndSendTransactions(params: SignAndSendTransactionsParams): Promise<FinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = []
-    for (const signAndSendTransactionParams of transactions) {
+    for (const signAndSendTransactionParams of params.transactions) {
       const outcome = await this.signAndSendTransaction(signAndSendTransactionParams)
       outcomes.push(outcome)
     }
     return outcomes
   }
 
-  async multiSend<Value>({transaction}: MultiSendOptions): Promise<Value> {
+  async multiSend<Value>(transaction: MultiTransaction): Promise<Value> {
     const outcomes = await this.signAndSendTransactions({ transactions: transaction.parseNearApiJsTransactions() })
     return parseOutcomeValue(outcomes.pop()!)
   }

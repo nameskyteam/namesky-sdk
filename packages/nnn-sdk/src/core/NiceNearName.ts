@@ -1,6 +1,6 @@
-import {WalletSelectorPlus} from "../utils/wallet-selector-plus/types/enhancement";
-import {NftContract} from "./contracts/NftContract";
-import {MarketContract} from "./contracts/MarketContract";
+import {WalletSelectorPlus} from "../utils";
+import {NftContract} from "./contracts";
+import {MarketContract} from "./contracts";
 import {KeyPairEd25519, PublicKey} from "near-api-js/lib/utils";
 import {
   REQUEST_ACCESS_PENDING_KEY_PREFIX
@@ -125,7 +125,7 @@ export class NiceNearName {
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
-    await this.selector.multiSendWithLocalKey({localSignerId: registrantId, transaction})
+    await this.selector.multiSendWithLocalKey(registrantId, transaction)
   }
 }
 
