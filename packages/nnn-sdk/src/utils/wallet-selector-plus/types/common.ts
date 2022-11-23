@@ -12,3 +12,8 @@ export interface MultiSendOptions {
   transaction: MultiTransaction
   callbackUrl?: string
 }
+
+export interface MultiSendWithLocalKeyOptions {
+  localSignerId: string
+  transaction: MultiTransaction
+}

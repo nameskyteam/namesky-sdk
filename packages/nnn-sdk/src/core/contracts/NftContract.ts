@@ -22,7 +22,7 @@ export class NftContract extends Contract {
         methodName: 'nft_register',
         args
       })
-    await this.selector.multiSendWithLocalKey(registrantId, transaction)
+    await this.selector.multiSendWithLocalKey({localSignerId: registrantId, transaction})
   }
 
   async nft_redeem(args: NftRedeemArgs, options?: ContractCallOptions): Promise<boolean> {
