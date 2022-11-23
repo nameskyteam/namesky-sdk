@@ -1,20 +1,9 @@
-import {FinalExecutionOutcome, FinalExecutionStatus} from "near-api-js/lib/providers";
 import {WalletModule} from "../types/wallet";
 import {Network, NetworkId, WalletModuleFactory} from "@near-wallet-selector/core";
 import {setupNearWallet} from "@near-wallet-selector/near-wallet";
 import {setupMyNearWallet} from "@near-wallet-selector/my-near-wallet";
 import {setupSender} from "@near-wallet-selector/sender";
 import {setupLedger} from "@near-wallet-selector/ledger";
-
-export function parseOutcomeValue<Value> (outcome: FinalExecutionOutcome): Value {
-  const successValue = (outcome.status as FinalExecutionStatus).SuccessValue
-  if (successValue) {
-    const decodedValue: string = Buffer.from(successValue, 'base64').toString()
-    return JSON.parse(decodedValue)
-  } else {
-    return void 0 as Value
-  }
-}
 
 export function setupWalletModules(modules: WalletModule[]) {
   return modules.map(({type, params}): WalletModuleFactory => {
