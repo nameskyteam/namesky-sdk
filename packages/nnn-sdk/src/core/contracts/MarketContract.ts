@@ -6,10 +6,11 @@ import {AccountView} from "../types/data";
 import Big from "big.js";
 
 export class MarketContract extends Contract {
-  // If simple offering, user needs to deposit equal price
+  // If simple offering, user needs to deposit with the same price
   // If pro offering, we recommend user to deposit insufficient balance
   async create_offering({args, gas}: ContractCallOptions<CreateOfferingArgs>) {
     const transaction = new MultiTransaction(this.contractId)
+      // first user needs to deposit for storage of new offer
       .functionCall<StorageDepositArgs>({
         methodName: 'storage_deposit',
         attachedDeposit: DEFAULT_STORAGE_DEPOSIT
@@ -19,6 +20,7 @@ export class MarketContract extends Contract {
 
     if (args.is_simple_offering) {
       transaction.
+        // create new offer and deposit with the same price
         functionCall({
           methodName: 'create_offering',
           args,
@@ -38,10 +40,12 @@ export class MarketContract extends Contract {
       insufficientBalance = insufficientBalance.gte(0) ? insufficientBalance : Big(0)
 
       transaction
+        // deposit insufficient balance
         .functionCall<NearDepositArgs>({
           methodName: 'near_deposit',
           attachedDeposit: insufficientBalance.toFixed()
         })
+        // create new offer
         .functionCall({
           methodName: 'create_offering',
           args,
