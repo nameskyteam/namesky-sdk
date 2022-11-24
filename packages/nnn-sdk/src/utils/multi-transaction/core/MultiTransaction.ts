@@ -78,7 +78,7 @@ export class MultiTransaction implements Transform {
   }: FunctionCallOptions<Args>): this {
     return this.addAction(ActionFactory.functionCall({
       methodName,
-      args: args ?? {},
+      args,
       attachedDeposit: attachedDeposit ?? Amount.ZERO,
       gas: gas ?? Gas.DEFAULT
     }))

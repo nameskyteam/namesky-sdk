@@ -14,6 +14,7 @@ export class MarketContract extends Contract {
       // first user needs to deposit for storage of new offer
       .functionCall<StorageDepositArgs>({
         methodName: 'storage_deposit',
+        args: {},
         attachedDeposit: DEFAULT_STORAGE_DEPOSIT
       })
       // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
@@ -41,6 +42,7 @@ export class MarketContract extends Contract {
         // deposit insufficient balance
         .functionCall<NearDepositArgs>({
           methodName: 'near_deposit',
+          args: {},
           attachedDeposit: insufficientBalance
         })
         // create new offer
