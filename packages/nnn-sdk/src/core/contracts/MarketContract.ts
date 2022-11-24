@@ -61,7 +61,7 @@ export class MarketContract extends Contract {
       })
     }
 
-    await this.selector.multiSend(transaction)
+    await this.selector.send(transaction)
   }
 
   async get_account_view_of({args}: FunctionViewOptions<GetAccountViewOfArgs>): Promise<AccountView> {

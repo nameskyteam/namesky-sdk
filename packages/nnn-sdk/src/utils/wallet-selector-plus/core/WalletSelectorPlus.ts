@@ -1,12 +1,13 @@
 import {setupWalletSelector} from "@near-wallet-selector/core";
 import {resolveNetwork, setupWalletModules} from "../utils";
 import {InMemorySigner, keyStores, Near} from "near-api-js";
-import {WalletSelectorPlusConfig, WalletSelectorPlus, MultiSendOptions} from "../types";
+import {WalletSelectorPlusConfig, WalletSelectorPlus} from "../types";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
 import {BaseArgs, MultiTransaction, SpecificFunctionViewOptions} from "../../multi-transaction";
 import {parseOutcomeValue} from "../../multi-transaction";
 import {MultiSendAccount} from "../../multi-send-account";
 import {FinalExecutionOutcome} from "near-api-js/lib/providers";
+import {SendOptions} from "../types/options";
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;
 
@@ -48,7 +49,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return this.multiSendAccount('').view(options)
       },
 
-      async multiSend<Value>(transaction: MultiTransaction, options?: MultiSendOptions): Promise<Value> {
+      async send<Value>(transaction: MultiTransaction, options?: SendOptions): Promise<Value> {
         const wallet = await this.wallet(options?.walletId)
         const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions()
         let outcome
@@ -68,7 +69,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return parseOutcomeValue(outcome!)
       },
 
-      async multiSendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
+      async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
         return this.multiSendAccount(signerID).send(transaction)
       }
     }
