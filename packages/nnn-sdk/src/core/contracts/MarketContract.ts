@@ -56,7 +56,7 @@ export class MarketContract extends Contract {
   }
 
   async get_account_view_of({args}: ContractViewOptions<GetAccountViewOfArgs>): Promise<AccountView> {
-    return  this.selector.view<AccountView, GetAccountViewOfArgs>({
+    return  this.selector.view({
       contractId: this.contractId,
       methodName: 'get_account_view_of',
       args
