@@ -5,7 +5,7 @@ export type NftTransferOptions = Omit<SpecificFunctionCallOptions<NftTransferArg
 
 export type NftTransferCallOptions = Omit<SpecificFunctionCallOptions<NftTransferCallArgs>, 'attachedDeposit'>
 
-export type NftApproveOptions = Omit<SpecificFunctionCallOptions<NftApproveArgs>, ''>
+export type NftApproveOptions = SpecificFunctionCallOptions<NftApproveArgs>
 
 export type NftRevokeOptions = Omit<SpecificFunctionCallOptions<NftRevokeArgs>, 'attachedDeposit'>
 

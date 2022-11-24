@@ -12,7 +12,7 @@ import {CleanStateArgs, InitArgs} from "./types/args";
 import {MultiTransaction} from "../utils";
 import {Amount} from "../utils";
 import {setupWalletSelectorPlus} from "../utils";
-import {SetupControllerOptions} from "./types/common";
+import {SetupControllerOptions} from "./types/options";
 
 export class NiceNearName {
   selector: WalletSelectorPlus

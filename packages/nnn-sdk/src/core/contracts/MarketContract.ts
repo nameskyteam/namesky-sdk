@@ -1,15 +1,15 @@
 import {Contract} from "../../utils/Contract";
-import {CallOptions, ViewOptions} from "../types/common";
-import {CreateOfferingArgs, GetAccountViewOfArgs, NearDepositArgs} from "../types/args";
+import {NearDepositArgs} from "../types/args";
 import {Amount, DEFAULT_STORAGE_DEPOSIT, MultiTransaction, subGteZero} from "../../utils";
 import {AccountView} from "../types/data";
 import Big from "big.js";
+import {CreateOfferingOptions, GetAccountViewOfOptions} from "../types/options";
 
 export class MarketContract extends Contract {
   // We have two type of offers, Simple Offer & Pro Offer
   // If Simple Offer, user needs to deposit with the same price
   // If Pro Offer, we recommend user to deposit insufficient balance
-  async create_offering({args, gas}: CallOptions<CreateOfferingArgs>) {
+  async create_offering({args, gas}: CreateOfferingOptions) {
     const transaction = new MultiTransaction(this.contractId)
       // first user needs to deposit for storage of new offer
       .storage_deposit({
@@ -35,28 +35,30 @@ export class MarketContract extends Contract {
         }
       })
 
-      const insufficientBalance = subGteZero(Big(args.price), Big(accountView.near_balance)).toFixed()
+      const insufficientBalance = subGteZero(Big(args.price), Big(accountView.near_balance))
 
-      transaction
+      if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
-        .functionCall<NearDepositArgs>({
+        transaction.functionCall<NearDepositArgs>({
           methodName: 'near_deposit',
           args: {},
-          attachedDeposit: insufficientBalance
+          attachedDeposit: insufficientBalance.toFixed()
         })
-        // create new offer
-        .functionCall({
-          methodName: 'create_offering',
-          args,
-          attachedDeposit: Amount.ONE_YOCTO,
-          gas
-        })
+      }
+
+      // create new offer
+      transaction.functionCall({
+        methodName: 'create_offering',
+        args,
+        attachedDeposit: Amount.ONE_YOCTO,
+        gas
+      })
     }
 
     await this.selector.multiSend(transaction)
   }
 
-  async get_account_view_of({args}: ViewOptions<GetAccountViewOfArgs>): Promise<AccountView> {
+  async get_account_view_of({args}: GetAccountViewOfOptions): Promise<AccountView> {
     return  this.selector.view({
       contractId: this.contractId,
       methodName: 'get_account_view_of',
