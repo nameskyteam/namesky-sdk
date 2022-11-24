@@ -42,14 +42,12 @@ export const App = () => {
   }
 
   const register = async () => {
-    await nearService!.nnn.nftContract.nft_register(
-      'rrerer.testnet',
-      {
-        args: {
-          minter_id: 'cornflower.testnet'
-        }
+    await nearService!.nnn.nftContract.nftRegister({
+      registrantId: 'rrerer.testnet',
+      args: {
+        minter_id: 'cornflower.testnet'
       }
-    )
+    })
   }
 
   const setupController = async () => {

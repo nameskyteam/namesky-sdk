@@ -1,4 +1,17 @@
-import {TransactionLike} from "../types";
+import {
+  FtTransferArgs,
+  FtTransferCallArgs,
+  NftApproveArgs,
+  NftRevokeAllArgs,
+  NftRevokeArgs,
+  NftTransferArgs,
+  NftTransferCallArgs,
+  SpecificFunctionCallOptions,
+  StorageDepositArgs,
+  StorageUnregisterArgs,
+  StorageWithdrawArgs,
+  TransactionLike
+} from "../types";
 import {ActionFactory} from "./ActionFactory";
 import {BaseArgs, FunctionCallOptions} from "../types";
 import {AccessKey, ActionLike} from "../types";
@@ -9,19 +22,6 @@ import {
 } from "../utils";
 import {Amount} from "../utils";
 import {Gas} from "../utils";
-import {
-  StorageDepositOptions,
-  StorageUnregisterOptions,
-  StorageWithdrawOptions
-} from "../types/nep145/options";
-import {FtTransferCallOptions, FtTransferOptions} from "../types/nep141/options";
-import {
-  NftApproveOptions,
-  NftRevokeAllOptions,
-  NftRevokeOptions,
-  NftTransferCallOptions,
-  NftTransferOptions
-} from "../types/nep171/options";
 
 /**
  * Helper class for creating transaction(s)
@@ -143,7 +143,7 @@ export class MultiTransaction {
 
   // --------------------------------------NEP145-------------------------------------------
 
-  storage_deposit({args, attachedDeposit, gas}: StorageDepositOptions) {
+  storage_deposit({args, attachedDeposit, gas}: SpecificFunctionCallOptions<StorageDepositArgs>) {
     return this.functionCall({
       methodName: 'storage_deposit',
       args,
@@ -152,7 +152,7 @@ export class MultiTransaction {
     })
   }
 
-  storage_withdraw({args, gas}: StorageWithdrawOptions) {
+  storage_withdraw({args, gas}: SpecificFunctionCallOptions<StorageWithdrawArgs>) {
     return this.functionCall({
       methodName: 'storage_withdraw',
       args,
@@ -161,7 +161,7 @@ export class MultiTransaction {
     })
   }
 
-  storage_unregister({args, gas}: StorageUnregisterOptions) {
+  storage_unregister({args, gas}: SpecificFunctionCallOptions<StorageUnregisterArgs>) {
     return this.functionCall({
       methodName: 'storage_unregister',
       args,
@@ -172,7 +172,7 @@ export class MultiTransaction {
 
   // --------------------------------------NEP141-------------------------------------------
 
-  ft_transfer({args, gas}: FtTransferOptions) {
+  ft_transfer({args, gas}: SpecificFunctionCallOptions<FtTransferArgs>) {
     return this.functionCall({
       methodName: 'ft_transfer',
       args,
@@ -181,18 +181,18 @@ export class MultiTransaction {
     })
   }
 
-  ft_transfer_call({args, gas}: FtTransferCallOptions) {
+  ft_transfer_call({args, gas}: SpecificFunctionCallOptions<FtTransferCallArgs>) {
     return this.functionCall({
       methodName: 'ft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas
+      gas: gas ?? Gas.tera(50)
     })
   }
 
   // --------------------------------------NEP171-------------------------------------------
 
-  nft_transfer({args, gas}: NftTransferOptions) {
+  nft_transfer({args, gas}: SpecificFunctionCallOptions<NftTransferArgs>) {
     return this.functionCall({
       methodName: 'nft_transfer',
       args,
@@ -201,16 +201,16 @@ export class MultiTransaction {
     })
   }
 
-  nft_transfer_call({args, gas}: NftTransferCallOptions) {
+  nft_transfer_call({args, gas}: SpecificFunctionCallOptions<NftTransferCallArgs>) {
     return this.functionCall({
       methodName: 'nft_transfer_call',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas
+      gas: gas ?? Gas.tera(50)
     })
   }
 
-  nft_approve({args, attachedDeposit, gas}: NftApproveOptions) {
+  nft_approve({args, attachedDeposit, gas}: SpecificFunctionCallOptions<NftApproveArgs>) {
     return this.functionCall({
       methodName: 'nft_approve',
       args,
@@ -219,7 +219,7 @@ export class MultiTransaction {
     })
   }
 
-  nft_revoke({args, gas}: NftRevokeOptions) {
+  nft_revoke({args, gas}: SpecificFunctionCallOptions<NftRevokeArgs>) {
     return this.functionCall({
       methodName: 'nft_revoke',
       args,
@@ -228,7 +228,7 @@ export class MultiTransaction {
     })
   }
 
-  nft_revoke_all({args, gas}: NftRevokeAllOptions) {
+  nft_revoke_all({args, gas}: SpecificFunctionCallOptions<NftRevokeAllArgs>) {
     return this.functionCall({
       methodName: 'nft_revoke_all',
       args,

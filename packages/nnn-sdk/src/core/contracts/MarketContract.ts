@@ -1,15 +1,21 @@
 import {Contract} from "../../utils/Contract";
-import {NearDepositArgs} from "../types/args";
-import {Amount, DEFAULT_STORAGE_DEPOSIT, MultiTransaction, subGteZero} from "../../utils";
+import {CreateOfferingArgs, GetAccountViewOfArgs, NearDepositArgs} from "../types/args";
+import {
+  Amount,
+  DEFAULT_STORAGE_DEPOSIT,
+  MultiTransaction,
+  SpecificFunctionCallOptions,
+  SpecificFunctionViewOptions,
+  subGteZero
+} from "../../utils";
 import {AccountView} from "../types/data";
 import Big from "big.js";
-import {CreateOfferingOptions, GetAccountViewOfOptions} from "../types/options";
 
 export class MarketContract extends Contract {
   // We have two type of offers, Simple Offer & Pro Offer
   // If Simple Offer, user needs to deposit with the same price
   // If Pro Offer, we recommend user to deposit insufficient balance
-  async create_offering({args, gas}: CreateOfferingOptions) {
+  async createOffering({args, gas}: SpecificFunctionCallOptions<CreateOfferingArgs>) {
     const transaction = new MultiTransaction(this.contractId)
       // first user needs to deposit for storage of new offer
       .storage_deposit({
@@ -58,7 +64,7 @@ export class MarketContract extends Contract {
     await this.selector.multiSend(transaction)
   }
 
-  async get_account_view_of({args}: GetAccountViewOfOptions): Promise<AccountView> {
+  async get_account_view_of({args}: SpecificFunctionViewOptions<GetAccountViewOfArgs>): Promise<AccountView> {
     return  this.selector.view({
       contractId: this.contractId,
       methodName: 'get_account_view_of',

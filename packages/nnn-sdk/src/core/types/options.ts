@@ -1,5 +1,5 @@
-import {CreateOfferingArgs, GetAccountViewOfArgs, NftIsRegisteredArgs, NftRedeemArgs} from "./args";
-import {SpecificFunctionCallOptions, SpecificFunctionViewOptions} from "../../utils";
+import {SpecificFunctionCallOptions} from "../../utils";
+import {NftRegisterArgs} from "./args";
 
 export interface SetupControllerOptions {
   registrantId: string
@@ -8,14 +8,6 @@ export interface SetupControllerOptions {
   gasForInit?: string
 }
 
-export type NftRegisterOptions = Omit<SpecificFunctionCallOptions<NftIsRegisteredArgs>, 'attachedDeposit'> & {
+export interface NftRegisterOptions extends SpecificFunctionCallOptions<NftRegisterArgs> {
   registrantId: string
 }
-
-export type NftRedeemOptions = Omit<SpecificFunctionCallOptions<NftRedeemArgs>, 'attachedDeposit'>
-
-export type CreateOfferingOptions = Omit<SpecificFunctionCallOptions<CreateOfferingArgs>, 'attachedDeposit'>
-
-export type NftIsRegisteredOptions = SpecificFunctionViewOptions<NftIsRegisteredArgs>
-
-export type GetAccountViewOfOptions = SpecificFunctionViewOptions<GetAccountViewOfArgs>
