@@ -1,6 +1,6 @@
 import create, {SetState} from "zustand";
-import {WalletSelectorPlus} from "../../nnn-sdk/src/utils/wallet-selector-plus/types/enhancement";
-import {NiceNearName} from "../../nnn-sdk/src/core/NiceNearName";
+import {WalletSelectorPlus} from "../../nnn-sdk/src";
+import {NiceNearName} from "../../nnn-sdk/src";
 
 export interface NearService {
   selector: WalletSelectorPlus,

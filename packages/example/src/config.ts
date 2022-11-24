@@ -1,4 +1,4 @@
-import {NiceNearNameConfig} from "../../nnn-sdk/src/core/types/config";
+import {NiceNearNameConfig} from "../../nnn-sdk/src";
 
 export interface Config {
   nnn: NiceNearNameConfig

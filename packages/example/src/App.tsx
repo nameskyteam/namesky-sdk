@@ -2,9 +2,7 @@ import React, {useEffect, useState} from "react"
 import {useNearService} from "./store";
 import {config} from "./config";
 import {setupModal, WalletSelectorModal} from "@near-wallet-selector/modal-ui";
-import {initNiceNearName} from "../../nnn-sdk/src/core/NiceNearName";
-import {Amount} from "../../nnn-sdk/src/utils/wallet-selector-plus/utils/Amount";
-import {Gas} from "../../nnn-sdk/src/utils/wallet-selector-plus/utils/Gas";
+import {Gas, initNiceNearName} from "../../nnn-sdk/src";
 
 export const App = () => {
   const {nearService, setNearService} = useNearService()
@@ -47,10 +45,9 @@ export const App = () => {
     await nearService!.nnn.nftContract.nft_register(
       'rrerer.testnet',
       {
-        minter_id: 'cornflower.testnet'
-      },
-      {
-        attachedDeposit: Amount.parseYoctoNear('1')
+        args: {
+          minter_id: 'cornflower.testnet'
+        }
       }
     )
   }
@@ -58,14 +55,12 @@ export const App = () => {
   const setupController = async () => {
     const data = await fetch('http://localhost:3000/nnn_controller.wasm')
     const code = new Uint8Array(await data.arrayBuffer())
-    await nearService!.nnn.setupController(
-      'rrerer.testnet',
+    await nearService!.nnn.setupController({
+      registrantId: 'rrerer.testnet',
       code,
-      {
-        gasForCleanState: Gas.tera(50),
-        gasForInit: Gas.tera(10)
-      }
-    )
+      gasForCleanState: Gas.tera(50),
+      gasForInit: Gas.tera(10)
+    })
   }
 
   console.log(nearService)

@@ -8,3 +8,10 @@ export interface CallOptions<Args extends BaseArgs> extends SpecificFunctionCall
 export interface ViewOptions <Args extends BaseArgs> extends SpecificFunctionViewOptions<Args> {
   blockQuery?: BlockReference
 }
+
+export interface SetupControllerOptions {
+  registrantId: string
+  code: Uint8Array
+  gasForCleanState?: string
+  gasForInit?: string
+}

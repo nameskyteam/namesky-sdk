@@ -12,6 +12,7 @@ import {CleanStateArgs, InitArgs} from "./types/args";
 import {MultiTransaction} from "../utils";
 import {Amount} from "../utils";
 import {setupWalletSelectorPlus} from "../utils";
+import {SetupControllerOptions} from "./types/common";
 
 export class NiceNearName {
   selector: WalletSelectorPlus
@@ -90,14 +91,12 @@ export class NiceNearName {
   }
 
   // signed by registrant
-  async setupController(
-    registrantId: string,
-    code: Uint8Array,
-    options?: {
-      gasForCleanState?: string,
-      gasForInit?: string
-    }
-  ) {
+  async setupController({
+    registrantId,
+    code,
+    gasForCleanState,
+    gasForInit
+  }: SetupControllerOptions) {
     const account = await this.account(registrantId)
     const state = await account.viewState('')
     const stateKeys = state.map(({key}) => key.toString('base64'))
@@ -112,7 +111,7 @@ export class NiceNearName {
           keys: stateKeys
         },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: options?.gasForCleanState
+        gas: gasForCleanState
       })
       .functionCall<InitArgs>({
         methodName: 'init',
@@ -120,7 +119,7 @@ export class NiceNearName {
           owner_id: this.getNftContractId()
         },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: options?.gasForInit
+        gas: gasForInit
       })
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
