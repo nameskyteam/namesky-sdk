@@ -2,15 +2,15 @@ import {Contract} from "../../utils/Contract";
 import {
   DEFAULT_MINT_FEE,
   MultiTransaction,
-  SpecificFunctionCallOptions,
-  SpecificFunctionViewOptions
+  FunctionCallOptions,
+  FunctionViewOptions
 } from "../../utils";
 import {Amount} from "../../utils";
 import {NftIsRegisteredArgs, NftRedeemArgs} from "../types/args";
 import {NftRegisterOptions} from "../types/options";
 
 export class NftContract extends Contract {
-  async nftIsRegistered({args}: SpecificFunctionViewOptions<NftIsRegisteredArgs>): Promise<string | null> {
+  async nftIsRegistered({args}: FunctionViewOptions<NftIsRegisteredArgs>): Promise<string | null> {
     return this.selector.view({
       contractId: this.contractId,
       methodName: 'nft_is_registered',
@@ -30,7 +30,7 @@ export class NftContract extends Contract {
     await this.selector.multiSendAccount(registrantId).multiSend(transaction)
   }
 
-  async nftRedeem({args, gas}: SpecificFunctionCallOptions<NftRedeemArgs>): Promise<boolean> {
+  async nftRedeem({args, gas}: FunctionCallOptions<NftRedeemArgs>): Promise<boolean> {
     const transaction = new MultiTransaction(this.contractId)
       .functionCall({
         methodName: 'nft_redeem',

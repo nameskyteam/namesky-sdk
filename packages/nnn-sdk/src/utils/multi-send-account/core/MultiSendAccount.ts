@@ -1,10 +1,9 @@
 import {Account} from "near-api-js";
-import {BaseArgs, MultiTransaction, parseOutcomeValue} from "../../multi-transaction";
+import {BaseArgs, MultiTransaction, parseOutcomeValue, SpecificFunctionViewOptions} from "../../multi-transaction";
 import {FinalExecutionOutcome} from "near-api-js/lib/providers";
 import {
   SignAndSendTransactionParams,
-  SignAndSendTransactionsParams,
-  AccountFunctionViewOptions
+  SignAndSendTransactionsParams
 } from "../types";
 
 /**
@@ -24,7 +23,7 @@ export class MultiSendAccount extends Account {
     return outcomes
   }
 
-  async view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: AccountFunctionViewOptions<Args>): Promise<Value> {
+  async view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: SpecificFunctionViewOptions<Args>): Promise<Value> {
     return this.viewFunction({
       contractId,
       methodName,

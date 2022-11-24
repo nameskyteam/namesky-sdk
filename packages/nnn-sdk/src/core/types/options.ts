@@ -1,4 +1,4 @@
-import {SpecificFunctionCallOptions} from "../../utils";
+import {FunctionCallOptions} from "../../utils";
 import {NftRegisterArgs} from "./args";
 
 export interface SetupControllerOptions {
@@ -8,6 +8,6 @@ export interface SetupControllerOptions {
   gasForInit?: string
 }
 
-export interface NftRegisterOptions extends SpecificFunctionCallOptions<NftRegisterArgs> {
+export interface NftRegisterOptions extends FunctionCallOptions<NftRegisterArgs> {
   registrantId: string
 }

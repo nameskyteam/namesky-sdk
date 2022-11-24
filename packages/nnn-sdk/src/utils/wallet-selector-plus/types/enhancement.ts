@@ -1,9 +1,9 @@
 import {Modify} from "@near-wallet-selector/core/lib/utils.types";
 import {WalletSelector} from "@near-wallet-selector/core";
 import {Near} from "near-api-js";
-import {SelectorMultiSendOptions, SelectorFunctionViewOptions} from "./common";
+import {SelectorMultiSendOptions} from "./common";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
-import {BaseArgs, MultiTransaction} from "../../multi-transaction";
+import {BaseArgs, MultiTransaction, SpecificFunctionViewOptions} from "../../multi-transaction";
 import {MultiSendAccount} from "../../multi-send-account";
 
 export interface WalletSelectorEnhancement {
@@ -12,7 +12,7 @@ export interface WalletSelectorEnhancement {
   getAccountIds(): string[];
   keyStore(): BrowserLocalStorageKeyStore;
   multiSendAccount(accountId: string): MultiSendAccount;
-  view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: SelectorFunctionViewOptions<Args>): Promise<Value>;
+  view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: SpecificFunctionViewOptions<Args>): Promise<Value>;
   multiSend<Value>(transaction: MultiTransaction, options?: SelectorMultiSendOptions): Promise<Value>;
 }
 
