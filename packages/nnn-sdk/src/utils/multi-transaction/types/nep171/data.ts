@@ -1,20 +1,3 @@
-import {SpecificFunctionCallOptions} from "./common";
-
-export interface NftTransferArgs {
-  receiver_id: string,
-  token_id: string,
-  approval_id?: number,
-  memo?: string,
-}
-
-export interface NftTransferCallArgs extends NftTransferArgs {
-  msg: string
-}
-
-export interface NftTokenArgs {
-  token_id: string
-}
-
 export interface Token {
   token_id: string,
   owner_id: string,
@@ -36,34 +19,3 @@ export interface TokenMetadata {
   reference?: string, // URL to an off-chain JSON file with more info.
   reference_hash?: string, // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
 }
-
-export interface NftApproveArgs {
-  token_id: string,
-  account_id: string,
-  msg?: string,
-}
-
-export interface NftRevokeArgs {
-  token_id: string,
-  account_id: string
-}
-
-export interface NftRevokeAllArgs {
-  token_id: string
-}
-
-export interface NftIsApprovedArgs {
-  token_id: string,
-  approved_account_id: string,
-  approval_id?: number,
-}
-
-export type NftTransferOptions = Omit<SpecificFunctionCallOptions<NftTransferArgs>, 'attachedDeposit'>
-
-export type NftTransferCallOptions = Omit<SpecificFunctionCallOptions<NftTransferCallArgs>, 'attachedDeposit'>
-
-export type NftApproveOptions = Omit<SpecificFunctionCallOptions<NftApproveArgs>, ''>
-
-export type NftRevokeOptions = Omit<SpecificFunctionCallOptions<NftRevokeArgs>, 'attachedDeposit'>
-
-export type NftRevokeAllOptions = Omit<SpecificFunctionCallOptions<NftRevokeAllArgs>, 'attachedDeposit'>

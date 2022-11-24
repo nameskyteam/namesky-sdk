@@ -13,15 +13,15 @@ import {
   StorageDepositOptions,
   StorageUnregisterOptions,
   StorageWithdrawOptions
-} from "../types/nep145";
-import {FtTransferCallOptions, FtTransferOptions} from "../types/nep141";
+} from "../types/nep145/options";
+import {FtTransferCallOptions, FtTransferOptions} from "../types/nep141/options";
 import {
   NftApproveOptions,
   NftRevokeAllOptions,
   NftRevokeOptions,
   NftTransferCallOptions,
   NftTransferOptions
-} from "../types/nep171";
+} from "../types/nep171/options";
 
 /**
  * Helper class for creating transaction(s)
