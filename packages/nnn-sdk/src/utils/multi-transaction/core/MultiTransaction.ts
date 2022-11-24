@@ -38,6 +38,10 @@ export class MultiTransaction {
     return this.transactions.length - 1
   }
 
+  isMultiple(): boolean {
+    return this.currentIndex() > 0
+  }
+
   nextTransaction(receiverId: string, signerId?: string) {
     return this.addTransaction({
       signerId,
@@ -55,6 +59,42 @@ export class MultiTransaction {
     this.transactions[this.currentIndex()].actions.push(...action)
     return this
   }
+
+  static fromTransactions(...transactions: TransactionLike[]): MultiTransaction {
+    if (transactions.length === 0) {
+      throw Error('Bad transaction(s)')
+    }
+    let multiTransaction: MultiTransaction
+    transactions.forEach((transaction, index) => {
+      if (index === 0) {
+        const {signerId, receiverId, actions} = transaction
+        multiTransaction = new MultiTransaction(receiverId, signerId).addAction(...actions)
+      } else {
+        multiTransaction.addTransaction(transaction)
+      }
+    })
+    return multiTransaction!
+  }
+
+  toTransactions(): TransactionLike[] {
+    return [...this.transactions]
+  }
+
+  // --------------------------------------Transform-------------------------------------------
+
+  parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
+    return this.toTransactions().map(transaction => {
+      return parseNearApiJsTransaction(transaction)
+    })
+  }
+
+  parseNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
+    return this.toTransactions().map(transaction => {
+      return parseNearWalletSelectorTransaction(transaction)
+    })
+  }
+
+  // --------------------------------------Action-------------------------------------------
 
   createAccount() {
     return this.addAction(ActionFactory.createAccount())
@@ -101,41 +141,7 @@ export class MultiTransaction {
     return this.addAction(ActionFactory.transfer({amount}))
   }
 
-  isMultiple(): boolean {
-    return this.currentIndex() > 0
-  }
-
-  static fromTransactions(...transactions: TransactionLike[]): MultiTransaction {
-    if (transactions.length === 0) {
-      throw Error('Bad transaction(s)')
-    }
-    let multiTransaction: MultiTransaction
-    transactions.forEach((transaction, index) => {
-      if (index === 0) {
-        const {signerId, receiverId, actions} = transaction
-        multiTransaction = new MultiTransaction(receiverId, signerId).addAction(...actions)
-      } else {
-        multiTransaction.addTransaction(transaction)
-      }
-    })
-    return multiTransaction!
-  }
-
-  toTransactions(): TransactionLike[] {
-    return [...this.transactions]
-  }
-
-  parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
-    return this.toTransactions().map(transaction => {
-      return parseNearApiJsTransaction(transaction)
-    })
-  }
-
-  parseNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
-    return this.toTransactions().map(transaction => {
-      return parseNearWalletSelectorTransaction(transaction)
-    })
-  }
+  // --------------------------------------NEP145-------------------------------------------
 
   storage_deposit({args, attachedDeposit, gas}: StorageDepositOptions) {
     return this.functionCall({
@@ -164,6 +170,8 @@ export class MultiTransaction {
     })
   }
 
+  // --------------------------------------NEP141-------------------------------------------
+
   ft_transfer({args, gas}: FtTransferOptions) {
     return this.functionCall({
       methodName: 'ft_transfer',
@@ -181,6 +189,8 @@ export class MultiTransaction {
       gas
     })
   }
+
+  // --------------------------------------NEP171-------------------------------------------
 
   nft_transfer({args, gas}: NftTransferOptions) {
     return this.functionCall({
