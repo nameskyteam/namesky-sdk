@@ -1,4 +1,4 @@
-export interface SelectorMultiSendOptions {
+export interface MultiSendOptions {
   walletId?: string
   callbackUrl?: string
 }

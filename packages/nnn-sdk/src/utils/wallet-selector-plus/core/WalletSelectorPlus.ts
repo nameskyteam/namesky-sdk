@@ -1,7 +1,7 @@
 import {setupWalletSelector} from "@near-wallet-selector/core";
 import {resolveNetwork, setupWalletModules} from "../utils";
 import {InMemorySigner, keyStores, Near} from "near-api-js";
-import {WalletSelectorPlusConfig, WalletSelectorPlus, SelectorMultiSendOptions} from "../types";
+import {WalletSelectorPlusConfig, WalletSelectorPlus, MultiSendOptions} from "../types";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
 import {BaseArgs, MultiTransaction, SpecificFunctionViewOptions} from "../../multi-transaction";
 import {parseOutcomeValue} from "../../multi-transaction";
@@ -48,7 +48,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return this.multiSenderAccount('').view(options)
       },
 
-      async multiSend<Value>(transaction: MultiTransaction, options?: SelectorMultiSendOptions): Promise<Value> {
+      async multiSend<Value>(transaction: MultiTransaction, options?: MultiSendOptions): Promise<Value> {
         const wallet = await this.wallet(options?.walletId)
         const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions()
         let outcome
