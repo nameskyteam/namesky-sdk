@@ -12,7 +12,7 @@ import {SignAndSendTransactionOptions} from "near-api-js/lib/account";
 /**
  * Enhancement of `Account` based on `MultiTransaction`
  */
-export class MultiSenderAccount extends Account {
+export class MultiSendAccount extends Account {
   // rewrite to make method public
   async signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
     return super.signAndSendTransaction(options)
