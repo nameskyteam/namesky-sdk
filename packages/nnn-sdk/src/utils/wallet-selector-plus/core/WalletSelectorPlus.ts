@@ -66,6 +66,10 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
           outcome = outcome as FinalExecutionOutcome
         }
         return parseOutcomeValue(outcome!)
+      },
+
+      async multiSendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
+        return this.multiSendAccount(signerID).send(transaction)
       }
     }
   }

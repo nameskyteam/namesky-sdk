@@ -1,23 +1,27 @@
 import {Account} from "near-api-js";
-import {BaseArgs, MultiTransaction, parseOutcomeValue, SpecificFunctionViewOptions} from "../../multi-transaction";
-import {FinalExecutionOutcome} from "near-api-js/lib/providers";
 import {
-  SignAndSendTransactionParams,
-  SignAndSendTransactionsParams
-} from "../types";
+  BaseArgs,
+  MultiTransaction,
+  parseOutcomeValue,
+  SpecificFunctionViewOptions
+} from "../../multi-transaction";
+import {FinalExecutionOutcome} from "near-api-js/lib/providers";
+import {SignAndSendTransactionsOptions} from "../types";
+import {SignAndSendTransactionOptions} from "near-api-js/lib/account";
 
 /**
  * Enhancement of `Account` based on `MultiTransaction`
  */
 export class MultiSendAccount extends Account {
-  async signAndSendTransaction(params: SignAndSendTransactionParams): Promise<FinalExecutionOutcome> {
-    return super.signAndSendTransaction(params)
+  // rewrite to make method public
+  async signAndSendTransaction(options: SignAndSendTransactionOptions): Promise<FinalExecutionOutcome> {
+    return super.signAndSendTransaction(options)
   }
 
-  async signAndSendTransactions(params: SignAndSendTransactionsParams): Promise<FinalExecutionOutcome[]> {
+  async signAndSendTransactions(options: SignAndSendTransactionsOptions): Promise<FinalExecutionOutcome[]> {
     const outcomes: FinalExecutionOutcome[] = []
-    for (const signAndSendTransactionParams of params.transactions) {
-      const outcome = await this.signAndSendTransaction(signAndSendTransactionParams)
+    for (const transaction of options.transactions) {
+      const outcome = await this.signAndSendTransaction(transaction)
       outcomes.push(outcome)
     }
     return outcomes
@@ -32,8 +36,8 @@ export class MultiSendAccount extends Account {
     })
   }
 
-  async multiSend<Value>(transaction: MultiTransaction): Promise<Value> {
-    const outcomes = await this.signAndSendTransactions({ transactions: transaction.parseNearApiJsTransactions() })
+  async send<Value>(transaction: MultiTransaction): Promise<Value> {
+    const outcomes = await this.signAndSendTransactions({transactions: transaction.parseNearApiJsTransactions()})
     return parseOutcomeValue(outcomes.pop()!)
   }
 }

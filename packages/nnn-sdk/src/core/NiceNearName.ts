@@ -124,7 +124,7 @@ export class NiceNearName {
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
-    await this.selector.multiSendAccount(registrantId).multiSend(transaction)
+    await this.selector.multiSendWithLocalKey(registrantId, transaction)
   }
 }
 

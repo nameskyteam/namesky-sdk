@@ -1,2 +1,2 @@
 export * from "./core"
-export {SignAndSendTransactionParams, SignAndSendTransactionsParams} from "./types"
+export * from "./types"

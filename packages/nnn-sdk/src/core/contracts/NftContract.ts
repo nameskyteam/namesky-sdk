@@ -27,7 +27,7 @@ export class NftContract extends Contract {
         attachedDeposit: DEFAULT_MINT_FEE,
         gas
       })
-    await this.selector.multiSendAccount(registrantId).multiSend(transaction)
+    await this.selector.multiSendWithLocalKey(registrantId, transaction)
   }
 
   async nftRedeem({args, gas}: FunctionCallOptions<NftRedeemArgs>): Promise<boolean> {

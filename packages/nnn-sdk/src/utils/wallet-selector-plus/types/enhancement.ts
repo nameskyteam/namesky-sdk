@@ -14,6 +14,7 @@ export interface WalletSelectorEnhancement {
   multiSendAccount(accountId: string): MultiSendAccount;
   view<Value, Args extends BaseArgs>({contractId, methodName, args, blockQuery}: SpecificFunctionViewOptions<Args>): Promise<Value>;
   multiSend<Value>(transaction: MultiTransaction, options?: SelectorMultiSendOptions): Promise<Value>;
+  multiSendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value>
 }
 
 /**
