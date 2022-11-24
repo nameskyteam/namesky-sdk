@@ -2,18 +2,23 @@ import {TransactionLike} from "../types";
 import {ActionFactory} from "./ActionFactory";
 import {BaseArgs, FunctionCallOptions} from "../types";
 import {AccessKey, ActionLike} from "../types";
-import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike, Transform} from "../types";
+import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike} from "../types";
 import {
   parseNearApiJsTransaction,
   parseNearWalletSelectorTransaction
 } from "../utils";
 import {Amount} from "../utils";
 import {Gas} from "../utils";
+import {
+  StoragedepositOptions,
+  StorageUnregisterOptions,
+  StorageWithdrawOptions
+} from "../types/nep145";
 
 /**
  * Helper class for creating transaction(s)
  */
-export class MultiTransaction implements Transform {
+export class MultiTransaction {
   transactions: TransactionLike[]
 
   constructor(receiverId: string, signerId?: string) {
@@ -25,7 +30,7 @@ export class MultiTransaction implements Transform {
     return this.transactions.length - 1
   }
 
-  nextTransaction(receiverId: string, signerId?: string): this {
+  nextTransaction(receiverId: string, signerId?: string) {
     return this.addTransaction({
       signerId,
       receiverId,
@@ -33,7 +38,7 @@ export class MultiTransaction implements Transform {
     })
   }
 
-  addTransaction(...transaction: TransactionLike[]): this {
+  addTransaction(...transaction: TransactionLike[]) {
     this.transactions.push(...transaction)
     return this
   }
@@ -43,30 +48,30 @@ export class MultiTransaction implements Transform {
     return this
   }
 
-  createAccount(): this {
+  createAccount() {
     return this.addAction(ActionFactory.createAccount())
   }
 
-  deleteAccount(beneficiaryId: string): this {
+  deleteAccount(beneficiaryId: string) {
     return this.addAction(ActionFactory.deleteAccount({beneficiaryId}))
   }
 
   addKey(
     publicKey: string,
     accessKey: AccessKey
-  ): this {
+  ) {
     return this.addAction(ActionFactory.addKey({publicKey, accessKey}))
   }
 
-  deleteKey(publicKey: string): this {
+  deleteKey(publicKey: string) {
     return  this.addAction(ActionFactory.deleteKey({publicKey}))
   }
 
-  deployContract(code: Uint8Array): this {
+  deployContract(code: Uint8Array) {
     return this.addAction(ActionFactory.deployContract({code}))
   }
 
-  stake(amount: string, publicKey: string): this {
+  stake(amount: string, publicKey: string) {
     return this.addAction(ActionFactory.stake({amount, publicKey}))
   }
 
@@ -75,7 +80,7 @@ export class MultiTransaction implements Transform {
     args,
     attachedDeposit,
     gas
-  }: FunctionCallOptions<Args>): this {
+  }: FunctionCallOptions<Args>) {
     return this.addAction(ActionFactory.functionCall({
       methodName,
       args,
@@ -84,7 +89,7 @@ export class MultiTransaction implements Transform {
     }))
   }
 
-  transfer(amount: string): this {
+  transfer(amount: string) {
     return this.addAction(ActionFactory.transfer({amount}))
   }
 
@@ -113,16 +118,41 @@ export class MultiTransaction implements Transform {
   }
 
   parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
-    const transactions = this.toTransactions()
-    return transactions.map(transaction => {
+    return this.toTransactions().map(transaction => {
       return parseNearApiJsTransaction(transaction)
     })
   }
 
   parseNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
-    const transactions = this.toTransactions()
-    return transactions.map(transaction => {
+    return this.toTransactions().map(transaction => {
       return parseNearWalletSelectorTransaction(transaction)
+    })
+  }
+
+  storage_deposit({args, attachedDeposit, gas}: StoragedepositOptions) {
+    return this.functionCall({
+      methodName: 'storage_deposit',
+      args,
+      attachedDeposit,
+      gas
+    })
+  }
+
+  storage_withdraw({args, gas}: StorageWithdrawOptions) {
+    return this.functionCall({
+      methodName: 'storage_withdraw',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  storage_unregister({args, gas}: StorageUnregisterOptions) {
+    return this.functionCall({
+      methodName: 'storage_unregister',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
     })
   }
 }

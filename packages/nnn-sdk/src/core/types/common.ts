@@ -1,14 +1,10 @@
 import {BlockReference} from "near-api-js/lib/providers/provider";
-import {BaseArgs} from "../../utils";
+import {BaseArgs, SpecificFunctionCallOptions, SpecificFunctionViewOptions} from "../../utils";
 
-export interface ContractCallOptions<Args extends BaseArgs> {
-  args: Args
-  attachedDeposit?: string
-  gas?: string,
+export interface CallOptions<Args extends BaseArgs> extends SpecificFunctionCallOptions<Args> {
   callbackUrl?: string
 }
 
-export interface ContractViewOptions <Args extends BaseArgs> {
-  args: Args
+export interface ViewOptions <Args extends BaseArgs> extends SpecificFunctionViewOptions<Args> {
   blockQuery?: BlockReference
 }

@@ -39,9 +39,3 @@ export interface GetAccountViewOfArgs {
 export interface NearDepositArgs {
   account_id?: string
 }
-
-// ------------------------------------NEP145-------------------------------------
-export interface StorageDepositArgs {
-  account_id?: string
-  registration_only?: boolean
-}
