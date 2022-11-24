@@ -10,10 +10,18 @@ import {
 import {Amount} from "../utils";
 import {Gas} from "../utils";
 import {
-  StoragedepositOptions,
+  StorageDepositOptions,
   StorageUnregisterOptions,
   StorageWithdrawOptions
 } from "../types/nep145";
+import {FtTransferCallOptions, FtTransferOptions} from "../types/nep141";
+import {
+  NftApproveOptions,
+  NftRevokeAllOptions,
+  NftRevokeOptions,
+  NftTransferCallOptions,
+  NftTransferOptions
+} from "../types/nep171";
 
 /**
  * Helper class for creating transaction(s)
@@ -129,7 +137,7 @@ export class MultiTransaction {
     })
   }
 
-  storage_deposit({args, attachedDeposit, gas}: StoragedepositOptions) {
+  storage_deposit({args, attachedDeposit, gas}: StorageDepositOptions) {
     return this.functionCall({
       methodName: 'storage_deposit',
       args,
@@ -150,6 +158,69 @@ export class MultiTransaction {
   storage_unregister({args, gas}: StorageUnregisterOptions) {
     return this.functionCall({
       methodName: 'storage_unregister',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  ft_transfer({args, gas}: FtTransferOptions) {
+    return this.functionCall({
+      methodName: 'ft_transfer',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  ft_transfer_call({args, gas}: FtTransferCallOptions) {
+    return this.functionCall({
+      methodName: 'ft_transfer_call',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  nft_transfer({args, gas}: NftTransferOptions) {
+    return this.functionCall({
+      methodName: 'nft_transfer',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  nft_transfer_call({args, gas}: NftTransferCallOptions) {
+    return this.functionCall({
+      methodName: 'nft_transfer_call',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  nft_approve({args, attachedDeposit, gas}: NftApproveOptions) {
+    return this.functionCall({
+      methodName: 'nft_approve',
+      args,
+      attachedDeposit,
+      gas
+    })
+  }
+
+  nft_revoke({args, gas}: NftRevokeOptions) {
+    return this.functionCall({
+      methodName: 'nft_revoke',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  nft_revoke_all({args, gas}: NftRevokeAllOptions) {
+    return this.functionCall({
+      methodName: 'nft_revoke_all',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
       gas

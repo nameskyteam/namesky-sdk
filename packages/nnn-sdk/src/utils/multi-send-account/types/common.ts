@@ -8,7 +8,7 @@ export interface SignAndSendTransactionsParams {
   transactions: SignAndSendTransactionParams[]
 }
 
-export interface ViewOptions<Args extends BaseArgs> extends FunctionViewOptions<Args> {
+export interface AccountFunctionViewOptions<Args extends BaseArgs> extends FunctionViewOptions<Args> {
   contractId: string
   blockQuery?: BlockReference
 }
