@@ -7,3 +7,8 @@ export interface ViewOptions<Args extends BaseArgs> {
   args?: Args
   blockQuery?: BlockReference
 }
+
+export interface SelectorMultiSendOptions {
+  walletId?: string
+  callbackUrl?: string
+}

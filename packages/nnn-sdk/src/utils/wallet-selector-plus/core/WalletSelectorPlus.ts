@@ -1,7 +1,7 @@
-import {AccountState, setupWalletSelector} from "@near-wallet-selector/core";
+import {setupWalletSelector} from "@near-wallet-selector/core";
 import {resolveNetwork, setupWalletModules} from "../utils";
 import {InMemorySigner, keyStores, Near} from "near-api-js";
-import {ViewOptions ,WalletSelectorPlusConfig, WalletSelectorPlus} from "../types";
+import {ViewOptions, WalletSelectorPlusConfig, WalletSelectorPlus, SelectorMultiSendOptions} from "../types";
 import {BrowserLocalStorageKeyStore} from "near-api-js/lib/key_stores";
 import {BaseArgs, MultiTransaction} from "../../multi-transaction";
 import {parseOutcomeValue} from "../../multi-transaction";
@@ -54,15 +54,21 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         })
       },
 
-      async multiSend<Value>(transaction: MultiTransaction, callbackUrl?: string): Promise<Value> {
-        const wallet = await this.wallet()
+      async multiSend<Value>(transaction: MultiTransaction, options?: SelectorMultiSendOptions): Promise<Value> {
+        const wallet = await this.wallet(options?.walletId)
         const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions()
         let outcome
         if (transaction.isMultiple()) {
-          const outcomes = await wallet.signAndSendTransactions({transactions: nearWalletSelectorTransactions , callbackUrl})
+          const outcomes = await wallet.signAndSendTransactions({
+            transactions: nearWalletSelectorTransactions ,
+            callbackUrl: options?.callbackUrl
+          })
           outcome = (outcomes as FinalExecutionOutcome[]).pop()
         } else {
-          outcome = await wallet.signAndSendTransaction({...nearWalletSelectorTransactions[0], callbackUrl})
+          outcome = await wallet.signAndSendTransaction({
+            ...nearWalletSelectorTransactions[0],
+            callbackUrl: options?.callbackUrl
+          })
           outcome = outcome as FinalExecutionOutcome
         }
         return parseOutcomeValue(outcome!)
