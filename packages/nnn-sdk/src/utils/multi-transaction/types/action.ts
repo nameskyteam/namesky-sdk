@@ -1,49 +1,49 @@
-export type ActionLike =
-  | CreateAccountActionLike
-  | DeleteAccountActionLike
-  | AddKeyActionLike
-  | DeleteKeyActionLike
-  | DeployContractActionLike
-  | StakeActionLike
-  | FunctionCallActionLike
-  | TransferActionLike
+export type Action =
+  | CreateAccountAction
+  | DeleteAccountAction
+  | AddKeyAction
+  | DeleteKeyAction
+  | DeployContractAction
+  | StakeAction
+  | FunctionCallAction
+  | TransferAction
 
-export interface CreateAccountActionLike {
+export interface CreateAccountAction {
   type: "CreateAccount"
   params: CreateAccountParams
 }
 
-export interface DeleteAccountActionLike {
+export interface DeleteAccountAction {
   type: "DeleteAccount"
   params: DeleteAccountParams
 }
 
-export interface AddKeyActionLike {
+export interface AddKeyAction {
   type: "AddKey"
   params: AddKeyParams
 }
 
-export interface DeleteKeyActionLike {
+export interface DeleteKeyAction {
   type: "DeleteKey"
   params: DeleteKeyParams
 }
 
-export interface DeployContractActionLike {
+export interface DeployContractAction {
   type: "DeployContract"
   params: DeployContractParams
 }
 
-export interface StakeActionLike {
+export interface StakeAction {
   type: "Stake"
   params: StakeParams
 }
 
-export interface FunctionCallActionLike {
+export interface FunctionCallAction {
   type: "FunctionCall"
   params: FunctionCallParams
 }
 
-export interface TransferActionLike {
+export interface TransferAction {
   type: "Transfer"
   params: TransferParams
 }

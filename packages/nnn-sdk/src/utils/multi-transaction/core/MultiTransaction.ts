@@ -9,13 +9,13 @@ import {
   StorageDepositArgs,
   StorageUnregisterArgs,
   StorageWithdrawArgs,
-  TransactionLike,
+  Transaction,
   SpecificFunctionCallOptions,
   FunctionCallOptions
 } from "../types";
 import {ActionFactory} from "./ActionFactory";
 import {BaseArgs} from "../types";
-import {AccessKey, ActionLike} from "../types";
+import {AccessKey, Action} from "../types";
 import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike} from "../types";
 import {
   parseNearApiJsTransaction,
@@ -28,7 +28,7 @@ import {Gas} from "../utils";
  * Helper class for creating transaction(s)
  */
 export class MultiTransaction {
-  transactions: TransactionLike[]
+  transactions: Transaction[]
 
   constructor(receiverId: string, signerId?: string) {
     this.transactions = []
@@ -51,17 +51,17 @@ export class MultiTransaction {
     })
   }
 
-  addTransaction(...transaction: TransactionLike[]) {
+  addTransaction(...transaction: Transaction[]) {
     this.transactions.push(...transaction)
     return this
   }
 
-  addAction(...action: ActionLike[]): this {
+  addAction(...action: Action[]): this {
     this.transactions[this.currentIndex()].actions.push(...action)
     return this
   }
 
-  static fromTransactions(...transactions: TransactionLike[]): MultiTransaction {
+  static fromTransactions(...transactions: Transaction[]): MultiTransaction {
     if (transactions.length === 0) {
       throw Error('Bad transaction(s)')
     }
@@ -77,7 +77,7 @@ export class MultiTransaction {
     return multiTransaction!
   }
 
-  toTransactions(): TransactionLike[] {
+  toTransactions(): Transaction[] {
     return [...this.transactions]
   }
 
