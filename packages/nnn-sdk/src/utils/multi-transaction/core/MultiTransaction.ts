@@ -11,12 +11,11 @@ import {
   StorageWithdrawArgs,
   Transaction,
   SpecificFunctionCallOptions,
-  FunctionCallOptions
+  FunctionCallOptions, RequiredNearApiJsTransaction, RequiredNearWalletSelectorTransaction
 } from "../types";
 import {ActionFactory} from "./ActionFactory";
 import {BaseArgs} from "../types";
 import {AccessKey, Action} from "../types";
-import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike} from "../types";
 import {
   parseNearApiJsTransaction,
   parseNearWalletSelectorTransaction
@@ -83,13 +82,13 @@ export class MultiTransaction {
 
   // --------------------------------------Transform-------------------------------------------
 
-  parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
+  parseNearApiJsTransactions(): RequiredNearApiJsTransaction[] {
     return this.toTransactions().map(transaction => {
       return parseNearApiJsTransaction(transaction)
     })
   }
 
-  parseNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
+  parseNearWalletSelectorTransactions(): RequiredNearWalletSelectorTransaction[] {
     return this.toTransactions().map(transaction => {
       return parseNearWalletSelectorTransaction(transaction)
     })
