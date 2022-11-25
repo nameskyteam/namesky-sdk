@@ -1,5 +1,5 @@
-import {RequiredNearApiJsTransaction} from "../../multi-transaction";
+import {NearApiJsTransactionLike} from "../../multi-transaction";
 
 export interface SignAndSendTransactionsOptions {
-  transactions: RequiredNearApiJsTransaction[]
+  transactions: NearApiJsTransactionLike[]
 }

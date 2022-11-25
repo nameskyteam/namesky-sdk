@@ -1,17 +1,17 @@
 import nearApiJs from "near-api-js";
 import nearWalletSelector from "@near-wallet-selector/core";
 
-export interface RequiredNearApiJsTransaction {
+export interface NearApiJsTransactionLike {
   receiverId: string,
-  actions: NearApiJsActionRequired[]
+  actions: NearApiJsActionLike[]
 }
 
-export type NearApiJsActionRequired = nearApiJs.transactions.Action
+export type NearApiJsActionLike = nearApiJs.transactions.Action
 
-export interface RequiredNearWalletSelectorTransaction {
+export interface NearWalletSelectorTransactionLike {
   signerId?: string
   receiverId: string
-  actions: NearWalletSelectorActionRequired[]
+  actions: NearWalletSelectorActionLike[]
 }
 
-export type NearWalletSelectorActionRequired = nearWalletSelector.Action
+export type NearWalletSelectorActionLike = nearWalletSelector.Action
