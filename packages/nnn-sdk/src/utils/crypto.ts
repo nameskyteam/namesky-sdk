@@ -1,8 +1,9 @@
-import sha256 from "sha256";
+import CryptoJS from "crypto-js";
 import base58 from "bs58";
 
 export function sha256Encoding(data: Uint8Array): Uint8Array {
-  const hex = sha256(Buffer.from(data.buffer))
+  const words = CryptoJS.lib.WordArray.create(data as any)
+  const hex = CryptoJS.SHA256(words).toString()
   return Buffer.from(hex, 'hex')
 }
 
