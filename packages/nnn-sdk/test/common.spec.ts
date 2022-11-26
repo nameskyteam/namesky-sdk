@@ -1,7 +1,6 @@
-import sha256 from "sha256";
+import {getBase58CodeHash} from "../src";
 
-test("", () => {
-  const code = new Uint8Array()
-  const hash = sha256(code.buffer as Buffer)
+test("Test get base58 code hash", () => {
+  const hash = getBase58CodeHash(Uint8Array.from([]))
   console.log(hash)
 })

@@ -52,7 +52,7 @@ export const App = () => {
 
   const setupController = async () => {
     const data = await fetch('http://localhost:3000/nnn_controller.wasm')
-    const code = new Uint8Array(await data.arrayBuffer())
+    const code = Buffer.from(await data.arrayBuffer())
     await nearService!.nnn.setupController({
       registrantId: 'rrerer.testnet',
       code,

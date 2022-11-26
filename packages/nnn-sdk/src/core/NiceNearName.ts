@@ -1,4 +1,4 @@
-import {WalletSelectorPlus} from "../utils";
+import {getBase58CodeHash, WalletSelectorPlus} from "../utils";
 import {NftContract} from "./contracts";
 import {MarketContract} from "./contracts";
 import {KeyPairEd25519, PublicKey} from "near-api-js/lib/utils";
@@ -14,8 +14,6 @@ import {Amount} from "../utils";
 import {setupWalletSelectorPlus} from "../utils";
 import {SetupControllerOptions} from "./types/options";
 import sha256 from "sha256";
-import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
 
 export class NiceNearName {
   selector: WalletSelectorPlus
@@ -107,7 +105,7 @@ export class NiceNearName {
 
     const accountState = await account.state()
     const accountCodeHash = accountState.code_hash
-    const codeHash = sha256(code.buffer as Buffer)
+    const codeHash = getBase58CodeHash(code)
 
     const ownerId = await this.getControllerOwnerId(registrantId)
 
@@ -128,9 +126,7 @@ export class NiceNearName {
 
     const transaction = new MultiTransaction(registrantId)
 
-    if (!isCodeHashVerified) {
-      transaction.deployContract(code)
-    }
+    transaction.deployContract(code)
 
     if (!isContractStateClear) {
       transaction.functionCall<CleanStateArgs>({
@@ -143,24 +139,18 @@ export class NiceNearName {
       })
     }
 
-    if (!isOwnerIdVerified) {
-      transaction.functionCall<InitArgs>({
-        methodName: 'init',
-        args: {
-          owner_id: this.getNftContractId()
-        },
-        attachedDeposit: Amount.ONE_YOCTO,
-        gas: gasForInit
-      })
-    }
+    transaction.functionCall<InitArgs>({
+      methodName: 'init',
+      args: {
+        owner_id: this.getNftContractId()
+      },
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: gasForInit
+    })
 
-    if (!isAccessKeyVerified) {
-      publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
-    }
+    publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
-    if (!transaction.isEmpty()) {
-      await this.selector.sendWithLocalKey(registrantId, transaction)
-    }
+    await this.selector.sendWithLocalKey(registrantId, transaction)
   }
 
   async getControllerOwnerId(registrantId: string): Promise<string | undefined> {
