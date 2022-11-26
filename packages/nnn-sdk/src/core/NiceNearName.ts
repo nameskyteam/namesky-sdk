@@ -13,6 +13,9 @@ import {MultiTransaction} from "../utils";
 import {Amount} from "../utils";
 import {setupWalletSelectorPlus} from "../utils";
 import {SetupControllerOptions} from "./types/options";
+import sha256 from "sha256";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 export class NiceNearName {
   selector: WalletSelectorPlus
@@ -98,22 +101,50 @@ export class NiceNearName {
     gasForInit
   }: SetupControllerOptions) {
     const account = await this.account(registrantId)
-    const state = await account.viewState('')
-    const stateKeys = state.map(({key}) => key.toString('base64'))
+
+    const contractState = await account.viewState('')
+    const contractStateKeys = contractState.map(({key}) => key.toString('base64'))
+
+    const accountState = await account.state()
+    const accountCodeHash = accountState.code_hash
+    const codeHash = sha256(code.buffer as Buffer)
+
+    const ownerId = await this.getControllerOwnerId(registrantId)
+
     const accessKeys = await account.getAccessKeys()
     const publicKeys = accessKeys.map(accessKey => accessKey.public_key)
 
+    const isCodeHashVerified = codeHash === accountCodeHash
+    const isContractStateVerified = contractStateKeys.length === 1
+    const isOwnerIdVerified = ownerId === this.nftContract.contractId
+    const isAccessKeyVerified = publicKeys.length === 0
+
+    const isContractStateClear = contractStateKeys.length === 0
+
+    if (isCodeHashVerified && isContractStateVerified && isOwnerIdVerified && isAccessKeyVerified) {
+      // skip
+      return
+    }
+
     const transaction = new MultiTransaction(registrantId)
-      .deployContract(code)
-      .functionCall<CleanStateArgs>({
+
+    if (!isCodeHashVerified) {
+      transaction.deployContract(code)
+    }
+
+    if (!isContractStateClear) {
+      transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
         args: {
-          keys: stateKeys
+          keys: contractStateKeys
         },
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState
       })
-      .functionCall<InitArgs>({
+    }
+
+    if (!isOwnerIdVerified) {
+      transaction.functionCall<InitArgs>({
         methodName: 'init',
         args: {
           owner_id: this.getNftContractId()
@@ -121,10 +152,28 @@ export class NiceNearName {
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForInit
       })
+    }
 
-    publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
+    if (!isAccessKeyVerified) {
+      publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
+    }
 
-    await this.selector.sendWithLocalKey(registrantId, transaction)
+    if (!transaction.isEmpty()) {
+      await this.selector.sendWithLocalKey(registrantId, transaction)
+    }
+  }
+
+  async getControllerOwnerId(registrantId: string): Promise<string | undefined> {
+    try {
+      return await this.selector.view({
+        contractId: registrantId,
+        methodName: 'get_owner_id',
+        args: {}
+      })
+    } catch (e) {
+      console.warn(`Get controller owner id failed, registrant id: ${registrantId}, message: ${(e as any).message}`)
+      return void 0
+    }
   }
 }
 
