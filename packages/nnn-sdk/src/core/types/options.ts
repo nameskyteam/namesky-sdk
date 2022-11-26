@@ -3,7 +3,7 @@ import {NftRegisterArgs} from "./args";
 
 export interface SetupControllerOptions {
   registrantId: string
-  code: Uint8Array
+  code: Buffer
   gasForCleanState?: string
   gasForInit?: string
 }

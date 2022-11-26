@@ -1,12 +1,20 @@
 import CryptoJS from "crypto-js";
 import base58 from "bs58";
 
-export function sha256Encoding(data: Uint8Array): Uint8Array {
-  const words = CryptoJS.lib.WordArray.create(data as any)
-  const hex = CryptoJS.SHA256(words).toString()
-  return Buffer.from(hex, 'hex')
+function bufferToWordArray(data: Buffer): CryptoJS.lib.WordArray {
+  return CryptoJS.enc.Hex.parse(data.toString("hex"))
 }
 
-export function base58CryptoHash(cryptoHash: Uint8Array): string {
+function wordArrayToBuffer(data: CryptoJS.lib.WordArray): Buffer {
+  return Buffer.from(data.toString(CryptoJS.enc.Hex), 'hex')
+}
+
+export function sha256(data: Buffer): Buffer {
+  const bytes = bufferToWordArray(data)
+  const hex = CryptoJS.SHA256(bytes)
+  return wordArrayToBuffer(hex)
+}
+
+export function base58CryptoHash(cryptoHash: Buffer): string {
   return base58.encode(cryptoHash)
 }
