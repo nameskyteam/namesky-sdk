@@ -13,7 +13,6 @@ import {MultiTransaction} from "../utils";
 import {Amount} from "../utils";
 import {setupWalletSelectorPlus} from "../utils";
 import {SetupControllerOptions} from "./types/options";
-import sha256 from "sha256";
 
 export class NiceNearName {
   selector: WalletSelectorPlus
