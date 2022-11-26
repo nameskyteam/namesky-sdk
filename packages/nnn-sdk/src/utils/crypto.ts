@@ -2,7 +2,7 @@ import sha256 from "sha256";
 import base58 from "bs58";
 
 export function sha256Encoding(data: Uint8Array): Uint8Array {
-  const hex = sha256(data as Buffer)
+  const hex = sha256(Buffer.from(data.buffer))
   return Buffer.from(hex, 'hex')
 }
 

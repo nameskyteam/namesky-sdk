@@ -6,7 +6,7 @@ import {
   MultiTransaction,
   FunctionCallOptions,
   FunctionViewOptions,
-  subGteZero
+  bigMax
 } from "../../utils";
 import {AccountView} from "../types/data";
 import Big from "big.js";
@@ -15,12 +15,12 @@ export class MarketContract extends Contract {
   // We have two type of offers, Simple Offer & Pro Offer
   // If Simple Offer, user needs to deposit with the same price
   // If Pro Offer, we recommend user to deposit insufficient balance
-  async createOffering({args, gas}: FunctionCallOptions<CreateOfferingArgs>) {
+  async createOffering({args, gas, attachedDeposit}: FunctionCallOptions<CreateOfferingArgs>) {
     const transaction = new MultiTransaction(this.contractId)
       // first user needs to deposit for storage of new offer
       .storage_deposit({
         args: {},
-        attachedDeposit: DEFAULT_STORAGE_DEPOSIT
+        attachedDeposit: attachedDeposit ?? DEFAULT_STORAGE_DEPOSIT
       })
       // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
       .nextTransaction(this.contractId)
@@ -41,7 +41,7 @@ export class MarketContract extends Contract {
         }
       })
 
-      const insufficientBalance = subGteZero(Big(args.price), Big(accountView.near_balance))
+      const insufficientBalance = bigMax(Big(args.price).sub(accountView.near_balance), Big(0))
 
       if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
