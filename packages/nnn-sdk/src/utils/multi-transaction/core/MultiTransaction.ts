@@ -1,20 +1,33 @@
-import {TransactionLike} from "../types/transaction";
+import {
+  FtTransferArgs,
+  FtTransferCallArgs,
+  NftApproveArgs,
+  NftRevokeAllArgs,
+  NftRevokeArgs,
+  NftTransferArgs,
+  NftTransferCallArgs,
+  StorageDepositArgs,
+  StorageUnregisterArgs,
+  StorageWithdrawArgs,
+  Transaction,
+  SpecificFunctionCallOptions,
+  FunctionCallOptions, NearApiJsTransactionLike, NearWalletSelectorTransactionLike
+} from "../types";
 import {ActionFactory} from "./ActionFactory";
-import {BaseArgs, FunctionCallOptions} from "../types/common";
-import {AccessKey, ActionLike} from "../types/action";
-import {NearApiJsTransactionLike, NearWalletSelectorTransactionLike, Transform} from "../types/transform";
+import {BaseArgs} from "../types";
+import {AccessKey, Action} from "../types";
 import {
   parseNearApiJsTransaction,
   parseNearWalletSelectorTransaction
-} from "../utils/transform";
-import {Amount} from "../utils/Amount";
-import {Gas} from "../utils/Gas";
+} from "../utils";
+import {Amount} from "../utils";
+import {Gas} from "../utils";
 
 /**
  * Helper class for creating transaction(s)
  */
-export class MultiTransaction implements Transform {
-  transactions: TransactionLike[]
+export class MultiTransaction {
+  transactions: Transaction[]
 
   constructor(receiverId: string, signerId?: string) {
     this.transactions = []
@@ -25,7 +38,11 @@ export class MultiTransaction implements Transform {
     return this.transactions.length - 1
   }
 
-  nextTransaction(receiverId: string, signerId?: string): this {
+  isMultiple(): boolean {
+    return this.currentIndex() > 0
+  }
+
+  nextTransaction(receiverId: string, signerId?: string) {
     return this.addTransaction({
       signerId,
       receiverId,
@@ -33,66 +50,17 @@ export class MultiTransaction implements Transform {
     })
   }
 
-  addTransaction(...transaction: TransactionLike[]): this {
+  addTransaction(...transaction: Transaction[]) {
     this.transactions.push(...transaction)
     return this
   }
 
-  addAction(...action: ActionLike[]): this {
+  addAction(...action: Action[]): this {
     this.transactions[this.currentIndex()].actions.push(...action)
     return this
   }
 
-  createAccount(): this {
-    return this.addAction(ActionFactory.createAccount())
-  }
-
-  deleteAccount(beneficiaryId: string): this {
-    return this.addAction(ActionFactory.deleteAccount({beneficiaryId}))
-  }
-
-  addKey(
-    publicKey: string,
-    accessKey: AccessKey
-  ): this {
-    return this.addAction(ActionFactory.addKey({publicKey, accessKey}))
-  }
-
-  deleteKey(publicKey: string): this {
-    return  this.addAction(ActionFactory.deleteKey({publicKey}))
-  }
-
-  deployContract(code: Uint8Array): this {
-    return this.addAction(ActionFactory.deployContract({code}))
-  }
-
-  stake(amount: string, publicKey: string): this {
-    return this.addAction(ActionFactory.stake({amount, publicKey}))
-  }
-
-  functionCall<Args extends BaseArgs>({
-    methodName,
-    args,
-    attachedDeposit,
-    gas
-  }: FunctionCallOptions<Args>): this {
-    return this.addAction(ActionFactory.functionCall({
-      methodName,
-      args: args ?? {},
-      attachedDeposit: attachedDeposit ?? Amount.ZERO,
-      gas: gas ?? Gas.DEFAULT
-    }))
-  }
-
-  transfer(amount: string): this {
-    return this.addAction(ActionFactory.transfer({amount}))
-  }
-
-  isMultiple(): boolean {
-    return this.currentIndex() > 0
-  }
-
-  static fromTransactions(...transactions: TransactionLike[]): MultiTransaction {
+  static fromTransactions(...transactions: Transaction[]): MultiTransaction {
     if (transactions.length === 0) {
       throw Error('Bad transaction(s)')
     }
@@ -108,21 +76,164 @@ export class MultiTransaction implements Transform {
     return multiTransaction!
   }
 
-  toTransactions(): TransactionLike[] {
+  toTransactions(): Transaction[] {
     return [...this.transactions]
   }
 
+  // --------------------------------------Transform-------------------------------------------
+
   parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
-    const transactions = this.toTransactions()
-    return transactions.map(transaction => {
+    return this.toTransactions().map(transaction => {
       return parseNearApiJsTransaction(transaction)
     })
   }
 
   parseNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
-    const transactions = this.toTransactions()
-    return transactions.map(transaction => {
+    return this.toTransactions().map(transaction => {
       return parseNearWalletSelectorTransaction(transaction)
+    })
+  }
+
+  // --------------------------------------Action-------------------------------------------
+
+  createAccount() {
+    return this.addAction(ActionFactory.createAccount())
+  }
+
+  deleteAccount(beneficiaryId: string) {
+    return this.addAction(ActionFactory.deleteAccount({beneficiaryId}))
+  }
+
+  addKey(
+    publicKey: string,
+    accessKey: AccessKey
+  ) {
+    return this.addAction(ActionFactory.addKey({publicKey, accessKey}))
+  }
+
+  deleteKey(publicKey: string) {
+    return  this.addAction(ActionFactory.deleteKey({publicKey}))
+  }
+
+  deployContract(code: Uint8Array) {
+    return this.addAction(ActionFactory.deployContract({code}))
+  }
+
+  stake(amount: string, publicKey: string) {
+    return this.addAction(ActionFactory.stake({amount, publicKey}))
+  }
+
+  functionCall<Args extends BaseArgs>({
+    methodName,
+    args,
+    attachedDeposit,
+    gas
+  }: SpecificFunctionCallOptions<Args>) {
+    return this.addAction(ActionFactory.functionCall({
+      methodName,
+      args,
+      attachedDeposit: attachedDeposit ?? Amount.ZERO,
+      gas: gas ?? Gas.DEFAULT
+    }))
+  }
+
+  transfer(amount: string) {
+    return this.addAction(ActionFactory.transfer({amount}))
+  }
+
+  // --------------------------------------NEP145-------------------------------------------
+
+  storage_deposit({args, attachedDeposit, gas}: FunctionCallOptions<StorageDepositArgs>) {
+    return this.functionCall({
+      methodName: 'storage_deposit',
+      args,
+      attachedDeposit,
+      gas
+    })
+  }
+
+  storage_withdraw({args, gas}: FunctionCallOptions<StorageWithdrawArgs>) {
+    return this.functionCall({
+      methodName: 'storage_withdraw',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  storage_unregister({args, gas}: FunctionCallOptions<StorageUnregisterArgs>) {
+    return this.functionCall({
+      methodName: 'storage_unregister',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  // --------------------------------------NEP141-------------------------------------------
+
+  ft_transfer({args, gas}: FunctionCallOptions<FtTransferArgs>) {
+    return this.functionCall({
+      methodName: 'ft_transfer',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  ft_transfer_call({args, gas}: FunctionCallOptions<FtTransferCallArgs>) {
+    return this.functionCall({
+      methodName: 'ft_transfer_call',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: gas ?? Gas.tera(50)
+    })
+  }
+
+  // --------------------------------------NEP171-------------------------------------------
+
+  nft_transfer({args, gas}: FunctionCallOptions<NftTransferArgs>) {
+    return this.functionCall({
+      methodName: 'nft_transfer',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  nft_transfer_call({args, gas}: FunctionCallOptions<NftTransferCallArgs>) {
+    return this.functionCall({
+      methodName: 'nft_transfer_call',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: gas ?? Gas.tera(50)
+    })
+  }
+
+  nft_approve({args, attachedDeposit, gas}: FunctionCallOptions<NftApproveArgs>) {
+    return this.functionCall({
+      methodName: 'nft_approve',
+      args,
+      attachedDeposit,
+      gas
+    })
+  }
+
+  nft_revoke({args, gas}: FunctionCallOptions<NftRevokeArgs>) {
+    return this.functionCall({
+      methodName: 'nft_revoke',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
+    })
+  }
+
+  nft_revoke_all({args, gas}: FunctionCallOptions<NftRevokeAllArgs>) {
+    return this.functionCall({
+      methodName: 'nft_revoke_all',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas
     })
   }
 }

@@ -1,13 +1,17 @@
 import {Contract} from "../../utils/Contract";
-import {NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs} from "../types/args/NftContract";
-import {ContractCallOptions, ContractViewOptions} from "../types/common";
-import {MultiTransaction} from "../../utils/multi-transaction/core/MultiTransaction";
-import {Amount} from "../../utils/multi-transaction/utils/Amount";
+import {
+  DEFAULT_MINT_FEE,
+  MultiTransaction,
+  FunctionCallOptions,
+  FunctionViewOptions
+} from "../../utils";
+import {Amount} from "../../utils";
+import {NftIsRegisteredArgs, NftRedeemArgs} from "../types/args";
+import {NftRegisterOptions} from "../types/options";
 
 export class NftContract extends Contract {
-  async nft_is_registered(args: NftIsRegisteredArgs, options?: ContractViewOptions): Promise<string | null> {
+  async nftIsRegistered({args}: FunctionViewOptions<NftIsRegisteredArgs>): Promise<string | null> {
     return this.selector.view({
-      ...options,
       contractId: this.contractId,
       methodName: 'nft_is_registered',
       args
@@ -15,24 +19,25 @@ export class NftContract extends Contract {
   }
 
   // signed by registrant
-  async nft_register(registrantId: string, args: NftRegisterArgs, options?: ContractCallOptions) {
+  async nftRegister({registrantId, args, gas}: NftRegisterOptions) {
     const transaction = new MultiTransaction(this.contractId)
       .functionCall({
-        ...options,
         methodName: 'nft_register',
-        args
+        args,
+        attachedDeposit: DEFAULT_MINT_FEE,
+        gas
       })
-    await this.selector.multiSendWithLocalKey(registrantId, transaction)
+    await this.selector.sendWithLocalKey(registrantId, transaction)
   }
 
-  async nft_redeem(args: NftRedeemArgs, options?: ContractCallOptions): Promise<boolean> {
+  async nftRedeem({args, gas}: FunctionCallOptions<NftRedeemArgs>): Promise<boolean> {
     const transaction = new MultiTransaction(this.contractId)
       .functionCall({
-        ...options,
         methodName: 'nft_redeem',
         args,
         attachedDeposit: Amount.ONE_YOCTO,
+        gas
       })
-    return this.selector.multiSend({...options, transaction})
+    return this.selector.send(transaction)
   }
 }

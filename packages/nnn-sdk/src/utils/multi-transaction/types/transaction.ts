@@ -1,7 +1,7 @@
-import {ActionLike} from "./action";
+import {Action} from "./action";
 
-export interface TransactionLike {
+export interface Transaction {
   signerId?: string
   receiverId: string,
-  actions: ActionLike[]
+  actions: Action[]
 }

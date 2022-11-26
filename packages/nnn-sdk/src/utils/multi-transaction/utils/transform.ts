@@ -1,54 +1,51 @@
-import {AccessKeyPermission, ActionLike} from "../types/action";
+import {AccessKeyPermission, ActionLike} from "../types";
 import {
   NearApiJsActionLike,
   NearApiJsTransactionLike,
   NearWalletSelectorActionLike,
   NearWalletSelectorTransactionLike
-} from "../types/transform";
+} from "../types";
 import nearApiJs from "near-api-js";
 import {PublicKey} from "near-api-js/lib/utils";
 import {AccessKey} from "near-api-js/lib/transaction";
-import {TransactionLike} from "../types/transaction";
+import {TransactionLike} from "../types";
 
 export function parseNearApiJsAction(action: ActionLike): NearApiJsActionLike {
-  const {type, params} = action
-  switch (type) {
+  switch (action.type) {
     case "CreateAccount": {
       return nearApiJs.transactions.createAccount()
     }
     case "DeleteAccount": {
-      const {beneficiaryId} = params
+      const {beneficiaryId} = action.params
       return nearApiJs.transactions.deleteAccount(beneficiaryId)
     }
     case "AddKey": {
-      const {publicKey, accessKey} = params
+      const {publicKey, accessKey} = action.params
       return nearApiJs.transactions.addKey(
         PublicKey.fromString(publicKey),
         getAccessKey(accessKey.permission)
       )
     }
     case "DeleteKey": {
-      const {publicKey} = params
+      const {publicKey} = action.params
       return nearApiJs.transactions.deleteKey(PublicKey.fromString(publicKey))
     }
     case "DeployContract": {
-      const {code} = params
+      const {code} = action.params
       return nearApiJs.transactions.deployContract(code)
     }
     case "Stake": {
-      const {amount, publicKey} = params
+      const {amount, publicKey} = action.params
       return nearApiJs.transactions.stake(amount, PublicKey.fromString(publicKey))
     }
     case "FunctionCall": {
-      const {methodName, args, gas, attachedDeposit} = params
+      const {methodName, args, gas, attachedDeposit} = action.params
       return nearApiJs.transactions.functionCall(methodName, args, gas, attachedDeposit)
     }
     case "Transfer": {
-      const {amount} = params
+      const {amount} = action.params
       return nearApiJs.transactions.transfer(amount)
     }
-    default:
-      throw Error(`Error action type: ${type}`)
   }
 }
 
@@ -60,8 +57,7 @@ export function parseNearApiJsTransaction({receiverId, actions}: TransactionLike
 }
 
 export function parseNearWalletSelectorAction(action: ActionLike): NearWalletSelectorActionLike {
-  const {type, params} = action
-  switch (type) {
+  switch (action.type) {
     case "CreateAccount": {
       return action
     }
@@ -78,9 +74,9 @@ export function parseNearWalletSelectorAction(action: ActionLike): NearWalletSel
       return action
     }
     case "Stake": {
-      const {amount, publicKey} = params
+      const {amount, publicKey} = action.params
       return {
-        type,
+        type: action.type,
         params: {
           stake: amount,
           publicKey
@@ -88,9 +84,9 @@ export function parseNearWalletSelectorAction(action: ActionLike): NearWalletSel
       }
     }
     case "FunctionCall": {
-      const {methodName, args, gas, attachedDeposit} = params
+      const {methodName, args, gas, attachedDeposit} = action.params
       return {
-        type,
+        type: action.type,
         params: {
           methodName,
           args,
@@ -100,16 +96,14 @@ export function parseNearWalletSelectorAction(action: ActionLike): NearWalletSel
       }
     }
     case "Transfer": {
-      const {amount} = params
+      const {amount} = action.params
       return {
-        type,
+        type: action.type,
         params: {
           deposit: amount
         }
       }
     }
-    default:
-      throw Error(`Error action type: ${type}`)
   }
 }
 

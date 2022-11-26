@@ -1,17 +1,18 @@
-import {WalletSelectorPlus} from "../utils/wallet-selector-plus/types/enhancement";
-import {NftContract} from "./contracts/NftContract";
-import {MarketContract} from "./contracts/MarketContract";
+import {WalletSelectorPlus} from "../utils";
+import {NftContract} from "./contracts";
+import {MarketContract} from "./contracts";
 import {KeyPairEd25519, PublicKey} from "near-api-js/lib/utils";
 import {
   REQUEST_ACCESS_PENDING_KEY_PREFIX
-} from "../utils/common";
+} from "../utils";
 import {Network} from "@near-wallet-selector/core";
 import {NiceNearNameComponent, NiceNearNameConfig} from "./types/config";
 import {Account} from "near-api-js";
-import {CleanStateArgs, InitArgs} from "./types/args/NftContract";
-import {MultiTransaction} from "../utils/multi-transaction/core/MultiTransaction";
-import {Amount} from "../utils/multi-transaction/utils/Amount";
-import {setupWalletSelectorPlus} from "../utils/wallet-selector-plus/core/WalletSelectorPlus";
+import {CleanStateArgs, InitArgs} from "./types/args";
+import {MultiTransaction} from "../utils";
+import {Amount} from "../utils";
+import {setupWalletSelectorPlus} from "../utils";
+import {SetupControllerOptions} from "./types/options";
 
 export class NiceNearName {
   selector: WalletSelectorPlus
@@ -48,8 +49,8 @@ export class NiceNearName {
     return this.marketContract.contractId
   }
 
-  account(accountId?: string): Promise<Account> {
-    return this.selector.near.account(accountId ?? '')
+  account(accountId: string): Promise<Account> {
+    return this.selector.near.account(accountId)
   }
 
   async requestFullAccess(
@@ -60,7 +61,7 @@ export class NiceNearName {
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey
-    const keystore = this.selector.getKeyStore()
+    const keystore = this.selector.keyStore()
     const networkId = this.getNetworkId()
     await keystore.setKey(networkId, pendingAccountId, keyPair)
     const newUrl = new URL(webWalletBaseUrl + '/login/');
@@ -79,7 +80,7 @@ export class NiceNearName {
       return
     }
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString()
-    const keystore = this.selector.getKeyStore()
+    const keystore = this.selector.keyStore()
     const networkId = this.getNetworkId()
     const keyPair = await keystore.getKey(networkId, pendingAccountId)
     if (!keyPair) {
@@ -90,14 +91,12 @@ export class NiceNearName {
   }
 
   // signed by registrant
-  async setupController(
-    registrantId: string,
-    code: Uint8Array,
-    options?: {
-      gasForCleanState?: string,
-      gasForInit?: string
-    }
-  ) {
+  async setupController({
+    registrantId,
+    code,
+    gasForCleanState,
+    gasForInit
+  }: SetupControllerOptions) {
     const account = await this.account(registrantId)
     const state = await account.viewState('')
     const stateKeys = state.map(({key}) => key.toString('base64'))
@@ -112,7 +111,7 @@ export class NiceNearName {
           keys: stateKeys
         },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: options?.gasForCleanState
+        gas: gasForCleanState
       })
       .functionCall<InitArgs>({
         methodName: 'init',
@@ -120,12 +119,12 @@ export class NiceNearName {
           owner_id: this.getNftContractId()
         },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: options?.gasForInit
+        gas: gasForInit
       })
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
-    await this.selector.multiSendWithLocalKey(registrantId, transaction)
+    await this.selector.sendWithLocalKey(registrantId, transaction)
   }
 }
 
@@ -135,5 +134,5 @@ export async function initNiceNearName(
   const selector = await setupWalletSelectorPlus(config.selector)
   const nftContract = new NftContract(config.contracts.nftContractId, selector)
   const marketContract = new MarketContract(config.contracts.marketContractId, selector)
-  return new NiceNearName({selector, nftContract, marketContract})
+  return new NiceNearName({selector,  nftContract, marketContract})
 }

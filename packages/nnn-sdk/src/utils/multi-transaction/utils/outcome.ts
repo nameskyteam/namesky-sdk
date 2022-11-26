@@ -6,6 +6,6 @@ export function parseOutcomeValue<Value> (outcome: FinalExecutionOutcome): Value
     const decodedValue: string = Buffer.from(successValue, 'base64').toString()
     return JSON.parse(decodedValue)
   } else {
-    return void 0 as Value
+    return void 0 as unknown as Value
   }
 }
