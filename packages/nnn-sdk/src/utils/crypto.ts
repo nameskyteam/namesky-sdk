@@ -11,8 +11,8 @@ function wordArrayToBuffer(data: CryptoJS.lib.WordArray): Buffer {
 
 export function sha256(data: Buffer): Buffer {
   const bytes = bufferToWordArray(data)
-  const hex = CryptoJS.SHA256(bytes)
-  return wordArrayToBuffer(hex)
+  const hash = CryptoJS.SHA256(bytes)
+  return wordArrayToBuffer(hash)
 }
 
 export function base58CryptoHash(cryptoHash: Buffer): string {
