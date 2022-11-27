@@ -5,7 +5,7 @@ import {
   NearWalletSelectorActionLike,
   NearWalletSelectorTransactionLike
 } from "../types";
-import nearApiJs from "near-api-js";
+import * as nearApiJs from "near-api-js";
 import {PublicKey} from "near-api-js/lib/utils";
 import {AccessKey} from "near-api-js/lib/transaction";
 import {Transaction} from "../types";
