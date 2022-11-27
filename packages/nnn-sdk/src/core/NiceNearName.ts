@@ -99,34 +99,39 @@ export class NiceNearName {
   }: SetupControllerOptions) {
     const account = await this.account(registrantId)
 
-    const contractState = await account.viewState('')
-    const contractStateKeys = contractState.map(({key}) => key.toString('base64'))
-
+    // account code hash
     const accountState = await account.state()
     const accountCodeHash = accountState.code_hash
     const codeHash = getBase58CodeHash(code)
 
+    // account controller owner id
     const ownerId = await this.getControllerOwnerId(registrantId)
 
+    // account contract state
+    const contractState = await account.viewState('')
+    const contractStateKeys = contractState.map(({key}) => key.toString('base64'))
+
+    // account access keys
     const accessKeys = await account.getAccessKeys()
     const publicKeys = accessKeys.map(accessKey => accessKey.public_key)
 
     const isCodeHashVerified = codeHash === accountCodeHash
-    const isContractStateVerified = contractStateKeys.length === 1
     const isOwnerIdVerified = ownerId === this.nftContract.contractId
+    const isContractStateVerified = contractStateKeys.length === 1 // refers to root key 'STATE'
+    const isContractStateClear = contractStateKeys.length === 0
     const isAccessKeyVerified = publicKeys.length === 0
 
-    const isContractStateClear = contractStateKeys.length === 0
-
-    if (isCodeHashVerified && isContractStateVerified && isOwnerIdVerified && isAccessKeyVerified) {
+    if (isCodeHashVerified && isOwnerIdVerified && isContractStateVerified && isAccessKeyVerified) {
       // skip
       return
     }
 
     const transaction = new MultiTransaction(registrantId)
 
+    // deploy controller contract
     transaction.deployContract(code)
 
+    // clean account state if needed
     if (!isContractStateClear) {
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
@@ -138,6 +143,7 @@ export class NiceNearName {
       })
     }
 
+    // init controller contract
     transaction.functionCall<InitArgs>({
       methodName: 'init',
       args: {
@@ -147,6 +153,7 @@ export class NiceNearName {
       gas: gasForInit
     })
 
+    // delete all access keys
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
     await this.selector.sendWithLocalKey(registrantId, transaction)

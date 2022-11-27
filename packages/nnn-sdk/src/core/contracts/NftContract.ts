@@ -6,10 +6,12 @@ import {
   FunctionViewOptions
 } from "../../utils";
 import {Amount} from "../../utils";
-import {NftIsRegisteredArgs, NftRedeemArgs} from "../types/args";
+import {NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs} from "../types/args";
 import {NftRegisterOptions} from "../types/options";
 
 export class NftContract extends Contract {
+  // --------------------------------------------------view-------------------------------------------------------
+
   async nftIsRegistered({args}: FunctionViewOptions<NftIsRegisteredArgs>): Promise<string | null> {
     return this.selector.view({
       contractId: this.contractId,
@@ -18,12 +20,14 @@ export class NftContract extends Contract {
     })
   }
 
+  // --------------------------------------------------call-------------------------------------------------------
+
   // signed by registrant
   async nftRegister({registrantId, args, gas, attachedDeposit}: NftRegisterOptions) {
     const transaction = new MultiTransaction(this.contractId)
-      .functionCall({
+      .functionCall<NftRegisterArgs>({
         methodName: 'nft_register',
-        args,
+        args: { minter_id: args.minter_id ?? this.selector.getActiveAccountId()! },
         attachedDeposit: attachedDeposit ?? DEFAULT_MINT_FEE,
         gas
       })

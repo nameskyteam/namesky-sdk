@@ -1,21 +1,33 @@
 import {Contract} from "../../utils/Contract";
-import {CreateOfferingArgs, GetAccountViewOfArgs, NearDepositArgs} from "../types/args";
+import {GetAccountViewOfArgs, NearDepositArgs} from "../types/args";
 import {
   Amount,
   DEFAULT_STORAGE_DEPOSIT,
   MultiTransaction,
-  FunctionCallOptions,
   FunctionViewOptions,
   bigMax
 } from "../../utils";
 import {AccountView} from "../types/data";
 import Big from "big.js";
+import {CreateOfferingOptions} from "../types/options";
 
 export class MarketContract extends Contract {
+  // --------------------------------------------------view-------------------------------------------------------
+
+  async get_account_view_of({args}: FunctionViewOptions<GetAccountViewOfArgs>): Promise<AccountView> {
+    return  this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_account_view_of',
+      args
+    })
+  }
+
+  // --------------------------------------------------call-------------------------------------------------------
+
   // We have two type of offers, Simple Offer & Pro Offer
   // If Simple Offer, user needs to deposit with the same price
   // If Pro Offer, we recommend user to deposit insufficient balance
-  async createOffering({args, gas, attachedDeposit}: FunctionCallOptions<CreateOfferingArgs>) {
+  async createOffering({args, gas, attachedDeposit}: CreateOfferingOptions) {
     const transaction = new MultiTransaction(this.contractId)
       // first user needs to deposit for storage of new offer
       .storage_deposit({
@@ -62,13 +74,5 @@ export class MarketContract extends Contract {
     }
 
     await this.selector.send(transaction)
-  }
-
-  async get_account_view_of({args}: FunctionViewOptions<GetAccountViewOfArgs>): Promise<AccountView> {
-    return  this.selector.view({
-      contractId: this.contractId,
-      methodName: 'get_account_view_of',
-      args
-    })
   }
 }
