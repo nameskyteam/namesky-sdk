@@ -1,6 +1,8 @@
 import {FunctionCallOptions} from "../../utils";
-import {NftRegisterArgs} from "./args";
+import {CreateOfferingArgs, NftRegisterArgs} from "./args";
 import {Optional} from "@near-wallet-selector/core";
+
+// ----------------------------------------------Controller---------------------------------------------------------
 
 export interface SetupControllerOptions {
   registrantId: string
@@ -9,6 +11,12 @@ export interface SetupControllerOptions {
   gasForInit?: string
 }
 
+// ------------------------------------------------Nft-------------------------------------------------------------
+
 export interface NftRegisterOptions extends FunctionCallOptions<Optional<NftRegisterArgs, 'minter_id'>> {
   registrantId: string
 }
+
+// ------------------------------------------------Market---------------------------------------------------------
+
+export interface CreateOfferingOptions extends FunctionCallOptions<CreateOfferingArgs> {}
