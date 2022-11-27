@@ -1,4 +1,4 @@
-import {WalletSelectorPlus} from "../utils";
+import {getBase58CodeHash, WalletSelectorPlus} from "../utils";
 import {NftContract} from "./contracts";
 import {MarketContract} from "./contracts";
 import {KeyPairEd25519, PublicKey} from "near-api-js/lib/utils";
@@ -98,33 +98,71 @@ export class NiceNearName {
     gasForInit
   }: SetupControllerOptions) {
     const account = await this.account(registrantId)
-    const state = await account.viewState('')
-    const stateKeys = state.map(({key}) => key.toString('base64'))
+
+    const contractState = await account.viewState('')
+    const contractStateKeys = contractState.map(({key}) => key.toString('base64'))
+
+    const accountState = await account.state()
+    const accountCodeHash = accountState.code_hash
+    const codeHash = getBase58CodeHash(code)
+
+    const ownerId = await this.getControllerOwnerId(registrantId)
+
     const accessKeys = await account.getAccessKeys()
     const publicKeys = accessKeys.map(accessKey => accessKey.public_key)
 
+    const isCodeHashVerified = codeHash === accountCodeHash
+    const isContractStateVerified = contractStateKeys.length === 1
+    const isOwnerIdVerified = ownerId === this.nftContract.contractId
+    const isAccessKeyVerified = publicKeys.length === 0
+
+    const isContractStateClear = contractStateKeys.length === 0
+
+    if (isCodeHashVerified && isContractStateVerified && isOwnerIdVerified && isAccessKeyVerified) {
+      // skip
+      return
+    }
+
     const transaction = new MultiTransaction(registrantId)
-      .deployContract(code)
-      .functionCall<CleanStateArgs>({
+
+    transaction.deployContract(code)
+
+    if (!isContractStateClear) {
+      transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
         args: {
-          keys: stateKeys
+          keys: contractStateKeys
         },
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState
       })
-      .functionCall<InitArgs>({
-        methodName: 'init',
-        args: {
-          owner_id: this.getNftContractId()
-        },
-        attachedDeposit: Amount.ONE_YOCTO,
-        gas: gasForInit
-      })
+    }
+
+    transaction.functionCall<InitArgs>({
+      methodName: 'init',
+      args: {
+        owner_id: this.getNftContractId()
+      },
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas: gasForInit
+    })
 
     publicKeys.forEach(publicKey => transaction.deleteKey(publicKey))
 
     await this.selector.sendWithLocalKey(registrantId, transaction)
+  }
+
+  async getControllerOwnerId(registrantId: string): Promise<string | undefined> {
+    try {
+      return await this.selector.view({
+        contractId: registrantId,
+        methodName: 'get_owner_id',
+        args: {}
+      })
+    } catch (e) {
+      console.warn(`Get controller owner id failed, registrant id: ${registrantId}, message: ${(e as any).message}`)
+      return void 0
+    }
   }
 }
 

@@ -1,5 +1,5 @@
-import nearApiJs from "near-api-js";
-import nearWalletSelector from "@near-wallet-selector/core";
+import * as nearApiJs from "near-api-js";
+import * as nearWalletSelector from "@near-wallet-selector/core";
 
 export interface NearApiJsTransactionLike {
   receiverId: string,

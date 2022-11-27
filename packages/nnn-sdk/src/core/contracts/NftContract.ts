@@ -19,12 +19,12 @@ export class NftContract extends Contract {
   }
 
   // signed by registrant
-  async nftRegister({registrantId, args, gas}: NftRegisterOptions) {
+  async nftRegister({registrantId, args, gas, attachedDeposit}: NftRegisterOptions) {
     const transaction = new MultiTransaction(this.contractId)
       .functionCall({
         methodName: 'nft_register',
         args,
-        attachedDeposit: DEFAULT_MINT_FEE,
+        attachedDeposit: attachedDeposit ?? DEFAULT_MINT_FEE,
         gas
       })
     await this.selector.sendWithLocalKey(registrantId, transaction)

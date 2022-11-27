@@ -1,16 +1,16 @@
-import {AccessKeyPermission, ActionLike} from "../types";
+import {AccessKeyPermission, Action} from "../types";
 import {
   NearApiJsActionLike,
   NearApiJsTransactionLike,
   NearWalletSelectorActionLike,
   NearWalletSelectorTransactionLike
 } from "../types";
-import nearApiJs from "near-api-js";
+import * as nearApiJs from "near-api-js";
 import {PublicKey} from "near-api-js/lib/utils";
 import {AccessKey} from "near-api-js/lib/transaction";
-import {TransactionLike} from "../types";
+import {Transaction} from "../types";
 
-export function parseNearApiJsAction(action: ActionLike): NearApiJsActionLike {
+export function parseNearApiJsAction(action: Action): NearApiJsActionLike {
   switch (action.type) {
     case "CreateAccount": {
       return nearApiJs.transactions.createAccount()
@@ -49,14 +49,14 @@ export function parseNearApiJsAction(action: ActionLike): NearApiJsActionLike {
   }
 }
 
-export function parseNearApiJsTransaction({receiverId, actions}: TransactionLike): NearApiJsTransactionLike {
+export function parseNearApiJsTransaction({receiverId, actions}: Transaction): NearApiJsTransactionLike {
   return {
     receiverId,
     actions: actions.map(action => parseNearApiJsAction(action))
   }
 }
 
-export function parseNearWalletSelectorAction(action: ActionLike): NearWalletSelectorActionLike {
+export function parseNearWalletSelectorAction(action: Action): NearWalletSelectorActionLike {
   switch (action.type) {
     case "CreateAccount": {
       return action
@@ -107,7 +107,7 @@ export function parseNearWalletSelectorAction(action: ActionLike): NearWalletSel
   }
 }
 
-export function parseNearWalletSelectorTransaction({signerId, receiverId, actions}: TransactionLike): NearWalletSelectorTransactionLike {
+export function parseNearWalletSelectorTransaction({signerId, receiverId, actions}: Transaction): NearWalletSelectorTransactionLike {
   return {
     signerId,
     receiverId,
