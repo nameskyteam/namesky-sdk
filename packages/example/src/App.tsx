@@ -20,7 +20,7 @@ export const App = () => {
         })
         const accountId = nnn.selector.store.getState().accounts.find(accountState => accountState.active)?.accountId
         setAccountId(accountId)
-        const modal = setupModal(nnn.selector, {contractId: 'nft.nicenearname.testnet'})
+        const modal = setupModal(nnn.selector, {contractId: ''})
         setModal(modal)
       })
   }, [nearService])
@@ -35,7 +35,7 @@ export const App = () => {
     setAccountId(undefined)
   }
 
-  const request = () => {
+  const requestFullAccess = () => {
     return nearService!.nnn.requestFullAccess(
       'https://wallet.testnet.near.org',
     )
@@ -43,10 +43,8 @@ export const App = () => {
 
   const register = async () => {
     await nearService!.nnn.nftContract.nftRegister({
-      registrantId: 'rrerer.testnet',
-      args: {
-        minter_id: 'cornflower.testnet'
-      }
+      registrantId: 'cool8.testnet',
+      args: {}
     })
   }
 
@@ -54,14 +52,12 @@ export const App = () => {
     const data = await fetch('http://localhost:3000/nnn_controller.wasm')
     const code = Buffer.from(await data.arrayBuffer())
     await nearService!.nnn.setupController({
-      registrantId: 'rrerer.testnet',
+      registrantId: 'cool8.testnet',
       code,
       gasForCleanState: Gas.tera(50),
       gasForInit: Gas.tera(10)
     })
   }
-
-  console.log(nearService)
 
   return (
     <div>
@@ -74,7 +70,7 @@ export const App = () => {
       <button onClick={signOut}>
         sign out
       </button>
-      <button onClick={register}>
+      <button onClick={requestFullAccess}>
         test
       </button>
     </div>
