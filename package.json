@@ -7,7 +7,8 @@
     "start:testnet": "react-scripts start",
     "build:testnet": "react-scripts build",
     "lint": "yarn eslint --fix packages/**/*.ts",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@near-wallet-selector/core": "^7.2.0",
@@ -35,6 +36,7 @@
     "@typescript-eslint/parser": "^5.38.0",
     "eslint": "^8.23.1",
     "husky": "^8.0.0",
+    "lint-staged": "^13.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1",
