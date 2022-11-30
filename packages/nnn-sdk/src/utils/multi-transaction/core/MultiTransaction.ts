@@ -25,6 +25,7 @@ import {Gas} from "../utils";
 
 /**
  * Helper class for creating transaction(s)
+ * Builder Pattern
  */
 export class MultiTransaction {
   transactions: Transaction[]
@@ -48,7 +49,7 @@ export class MultiTransaction {
     })
   }
 
-  nextTransaction(receiverId: string, signerId?: string) {
+  nextTransaction(receiverId: string, signerId?: string): MultiTransaction {
     return this.addTransaction({
       signerId,
       receiverId,
@@ -56,12 +57,12 @@ export class MultiTransaction {
     })
   }
 
-  addTransaction(...transaction: Transaction[]) {
+  addTransaction(...transaction: Transaction[]): MultiTransaction {
     this.transactions.push(...transaction)
     return this
   }
 
-  addAction(...action: Action[]): this {
+  addAction(...action: Action[]): MultiTransaction {
     this.transactions[this.currentIndex()].actions.push(...action)
     return this
   }
@@ -86,6 +87,10 @@ export class MultiTransaction {
     return [...this.transactions]
   }
 
+  extend(other: MultiTransaction): MultiTransaction {
+    return this.addTransaction(...other.toTransactions())
+  }
+
   // --------------------------------------Transform-------------------------------------------
 
   parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
@@ -102,30 +107,30 @@ export class MultiTransaction {
 
   // --------------------------------------Action-------------------------------------------
 
-  createAccount() {
+  createAccount(): MultiTransaction {
     return this.addAction(ActionFactory.createAccount())
   }
 
-  deleteAccount(beneficiaryId: string) {
+  deleteAccount(beneficiaryId: string): MultiTransaction {
     return this.addAction(ActionFactory.deleteAccount({beneficiaryId}))
   }
 
   addKey(
     publicKey: string,
     accessKey: AccessKey
-  ) {
+  ): MultiTransaction {
     return this.addAction(ActionFactory.addKey({publicKey, accessKey}))
   }
 
-  deleteKey(publicKey: string) {
+  deleteKey(publicKey: string): MultiTransaction {
     return  this.addAction(ActionFactory.deleteKey({publicKey}))
   }
 
-  deployContract(code: Uint8Array) {
+  deployContract(code: Uint8Array): MultiTransaction {
     return this.addAction(ActionFactory.deployContract({code}))
   }
 
-  stake(amount: string, publicKey: string) {
+  stake(amount: string, publicKey: string): MultiTransaction {
     return this.addAction(ActionFactory.stake({amount, publicKey}))
   }
 
@@ -134,7 +139,7 @@ export class MultiTransaction {
     args,
     attachedDeposit,
     gas
-  }: SpecificFunctionCallOptions<Args>) {
+  }: SpecificFunctionCallOptions<Args>): MultiTransaction {
     return this.addAction(ActionFactory.functionCall({
       methodName,
       args,
@@ -143,13 +148,13 @@ export class MultiTransaction {
     }))
   }
 
-  transfer(amount: string) {
+  transfer(amount: string): MultiTransaction {
     return this.addAction(ActionFactory.transfer({amount}))
   }
 
   // --------------------------------------NEP145-------------------------------------------
 
-  storage_deposit({args, attachedDeposit, gas}: FunctionCallOptions<StorageDepositArgs>) {
+  storage_deposit({args, attachedDeposit, gas}: FunctionCallOptions<StorageDepositArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'storage_deposit',
       args,
@@ -158,7 +163,7 @@ export class MultiTransaction {
     })
   }
 
-  storage_withdraw({args, gas}: FunctionCallOptions<StorageWithdrawArgs>) {
+  storage_withdraw({args, gas}: FunctionCallOptions<StorageWithdrawArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'storage_withdraw',
       args,
@@ -167,7 +172,7 @@ export class MultiTransaction {
     })
   }
 
-  storage_unregister({args, gas}: FunctionCallOptions<StorageUnregisterArgs>) {
+  storage_unregister({args, gas}: FunctionCallOptions<StorageUnregisterArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'storage_unregister',
       args,
@@ -178,7 +183,7 @@ export class MultiTransaction {
 
   // --------------------------------------NEP141-------------------------------------------
 
-  ft_transfer({args, gas}: FunctionCallOptions<FtTransferArgs>) {
+  ft_transfer({args, gas}: FunctionCallOptions<FtTransferArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'ft_transfer',
       args,
@@ -187,7 +192,7 @@ export class MultiTransaction {
     })
   }
 
-  ft_transfer_call({args, gas}: FunctionCallOptions<FtTransferCallArgs>) {
+  ft_transfer_call({args, gas}: FunctionCallOptions<FtTransferCallArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'ft_transfer_call',
       args,
@@ -198,7 +203,7 @@ export class MultiTransaction {
 
   // --------------------------------------NEP171-------------------------------------------
 
-  nft_transfer({args, gas}: FunctionCallOptions<NftTransferArgs>) {
+  nft_transfer({args, gas}: FunctionCallOptions<NftTransferArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'nft_transfer',
       args,
@@ -207,7 +212,7 @@ export class MultiTransaction {
     })
   }
 
-  nft_transfer_call({args, gas}: FunctionCallOptions<NftTransferCallArgs>) {
+  nft_transfer_call({args, gas}: FunctionCallOptions<NftTransferCallArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'nft_transfer_call',
       args,
@@ -216,7 +221,7 @@ export class MultiTransaction {
     })
   }
 
-  nft_approve({args, attachedDeposit, gas}: FunctionCallOptions<NftApproveArgs>) {
+  nft_approve({args, attachedDeposit, gas}: FunctionCallOptions<NftApproveArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'nft_approve',
       args,
@@ -225,7 +230,7 @@ export class MultiTransaction {
     })
   }
 
-  nft_revoke({args, gas}: FunctionCallOptions<NftRevokeArgs>) {
+  nft_revoke({args, gas}: FunctionCallOptions<NftRevokeArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'nft_revoke',
       args,
@@ -234,7 +239,7 @@ export class MultiTransaction {
     })
   }
 
-  nft_revoke_all({args, gas}: FunctionCallOptions<NftRevokeAllArgs>) {
+  nft_revoke_all({args, gas}: FunctionCallOptions<NftRevokeAllArgs>): MultiTransaction {
     return this.functionCall({
       methodName: 'nft_revoke_all',
       args,
