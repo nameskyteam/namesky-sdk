@@ -6,7 +6,7 @@ import Big from 'big.js';
 import { CreateOfferingOptions, GetAccountViewOfOptions } from '../types/options';
 
 export class MarketContract extends Contract {
-  // --------------------------------------------------view-------------------------------------------------------
+  // ------------------------------------------------- View -------------------------------------------------------
 
   async get_account_view_of({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView> {
     return this.selector.view({
@@ -17,7 +17,7 @@ export class MarketContract extends Contract {
     });
   }
 
-  // --------------------------------------------------call-------------------------------------------------------
+  // ------------------------------------------------- Call -------------------------------------------------------
 
   // We have two type of offers, Simple Offer & Pro Offer
   // If Simple Offer, user needs to deposit with the same price

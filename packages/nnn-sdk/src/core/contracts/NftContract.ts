@@ -5,7 +5,7 @@ import { NftRegisterArgs } from '../types/args';
 import { NftIsRegisteredOptions, NftRedeemOptions, NftRegisterOptions, NftTransferOptions } from '../types/options';
 
 export class NftContract extends Contract {
-  // --------------------------------------------------view-------------------------------------------------------
+  // ------------------------------------------------- View -------------------------------------------------------
 
   async nftIsRegistered({ args, blockQuery }: NftIsRegisteredOptions): Promise<string | null> {
     return this.selector.view({
@@ -16,7 +16,7 @@ export class NftContract extends Contract {
     });
   }
 
-  // --------------------------------------------------call-------------------------------------------------------
+  // -------------------------------------------------- Call -------------------------------------------------------
 
   // signed by registrant
   async nftRegister({ registrantId, args, gas, attachedDeposit }: NftRegisterOptions) {
