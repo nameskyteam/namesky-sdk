@@ -1,17 +1,17 @@
-import * as nearApiJs from "near-api-js";
-import * as nearWalletSelector from "@near-wallet-selector/core";
+import * as nearApiJs from 'near-api-js';
+import * as nearWalletSelector from '@near-wallet-selector/core';
 
 export interface NearApiJsTransactionLike {
-  receiverId: string,
-  actions: NearApiJsActionLike[]
+  receiverId: string;
+  actions: NearApiJsActionLike[];
 }
 
-export type NearApiJsActionLike = nearApiJs.transactions.Action
+export type NearApiJsActionLike = nearApiJs.transactions.Action;
 
 export interface NearWalletSelectorTransactionLike {
-  signerId?: string
-  receiverId: string
-  actions: NearWalletSelectorActionLike[]
+  signerId?: string;
+  receiverId: string;
+  actions: NearWalletSelectorActionLike[];
 }
 
-export type NearWalletSelectorActionLike = nearWalletSelector.Action
+export type NearWalletSelectorActionLike = nearWalletSelector.Action;

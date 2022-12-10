@@ -6,92 +6,92 @@ export type Action =
   | DeployContractAction
   | StakeAction
   | FunctionCallAction
-  | TransferAction
+  | TransferAction;
 
 export interface CreateAccountAction {
-  type: "CreateAccount"
-  params: CreateAccountParams
+  type: 'CreateAccount';
+  params: CreateAccountParams;
 }
 
 export interface DeleteAccountAction {
-  type: "DeleteAccount"
-  params: DeleteAccountParams
+  type: 'DeleteAccount';
+  params: DeleteAccountParams;
 }
 
 export interface AddKeyAction {
-  type: "AddKey"
-  params: AddKeyParams
+  type: 'AddKey';
+  params: AddKeyParams;
 }
 
 export interface DeleteKeyAction {
-  type: "DeleteKey"
-  params: DeleteKeyParams
+  type: 'DeleteKey';
+  params: DeleteKeyParams;
 }
 
 export interface DeployContractAction {
-  type: "DeployContract"
-  params: DeployContractParams
+  type: 'DeployContract';
+  params: DeployContractParams;
 }
 
 export interface StakeAction {
-  type: "Stake"
-  params: StakeParams
+  type: 'Stake';
+  params: StakeParams;
 }
 
 export interface FunctionCallAction {
-  type: "FunctionCall"
-  params: FunctionCallParams
+  type: 'FunctionCall';
+  params: FunctionCallParams;
 }
 
 export interface TransferAction {
-  type: "Transfer"
-  params: TransferParams
+  type: 'Transfer';
+  params: TransferParams;
 }
 
 export interface CreateAccountParams {}
 
 export interface DeleteAccountParams {
-  beneficiaryId: string
+  beneficiaryId: string;
 }
 
 export interface AddKeyParams {
-  publicKey: string
-  accessKey: AccessKey
+  publicKey: string;
+  accessKey: AccessKey;
 }
 
 export interface DeleteKeyParams {
-  publicKey: string
+  publicKey: string;
 }
 
 export interface DeployContractParams {
-  code: Uint8Array
+  code: Uint8Array;
 }
 
 export interface StakeParams {
-  amount: string
-  publicKey: string
+  amount: string;
+  publicKey: string;
 }
 
 export interface FunctionCallParams {
-  methodName: string
-  args: object
-  attachedDeposit: string
-  gas: string
+  methodName: string;
+  args: object;
+  attachedDeposit: string;
+  gas: string;
 }
 
 export interface TransferParams {
-  amount: string
+  amount: string;
 }
 
 export interface AccessKey {
-  permission: AccessKeyPermission,
-  nonce?: number
+  permission: AccessKeyPermission;
+  nonce?: number;
 }
 
-export type AccessKeyPermission = 'FullAccess' | FunctionCallAccess
+export type AccessKeyPermission = 'FullAccess' | FunctionCallAccess;
 
 export interface FunctionCallAccess {
-  receiverId: string
-  methodNames: string[]
-  allowance?: string
+  receiverId: string;
+  methodNames: string[];
+  allowance?: string;
 }

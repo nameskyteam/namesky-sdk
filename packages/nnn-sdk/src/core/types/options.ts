@@ -1,13 +1,13 @@
-import { FunctionCallOptions, NftTransferArgs } from "../../utils";
-import { CreateOfferingArgs, NftRedeemArgs, NftRegisterArgs } from "./args";
-import { Optional } from "@near-wallet-selector/core";
+import { FunctionCallOptions, FunctionViewOptions, NftTransferArgs } from '../../utils';
+import { CreateOfferingArgs, GetAccountViewOfArgs, NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs } from './args';
+import { Optional } from '@near-wallet-selector/core';
 
-interface CommonOptions {
+// ================================================ Call =======================================================
+type FunctionCallOptionsWithoutArgs = Omit<FunctionCallOptions<any>, 'args'> & {
   callbackUrl?: string;
-}
+};
 
-// ----------------------------------------------Controller---------------------------------------------------------
-
+// ---------------------------------------------- Controller ---------------------------------------------------
 export interface SetupControllerOptions {
   registrantId: string;
   code: Buffer;
@@ -15,23 +15,39 @@ export interface SetupControllerOptions {
   gasForInit?: string;
 }
 
-// ------------------------------------------------Nft-------------------------------------------------------------
+// ------------------------------------------------ Nft --------------------------------------------------------
+export interface NftRegisterOptions extends FunctionCallOptionsWithoutArgs {
+  registrantId: string;
+  args?: Optional<NftRegisterArgs, 'minter_id'>;
+}
 
-export interface NftRegisterOptions
-  extends FunctionCallOptions<Optional<NftRegisterArgs, "minter_id">> {
+export interface NftRedeemOptions extends FunctionCallOptionsWithoutArgs {
+  args: NftRedeemArgs;
+}
+
+export interface NftTransferOptions extends FunctionCallOptionsWithoutArgs {
+  args: NftTransferArgs;
+}
+
+// ------------------------------------------------ Market -----------------------------------------------------
+export interface CreateOfferingOptions extends FunctionCallOptionsWithoutArgs {
+  args: CreateOfferingArgs;
+}
+
+// ================================================ View =======================================================
+type FunctionViewOptionsWithoutArgs = Omit<FunctionViewOptions<any>, 'args'>;
+
+// ---------------------------------------------- Controller ---------------------------------------------------
+export interface GetControllerOwnerIdOptions extends FunctionViewOptionsWithoutArgs {
   registrantId: string;
 }
 
-export interface NftRedeemOptions
-  extends FunctionCallOptions<NftRedeemArgs>,
-    CommonOptions {}
+// ------------------------------------------------ Nft --------------------------------------------------------
+export interface NftIsRegisteredOptions extends FunctionViewOptionsWithoutArgs {
+  args: NftIsRegisteredArgs;
+}
 
-export interface NftTransferOptions
-  extends FunctionCallOptions<NftTransferArgs>,
-    CommonOptions {}
-
-// ------------------------------------------------Market---------------------------------------------------------
-
-export interface CreateOfferingOptions
-  extends FunctionCallOptions<CreateOfferingArgs>,
-    CommonOptions {}
+// ------------------------------------------------ Market -----------------------------------------------------
+export interface GetAccountViewOfOptions extends FunctionViewOptionsWithoutArgs {
+  args: GetAccountViewOfArgs;
+}

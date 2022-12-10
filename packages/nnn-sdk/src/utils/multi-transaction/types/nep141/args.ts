@@ -1,15 +1,15 @@
 export interface FtTransferArgs {
-  receiver_id: string
-  amount: string
-  memo?: string
+  receiver_id: string;
+  amount: string;
+  memo?: string;
 }
 
 export interface FtTransferCallArgs extends FtTransferArgs {
-  msg: string
+  msg: string;
 }
 
 export interface FtBalanceOfArgs {
-  account_id: string
+  account_id: string;
 }
 
 export interface FtTotalSupplyArgs {}

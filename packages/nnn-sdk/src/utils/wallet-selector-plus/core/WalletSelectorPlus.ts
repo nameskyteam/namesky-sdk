@@ -1,24 +1,22 @@
-import { setupWalletSelector } from "@near-wallet-selector/core";
-import { resolveNetwork, setupWalletModules } from "../utils";
-import { InMemorySigner, keyStores, Near } from "near-api-js";
-import { WalletSelectorPlusConfig, WalletSelectorPlus } from "../types";
-import { BrowserLocalStorageKeyStore } from "near-api-js/lib/key_stores";
+import { setupWalletSelector } from '@near-wallet-selector/core';
+import { resolveNetwork, setupWalletModules } from '../utils';
+import { InMemorySigner, keyStores, Near } from 'near-api-js';
+import { WalletSelectorPlusConfig, WalletSelectorPlus } from '../types';
+import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
 import {
   BaseArgs,
   MultiTransaction,
   SpecificFunctionViewOptions,
   throwReceiptsErrorIfAny,
-} from "../../multi-transaction";
-import { parseOutcomeValue } from "../../multi-transaction";
-import { MultiSendAccount } from "../../multi-send-account";
-import { FinalExecutionOutcome } from "near-api-js/lib/providers";
-import { WalletSelectorPlusSendOptions } from "../types";
+} from '../../multi-transaction';
+import { parseOutcomeValue } from '../../multi-transaction';
+import { MultiSendAccount } from '../../multi-send-account';
+import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
+import { WalletSelectorPlusSendOptions } from '../types';
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;
 
-export async function setupWalletSelectorPlus(
-  config: WalletSelectorPlusConfig
-): Promise<WalletSelectorPlus> {
+export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig): Promise<WalletSelectorPlus> {
   if (!walletSelectorPlus) {
     const selector = await setupWalletSelector({
       ...config,
@@ -27,10 +25,7 @@ export async function setupWalletSelectorPlus(
 
     const near = new Near({
       ...resolveNetwork(config.network),
-      keyStore: new keyStores.BrowserLocalStorageKeyStore(
-        localStorage,
-        config.keyStorePrefix
-      ),
+      keyStore: new keyStores.BrowserLocalStorageKeyStore(localStorage, config.keyStorePrefix),
     });
 
     walletSelectorPlus = {
@@ -38,39 +33,28 @@ export async function setupWalletSelectorPlus(
       near,
 
       getActiveAccountId(): string | undefined {
-        return this.store
-          .getState()
-          .accounts.find((accountState) => accountState.active)?.accountId;
+        return this.store.getState().accounts.find((accountState) => accountState.active)?.accountId;
       },
 
       getAccountIds(): string[] {
-        return this.store
-          .getState()
-          .accounts.map((accountState) => accountState.accountId);
+        return this.store.getState().accounts.map((accountState) => accountState.accountId);
       },
 
       keyStore(): BrowserLocalStorageKeyStore {
-        return (this.near.connection.signer as InMemorySigner)
-          .keyStore as BrowserLocalStorageKeyStore;
+        return (this.near.connection.signer as InMemorySigner).keyStore as BrowserLocalStorageKeyStore;
       },
 
       multiSendAccount(accountId: string): MultiSendAccount {
         return new MultiSendAccount(this.near.connection, accountId);
       },
 
-      async view<Value, Args extends BaseArgs>(
-        options: SpecificFunctionViewOptions<Args>
-      ): Promise<Value> {
-        return this.multiSendAccount("").view(options);
+      async view<Value, Args extends BaseArgs>(options: SpecificFunctionViewOptions<Args>): Promise<Value> {
+        return this.multiSendAccount('').view(options);
       },
 
-      async send<Value>(
-        transaction: MultiTransaction,
-        options?: WalletSelectorPlusSendOptions
-      ): Promise<Value> {
+      async send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions): Promise<Value> {
         const wallet = await this.wallet(options?.walletId);
-        const nearWalletSelectorTransactions =
-          transaction.parseNearWalletSelectorTransactions();
+        const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions();
         let outcomes: FinalExecutionOutcome[];
         if (transaction.isMultiple()) {
           outcomes = (await wallet.signAndSendTransactions({
@@ -90,10 +74,7 @@ export async function setupWalletSelectorPlus(
         return parseOutcomeValue(outcomes.pop()!);
       },
 
-      async sendWithLocalKey<Value>(
-        signerID: string,
-        transaction: MultiTransaction
-      ): Promise<Value> {
+      async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
         return this.multiSendAccount(signerID).send(transaction);
       },
     };

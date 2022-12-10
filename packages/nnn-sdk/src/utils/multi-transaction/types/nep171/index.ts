@@ -1,2 +1,2 @@
-export * from "./args"
-export * from "./data"
+export * from './args';
+export * from './data';

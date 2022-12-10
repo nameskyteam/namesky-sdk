@@ -1,9 +1,9 @@
 export interface StorageBalance {
-  total: string
-  available: string
+  total: string;
+  available: string;
 }
 
 export interface StorageBalanceBounds {
-  min: string,
-  max?: string
+  min: string;
+  max?: string;
 }

@@ -1,11 +1,11 @@
-import {WalletSelectorPlus} from "./wallet-selector-plus";
+import { WalletSelectorPlus } from './wallet-selector-plus';
 
 export class Contract {
-  contractId: string
-  selector: WalletSelectorPlus
+  contractId: string;
+  selector: WalletSelectorPlus;
 
   constructor(contractId: string, selector: WalletSelectorPlus) {
-    this.contractId = contractId
-    this.selector = selector
+    this.contractId = contractId;
+    this.selector = selector;
   }
 }

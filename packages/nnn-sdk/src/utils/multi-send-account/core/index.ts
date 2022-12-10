@@ -1,1 +1,1 @@
-export * from "./MultiSendAccount"
+export * from './MultiSendAccount';

@@ -1,62 +1,42 @@
-import { Contract } from "../../utils/Contract";
-import {
-  DEFAULT_MINT_FEE,
-  MultiTransaction,
-  FunctionViewOptions
-} from "../../utils";
-import { Amount } from "../../utils";
-import { NftIsRegisteredArgs, NftRegisterArgs } from "../types/args";
-import {
-  NftRedeemOptions,
-  NftRegisterOptions,
-  NftTransferOptions
-} from "../types/options";
+import { Contract } from '../../utils/Contract';
+import { DEFAULT_MINT_FEE, MultiTransaction } from '../../utils';
+import { Amount } from '../../utils';
+import { NftRegisterArgs } from '../types/args';
+import { NftIsRegisteredOptions, NftRedeemOptions, NftRegisterOptions, NftTransferOptions } from '../types/options';
 
 export class NftContract extends Contract {
   // --------------------------------------------------view-------------------------------------------------------
 
-  async nftIsRegistered({
-    args
-  }: FunctionViewOptions<NftIsRegisteredArgs>): Promise<string | null> {
+  async nftIsRegistered({ args, blockQuery }: NftIsRegisteredOptions): Promise<string | null> {
     return this.selector.view({
       contractId: this.contractId,
-      methodName: "nft_is_registered",
-      args
+      methodName: 'nft_is_registered',
+      args,
+      blockQuery,
     });
   }
 
   // --------------------------------------------------call-------------------------------------------------------
 
   // signed by registrant
-  async nftRegister({
-    registrantId,
-    args,
-    gas,
-    attachedDeposit
-  }: NftRegisterOptions) {
-    const transaction = new MultiTransaction(this.contractId).functionCall<
-      NftRegisterArgs
-    >({
-      methodName: "nft_register",
+  async nftRegister({ registrantId, args, gas, attachedDeposit }: NftRegisterOptions) {
+    const transaction = new MultiTransaction(this.contractId).functionCall<NftRegisterArgs>({
+      methodName: 'nft_register',
       args: {
-        minter_id: args.minter_id ?? this.selector.getActiveAccountId()!
+        minter_id: args?.minter_id ?? this.selector.getActiveAccountId()!,
       },
       attachedDeposit: attachedDeposit ?? DEFAULT_MINT_FEE,
-      gas
+      gas,
     });
     await this.selector.sendWithLocalKey(registrantId, transaction);
   }
 
-  async nftRedeem({
-    args,
-    gas,
-    callbackUrl
-  }: NftRedeemOptions): Promise<boolean> {
+  async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
     const transaction = new MultiTransaction(this.contractId).functionCall({
-      methodName: "nft_redeem",
+      methodName: 'nft_redeem',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
-      gas
+      gas,
     });
     return this.selector.send(transaction, { callbackUrl });
   }
@@ -64,7 +44,7 @@ export class NftContract extends Contract {
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
     const transaction = new MultiTransaction(this.contractId).nft_transfer({
       args,
-      gas
+      gas,
     });
     await this.selector.send(transaction, { callbackUrl });
   }

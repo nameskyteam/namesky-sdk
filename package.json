@@ -52,5 +52,10 @@
     "moduleDirectories": [
       "node_modules"
     ]
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "printWidth": 120
   }
 }
