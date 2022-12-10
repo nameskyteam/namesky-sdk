@@ -73,17 +73,16 @@ export async function setupWalletSelectorPlus(
           transaction.parseNearWalletSelectorTransactions();
         let outcomes: FinalExecutionOutcome[];
         if (transaction.isMultiple()) {
-          const res = await wallet.signAndSendTransactions({
+          outcomes = (await wallet.signAndSendTransactions({
             transactions: nearWalletSelectorTransactions,
             callbackUrl: options?.callbackUrl,
-          });
-          outcomes = res as FinalExecutionOutcome[];
+          })) as FinalExecutionOutcome[];
         } else {
-          const res = await wallet.signAndSendTransaction({
+          const outcome = (await wallet.signAndSendTransaction({
             ...nearWalletSelectorTransactions[0],
             callbackUrl: options?.callbackUrl,
-          });
-          outcomes = [res as FinalExecutionOutcome];
+          })) as FinalExecutionOutcome;
+          outcomes = [outcome];
         }
         if (options?.throwReceiptsErrorIfAny) {
           outcomes.forEach((outcome) => throwReceiptsErrorIfAny(outcome));
