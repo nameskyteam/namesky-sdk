@@ -44,7 +44,10 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
       },
 
       async view<Value, Args extends BaseArgs>(options: FunctionViewOptions<Args>): Promise<Value> {
-        return this.multiSendAccount('').view(options);
+        if (!this.viewer) {
+          this.viewer = this.multiSendAccount('');
+        }
+        return this.viewer.view<Value, Args>(options);
       },
 
       async send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions): Promise<Value> {
@@ -66,11 +69,11 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         if (options?.throwReceiptsErrorIfAny) {
           outcomes.forEach((outcome) => throwReceiptsErrorIfAny(outcome));
         }
-        return parseOutcomeValue(outcomes.pop()!);
+        return parseOutcomeValue<Value>(outcomes.pop()!);
       },
 
       async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
-        return this.multiSendAccount(signerID).send(transaction);
+        return this.multiSendAccount(signerID).send<Value>(transaction);
       },
     };
   }

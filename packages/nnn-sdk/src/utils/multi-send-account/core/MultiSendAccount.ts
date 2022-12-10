@@ -50,6 +50,6 @@ export class MultiSendAccount extends Account {
     if (options?.throwReceiptsErrorIfAny) {
       outcomes.forEach((outcome) => throwReceiptsErrorIfAny(outcome));
     }
-    return parseOutcomeValue(outcomes.pop()!);
+    return parseOutcomeValue<Value>(outcomes.pop()!);
   }
 }

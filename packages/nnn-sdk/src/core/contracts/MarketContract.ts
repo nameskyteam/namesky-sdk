@@ -1,5 +1,4 @@
 import { Contract } from '../../utils/Contract';
-import { NearDepositArgs } from '../types/args';
 import { Amount, DEFAULT_STORAGE_DEPOSIT, MultiTransaction, bigMax } from '../../utils';
 import { AccountView } from '../types/data';
 import Big from 'big.js';
@@ -51,7 +50,7 @@ export class MarketContract extends Contract {
 
       if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
-        transaction.functionCall<NearDepositArgs>({
+        transaction.functionCall({
           methodName: 'near_deposit',
           args: {},
           attachedDeposit: insufficientBalance.toFixed(),

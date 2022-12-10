@@ -34,7 +34,3 @@ export interface CreateOfferingArgs {
 export interface GetAccountViewOfArgs {
   account_id: string;
 }
-
-export interface NearDepositArgs {
-  account_id?: string;
-}
