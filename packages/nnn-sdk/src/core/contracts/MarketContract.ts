@@ -26,7 +26,6 @@ export class MarketContract extends Contract {
     const transaction = new MultiTransaction(this.contractId)
       // first user needs to deposit for storage of new offer
       .storage_deposit({
-        args: {},
         attachedDeposit: attachedDeposit ?? DEFAULT_STORAGE_DEPOSIT,
       });
 
