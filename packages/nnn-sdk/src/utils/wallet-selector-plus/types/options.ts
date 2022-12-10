@@ -1,4 +1,5 @@
-export interface SendOptions {
-  walletId?: string
-  callbackUrl?: string
+export interface WalletSelectorPlusSendOptions {
+  walletId?: string;
+  callbackUrl?: string;
+  throwReceiptsErrorIfAny?: boolean;
 }

@@ -1,5 +1,9 @@
-import {NearApiJsTransactionLike} from "../../multi-transaction";
+import { NearApiJsTransactionLike } from "../../multi-transaction";
 
 export interface SignAndSendTransactionsOptions {
-  transactions: NearApiJsTransactionLike[]
+  transactions: NearApiJsTransactionLike[];
+}
+
+export interface MultiSendAccountSendOptions {
+  throwReceiptsErrorIfAny?: boolean;
 }
