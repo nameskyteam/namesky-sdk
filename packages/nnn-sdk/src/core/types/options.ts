@@ -1,11 +1,14 @@
-import { FunctionCallOptions, FunctionViewOptions, NftTransferArgs } from '../../utils';
+import { NftTransferArgs } from '../../utils';
 import { CreateOfferingArgs, GetAccountViewOfArgs, NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs } from './args';
 import { Optional } from '@near-wallet-selector/core';
+import { BlockReference } from 'near-api-js/lib/providers/provider';
 
 // ================================================ Call =======================================================
-type FunctionCallOptionsWithoutArgs = Omit<FunctionCallOptions<any>, 'args'> & {
+interface FunctionCallOptionsWithoutArgs {
+  attachedDeposit?: string;
+  gas?: string;
   callbackUrl?: string;
-};
+}
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface SetupControllerOptions {
@@ -35,7 +38,9 @@ export interface CreateOfferingOptions extends FunctionCallOptionsWithoutArgs {
 }
 
 // ================================================ View =======================================================
-type FunctionViewOptionsWithoutArgs = Omit<FunctionViewOptions<any>, 'args'>;
+interface FunctionViewOptionsWithoutArgs {
+  blockQuery?: BlockReference;
+}
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface GetControllerOwnerIdOptions extends FunctionViewOptionsWithoutArgs {

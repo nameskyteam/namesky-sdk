@@ -3,7 +3,7 @@ import { WalletSelector } from '@near-wallet-selector/core';
 import { Near } from 'near-api-js';
 import { WalletSelectorPlusSendOptions } from './options';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { BaseArgs, MultiTransaction, SpecificFunctionViewOptions } from '../../multi-transaction';
+import { BaseArgs, FunctionViewOptions, MultiTransaction } from '../../multi-transaction';
 import { MultiSendAccount } from '../../multi-send-account';
 
 export interface WalletSelectorEnhancement {
@@ -17,7 +17,7 @@ export interface WalletSelectorEnhancement {
     methodName,
     args,
     blockQuery,
-  }: SpecificFunctionViewOptions<Args>): Promise<Value>;
+  }: FunctionViewOptions<Args>): Promise<Value>;
   send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions): Promise<Value>;
   sendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value>;
 }

@@ -1,9 +1,9 @@
 import { Account } from 'near-api-js';
 import {
   BaseArgs,
+  FunctionViewOptions,
   MultiTransaction,
   parseOutcomeValue,
-  SpecificFunctionViewOptions,
   throwReceiptsErrorIfAny,
 } from '../../multi-transaction';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
@@ -34,7 +34,7 @@ export class MultiSendAccount extends Account {
     methodName,
     args,
     blockQuery,
-  }: SpecificFunctionViewOptions<Args>): Promise<Value> {
+  }: FunctionViewOptions<Args>): Promise<Value> {
     return this.viewFunction({
       contractId,
       methodName,
