@@ -1,12 +1,10 @@
-import { NftTransferArgs } from '../../utils';
+import { ArgsOptions, AttachedDepositOptions, GasOptions, NftTransferArgs, RequiredArgsOptions } from '../../utils';
 import { CreateOfferingArgs, GetAccountViewOfArgs, NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs } from './args';
 import { Optional } from '@near-wallet-selector/core';
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 
 // ================================================ Call =======================================================
-interface FunctionCallOptionsWithoutArgs {
-  attachedDeposit?: string;
-  gas?: string;
+interface FunctionCallExtraOptions {
   callbackUrl?: string;
 }
 
@@ -19,40 +17,45 @@ export interface SetupControllerOptions {
 }
 
 // ------------------------------------------------ Nft --------------------------------------------------------
-export interface NftRegisterOptions extends FunctionCallOptionsWithoutArgs {
+export interface NftRegisterOptions
+  extends ArgsOptions<Optional<NftRegisterArgs, 'minter_id'>>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {
   registrantId: string;
-  args?: Optional<NftRegisterArgs, 'minter_id'>;
 }
 
-export interface NftRedeemOptions extends FunctionCallOptionsWithoutArgs {
-  args: NftRedeemArgs;
-}
+export interface NftRedeemOptions
+  extends RequiredArgsOptions<NftRedeemArgs>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {}
 
-export interface NftTransferOptions extends FunctionCallOptionsWithoutArgs {
-  args: NftTransferArgs;
-}
+export interface NftTransferOptions
+  extends RequiredArgsOptions<NftTransferArgs>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {}
 
 // ------------------------------------------------ Market -----------------------------------------------------
-export interface CreateOfferingOptions extends FunctionCallOptionsWithoutArgs {
-  args: CreateOfferingArgs;
-}
+export interface CreateOfferingOptions
+  extends RequiredArgsOptions<CreateOfferingArgs>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {}
 
 // ================================================ View =======================================================
-interface FunctionViewOptionsWithoutArgs {
+interface FunctionViewExtraOptions {
   blockQuery?: BlockReference;
 }
 
 // ---------------------------------------------- Controller ---------------------------------------------------
-export interface GetControllerOwnerIdOptions extends FunctionViewOptionsWithoutArgs {
+export interface GetControllerOwnerIdOptions extends FunctionViewExtraOptions {
   registrantId: string;
 }
 
 // ------------------------------------------------ Nft --------------------------------------------------------
-export interface NftIsRegisteredOptions extends FunctionViewOptionsWithoutArgs {
-  args: NftIsRegisteredArgs;
-}
+export interface NftIsRegisteredOptions extends RequiredArgsOptions<NftIsRegisteredArgs>, FunctionViewExtraOptions {}
 
 // ------------------------------------------------ Market -----------------------------------------------------
-export interface GetAccountViewOfOptions extends FunctionViewOptionsWithoutArgs {
-  args: GetAccountViewOfArgs;
-}
+export interface GetAccountViewOfOptions extends RequiredArgsOptions<GetAccountViewOfArgs>, FunctionViewExtraOptions {}
