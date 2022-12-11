@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "ES2015",
+    "lib": ["DOM"],
     "importHelpers": true,
     // output .d.ts declaration files for consumers
     "declaration": true,
