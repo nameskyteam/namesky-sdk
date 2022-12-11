@@ -1,9 +1,9 @@
 import { FtTransferArgs, FtTransferCallArgs } from './args';
-import { AttachedDepositOptions, GasOptions, RequiredArgsOptions } from '../options';
+import { AttachedDepositOptions, GasOptions, ArgsOptions } from '../options';
 
-export interface FtTransferOptions extends RequiredArgsOptions<FtTransferArgs>, AttachedDepositOptions, GasOptions {}
+export interface FtTransferOptions extends Required<ArgsOptions<FtTransferArgs>>, AttachedDepositOptions, GasOptions {}
 
 export interface FtTransferCallOptions
-  extends RequiredArgsOptions<FtTransferCallArgs>,
+  extends Required<ArgsOptions<FtTransferCallArgs>>,
     AttachedDepositOptions,
     GasOptions {}

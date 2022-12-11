@@ -21,11 +21,11 @@ export class MarketContract extends Contract {
   // We have two type of offers, Simple Offer & Pro Offer
   // If Simple Offer, user needs to deposit with the same price
   // If Pro Offer, we recommend user to deposit insufficient balance
-  async createOffering({ args, gas, attachedDeposit, callbackUrl }: CreateOfferingOptions) {
+  async createOffering({ args, gas, storageDeposit, callbackUrl }: CreateOfferingOptions) {
     const transaction = new MultiTransaction(this.contractId)
       // first user needs to deposit for storage of new offer
       .storage_deposit({
-        attachedDeposit: attachedDeposit ?? DEFAULT_STORAGE_DEPOSIT,
+        attachedDeposit: storageDeposit ?? DEFAULT_STORAGE_DEPOSIT,
       });
 
     // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions

@@ -1,6 +1,5 @@
-import { ArgsOptions, AttachedDepositOptions, GasOptions, NftTransferArgs, RequiredArgsOptions } from '../../utils';
+import { ArgsOptions, AttachedDepositOptions, EmptyArgs, GasOptions, NftTransferArgs } from '../../utils';
 import { CreateOfferingArgs, GetAccountViewOfArgs, NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs } from './args';
-import { Optional } from '@near-wallet-selector/core';
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 
 // ================================================ Call =======================================================
@@ -8,7 +7,7 @@ interface FunctionCallExtraOptions {
   callbackUrl?: string;
 }
 
-interface AttachedDepositAndGasOptions extends AttachedDepositOptions, GasOptions {}
+type RequiredArgsOptions<Args extends EmptyArgs> = Required<ArgsOptions<Args>>;
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface SetupControllerOptions {
@@ -19,27 +18,24 @@ export interface SetupControllerOptions {
 }
 
 // ------------------------------------------------ Nft --------------------------------------------------------
-export interface NftRegisterOptions
-  extends ArgsOptions<Optional<NftRegisterArgs, 'minter_id'>>,
-    AttachedDepositAndGasOptions {
+export interface NftRegisterOptions extends RequiredArgsOptions<NftRegisterArgs>, AttachedDepositOptions, GasOptions {
   registrantId: string;
 }
 
-export interface NftRedeemOptions
-  extends RequiredArgsOptions<NftRedeemArgs>,
-    AttachedDepositAndGasOptions,
-    FunctionCallExtraOptions {}
+export interface NftRedeemOptions extends RequiredArgsOptions<NftRedeemArgs>, GasOptions, FunctionCallExtraOptions {}
 
 export interface NftTransferOptions
   extends RequiredArgsOptions<NftTransferArgs>,
-    AttachedDepositAndGasOptions,
+    GasOptions,
     FunctionCallExtraOptions {}
 
 // ------------------------------------------------ Market -----------------------------------------------------
 export interface CreateOfferingOptions
   extends RequiredArgsOptions<CreateOfferingArgs>,
-    AttachedDepositAndGasOptions,
-    FunctionCallExtraOptions {}
+    GasOptions,
+    FunctionCallExtraOptions {
+  storageDeposit: string;
+}
 
 // ================================================ View =======================================================
 interface FunctionViewExtraOptions {

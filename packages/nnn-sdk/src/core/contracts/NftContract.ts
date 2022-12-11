@@ -22,9 +22,7 @@ export class NftContract extends Contract {
   async nftRegister({ registrantId, args, gas, attachedDeposit }: NftRegisterOptions) {
     const transaction = new MultiTransaction(this.contractId).functionCall<NftRegisterArgs>({
       methodName: 'nft_register',
-      args: {
-        minter_id: args?.minter_id ?? this.selector.getActiveAccountId()!,
-      },
+      args,
       attachedDeposit: attachedDeposit ?? DEFAULT_MINT_FEE,
       gas,
     });

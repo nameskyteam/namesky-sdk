@@ -44,7 +44,9 @@ export const App = () => {
   const register = async () => {
     await nearService!.nnn.nftContract.nftRegister({
       registrantId: 'cool8.testnet',
-      args: {}
+      args: {
+        minter_id: nearService!.selector.getActiveAccountId()!
+      }
     })
   }
 
