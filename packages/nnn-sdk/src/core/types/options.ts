@@ -8,6 +8,8 @@ interface FunctionCallExtraOptions {
   callbackUrl?: string;
 }
 
+interface AttachedDepositAndGasOptions extends AttachedDepositOptions, GasOptions {}
+
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface SetupControllerOptions {
   registrantId: string;
@@ -19,29 +21,24 @@ export interface SetupControllerOptions {
 // ------------------------------------------------ Nft --------------------------------------------------------
 export interface NftRegisterOptions
   extends ArgsOptions<Optional<NftRegisterArgs, 'minter_id'>>,
-    AttachedDepositOptions,
-    GasOptions,
-    FunctionCallExtraOptions {
+    AttachedDepositAndGasOptions {
   registrantId: string;
 }
 
 export interface NftRedeemOptions
   extends RequiredArgsOptions<NftRedeemArgs>,
-    AttachedDepositOptions,
-    GasOptions,
+    AttachedDepositAndGasOptions,
     FunctionCallExtraOptions {}
 
 export interface NftTransferOptions
   extends RequiredArgsOptions<NftTransferArgs>,
-    AttachedDepositOptions,
-    GasOptions,
+    AttachedDepositAndGasOptions,
     FunctionCallExtraOptions {}
 
 // ------------------------------------------------ Market -----------------------------------------------------
 export interface CreateOfferingOptions
   extends RequiredArgsOptions<CreateOfferingArgs>,
-    AttachedDepositOptions,
-    GasOptions,
+    AttachedDepositAndGasOptions,
     FunctionCallExtraOptions {}
 
 // ================================================ View =======================================================

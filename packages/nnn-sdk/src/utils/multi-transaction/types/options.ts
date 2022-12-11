@@ -14,11 +14,10 @@ export type FunctionViewOptions<Args extends EmptyArgs> = Pick<FunctionCallOptio
   blockQuery?: BlockReference;
 };
 
-export type AttachedDepositOptions = Pick<FunctionCallOptions<any>, 'attachedDeposit'>;
-export type RequiredAttachedDepositOptions = Required<AttachedDepositOptions>;
-
-export type GasOptions = Pick<FunctionCallOptions<any>, 'gas'>;
-export type RequiredGasOptions = Required<GasOptions>;
-
 export type ArgsOptions<Args extends EmptyArgs> = Pick<FunctionCallOptions<Args>, 'args'>;
+export type AttachedDepositOptions = Pick<FunctionCallOptions<any>, 'attachedDeposit'>;
+export type GasOptions = Pick<FunctionCallOptions<any>, 'gas'>;
+
 export type RequiredArgsOptions<Args extends EmptyArgs> = Required<ArgsOptions<Args>>;
+export type RequiredAttachedDepositOptions = Required<AttachedDepositOptions>;
+export type RequiredGasOptions = Required<GasOptions>;
