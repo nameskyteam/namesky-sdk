@@ -2,16 +2,18 @@ import { StorageDepositArgs, StorageUnregisterArgs, StorageWithdrawArgs } from '
 
 export interface StorageDepositOptions {
   args?: StorageDepositArgs;
-  attachedDeposit: string;
+  attachedDeposit?: string;
   gas?: string;
 }
 
 export interface StorageWithdrawOptions {
   args?: StorageWithdrawArgs;
+  attachedDeposit?: string;
   gas?: string;
 }
 
 export interface StorageUnregisterOptions {
   args?: StorageUnregisterArgs;
+  attachedDeposit?: string;
   gas?: string;
 }

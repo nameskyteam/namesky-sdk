@@ -25,7 +25,7 @@ import {
   NftRevokeAllOptions,
 } from '../types';
 import { ActionFactory } from './ActionFactory';
-import { BaseArgs } from '../types';
+import { EmptyArgs } from '../types';
 import { AccessKey, Action } from '../types';
 import { parseNearApiJsTransaction, parseNearWalletSelectorTransaction } from '../utils';
 import { Amount } from '../utils';
@@ -99,7 +99,7 @@ export class MultiTransaction {
     return this.addTransaction(...other.toTransactions());
   }
 
-  // --------------------------------------Transform-------------------------------------------
+  // ------------------------------------------- Transform -------------------------------------------------
 
   parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
     return this.toTransactions().map((transaction) => {
@@ -113,7 +113,7 @@ export class MultiTransaction {
     });
   }
 
-  // --------------------------------------Action-------------------------------------------
+  // -------------------------------------------- Action ---------------------------------------------------
 
   createAccount(): MultiTransaction {
     return this.addAction(ActionFactory.createAccount());
@@ -139,7 +139,7 @@ export class MultiTransaction {
     return this.addAction(ActionFactory.stake({ amount, publicKey }));
   }
 
-  functionCall<Args extends BaseArgs>({
+  functionCall<Args extends EmptyArgs>({
     methodName,
     args,
     attachedDeposit,
@@ -148,7 +148,7 @@ export class MultiTransaction {
     return this.addAction(
       ActionFactory.functionCall({
         methodName,
-        args,
+        args: args ?? {},
         attachedDeposit: attachedDeposit ?? Amount.ZERO,
         gas: gas ?? Gas.DEFAULT,
       })
@@ -163,64 +163,64 @@ export class MultiTransaction {
   storage_deposit({ args, attachedDeposit, gas }: StorageDepositOptions): MultiTransaction {
     return this.functionCall<StorageDepositArgs>({
       methodName: 'storage_deposit',
-      args: args ?? {},
-      attachedDeposit,
+      args,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }
 
-  storage_withdraw({ args, gas }: StorageWithdrawOptions): MultiTransaction {
+  storage_withdraw({ args, gas, attachedDeposit }: StorageWithdrawOptions): MultiTransaction {
     return this.functionCall<StorageWithdrawArgs>({
       methodName: 'storage_withdraw',
-      args: args ?? {},
-      attachedDeposit: Amount.ONE_YOCTO,
+      args,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }
 
-  storage_unregister({ args, gas }: StorageUnregisterOptions): MultiTransaction {
+  storage_unregister({ args, gas, attachedDeposit }: StorageUnregisterOptions): MultiTransaction {
     return this.functionCall<StorageUnregisterArgs>({
       methodName: 'storage_unregister',
-      args: args ?? {},
-      attachedDeposit: Amount.ONE_YOCTO,
+      args,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }
 
   // --------------------------------------------- NEP141 --------------------------------------------------
-  ft_transfer({ args, gas }: FtTransferOptions): MultiTransaction {
+  ft_transfer({ args, gas, attachedDeposit }: FtTransferOptions): MultiTransaction {
     return this.functionCall<FtTransferArgs>({
       methodName: 'ft_transfer',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }
 
-  ft_transfer_call({ args, gas }: FtTransferCallOptions): MultiTransaction {
+  ft_transfer_call({ args, gas, attachedDeposit }: FtTransferCallOptions): MultiTransaction {
     return this.functionCall<FtTransferCallArgs>({
       methodName: 'ft_transfer_call',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas: gas ?? Gas.tera(50),
     });
   }
 
   // --------------------------------------------- NEP171 --------------------------------------------------
-  nft_transfer({ args, gas }: NftTransferOptions): MultiTransaction {
+  nft_transfer({ args, gas, attachedDeposit }: NftTransferOptions): MultiTransaction {
     return this.functionCall<NftTransferArgs>({
       methodName: 'nft_transfer',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }
 
-  nft_transfer_call({ args, gas }: NftTransferCallOptions): MultiTransaction {
+  nft_transfer_call({ args, gas, attachedDeposit }: NftTransferCallOptions): MultiTransaction {
     return this.functionCall<NftTransferCallArgs>({
       methodName: 'nft_transfer_call',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas: gas ?? Gas.tera(50),
     });
   }
@@ -229,25 +229,25 @@ export class MultiTransaction {
     return this.functionCall<NftApproveArgs>({
       methodName: 'nft_approve',
       args,
-      attachedDeposit,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }
 
-  nft_revoke({ args, gas }: NftRevokeOptions): MultiTransaction {
+  nft_revoke({ args, gas, attachedDeposit }: NftRevokeOptions): MultiTransaction {
     return this.functionCall<NftRevokeArgs>({
       methodName: 'nft_revoke',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }
 
-  nft_revoke_all({ args, gas }: NftRevokeAllOptions): MultiTransaction {
+  nft_revoke_all({ args, gas, attachedDeposit }: NftRevokeAllOptions): MultiTransaction {
     return this.functionCall<NftRevokeAllArgs>({
       methodName: 'nft_revoke_all',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: attachedDeposit ?? Amount.ONE_YOCTO,
       gas,
     });
   }

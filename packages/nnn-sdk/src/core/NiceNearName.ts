@@ -149,7 +149,6 @@ export class NiceNearName {
       return await this.selector.view({
         contractId: registrantId,
         methodName: 'get_owner_id',
-        args: {},
         blockQuery,
       });
     } catch (e) {

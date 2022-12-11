@@ -1,6 +1,6 @@
 import { Account } from 'near-api-js';
 import {
-  BaseArgs,
+  EmptyArgs,
   FunctionViewOptions,
   MultiTransaction,
   parseOutcomeValue,
@@ -29,7 +29,7 @@ export class MultiSendAccount extends Account {
     return outcomes;
   }
 
-  async view<Value, Args extends BaseArgs>({
+  async view<Value, Args extends EmptyArgs>({
     contractId,
     methodName,
     args,
@@ -38,7 +38,7 @@ export class MultiSendAccount extends Account {
     return this.viewFunction({
       contractId,
       methodName,
-      args,
+      args: args ?? {},
       blockQuery,
     });
   }

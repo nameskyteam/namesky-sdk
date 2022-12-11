@@ -3,7 +3,7 @@ import { WalletSelector } from '@near-wallet-selector/core';
 import { Near } from 'near-api-js';
 import { WalletSelectorPlusSendOptions } from './options';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { BaseArgs, FunctionViewOptions, MultiTransaction } from '../../multi-transaction';
+import { EmptyArgs, FunctionViewOptions, MultiTransaction } from '../../multi-transaction';
 import { MultiSendAccount } from '../../multi-send-account';
 
 export interface WalletSelectorEnhancement {
@@ -13,7 +13,7 @@ export interface WalletSelectorEnhancement {
   getAccountIds(): string[];
   keyStore(): BrowserLocalStorageKeyStore;
   multiSendAccount(accountId: string): MultiSendAccount;
-  view<Value, Args extends BaseArgs>({
+  view<Value, Args extends EmptyArgs>({
     contractId,
     methodName,
     args,
