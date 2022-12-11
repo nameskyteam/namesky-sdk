@@ -90,7 +90,7 @@ export class NiceNearName {
     const codeHash = getBase58CodeHash(code);
 
     // account controller owner id
-    const ownerId = await this.getControllerOwnerId({ registrantId });
+    const ownerId = await this.get_owner_id({ registrantId });
 
     // account contract state
     const contractState = await account.viewState('');
@@ -144,7 +144,8 @@ export class NiceNearName {
     await this.selector.sendWithLocalKey(registrantId, transaction);
   }
 
-  async getControllerOwnerId({ registrantId, blockQuery }: GetControllerOwnerIdOptions): Promise<string | undefined> {
+  // controller owner id
+  async get_owner_id({ registrantId, blockQuery }: GetControllerOwnerIdOptions): Promise<string | undefined> {
     try {
       return await this.selector.view({
         contractId: registrantId,

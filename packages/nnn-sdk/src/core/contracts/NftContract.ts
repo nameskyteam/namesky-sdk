@@ -7,7 +7,7 @@ import { NftIsRegisteredOptions, NftRedeemOptions, NftRegisterOptions, NftTransf
 export class NftContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async nftIsRegistered({ args, blockQuery }: NftIsRegisteredOptions): Promise<string | null> {
+  async nft_is_registered({ args, blockQuery }: NftIsRegisteredOptions): Promise<string | null> {
     return this.selector.view({
       contractId: this.contractId,
       methodName: 'nft_is_registered',

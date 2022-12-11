@@ -7,7 +7,7 @@ import { CreateOfferingOptions, GetAccountViewOfOptions } from '../types/options
 export class MarketContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async getAccountViewOf({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView> {
+  async get_account_view_of({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView> {
     return this.selector.view({
       contractId: this.contractId,
       methodName: 'get_account_view_of',
@@ -40,7 +40,7 @@ export class MarketContract extends Contract {
         gas,
       });
     } else {
-      const accountView = await this.getAccountViewOf({
+      const accountView = await this.get_account_view_of({
         args: {
           account_id: this.selector.getActiveAccountId()!,
         },
