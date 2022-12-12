@@ -51,12 +51,6 @@ export class MultiTransaction {
     return this.currentIndex() > 0;
   }
 
-  isEmpty(): boolean {
-    return !this.transactions.some((transaction) => {
-      return transaction.actions.length !== 0;
-    });
-  }
-
   nextTransaction(receiverId: string, signerId?: string): MultiTransaction {
     return this.addTransaction({
       signerId,
