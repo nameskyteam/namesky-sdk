@@ -111,7 +111,7 @@ export class NiceNearName {
       return;
     }
 
-    const transaction = new MultiTransaction(registrantId);
+    const transaction = MultiTransaction.createTransaction(registrantId);
 
     // deploy controller contract
     transaction.deployContract(code);

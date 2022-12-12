@@ -38,9 +38,19 @@ import { Gas } from '../utils';
 export class MultiTransaction {
   transactions: Transaction[];
 
-  constructor(receiverId: string, signerId?: string) {
+  private constructor() {
     this.transactions = [];
-    this.nextTransaction(receiverId, signerId);
+  }
+
+  // Return an empty 'MultiTransaction' object
+  // Usually followed by the method '.createTransaction(/* args */)'
+  static new(): MultiTransaction {
+    return new MultiTransaction();
+  }
+
+  // Return a 'MultiTransaction' object and create a new transaction without action in this object
+  static createTransaction(receiverId: string, signerId?: string): MultiTransaction {
+    return MultiTransaction.new().createTransaction(receiverId, signerId);
   }
 
   private currentIndex(): number {
@@ -51,38 +61,31 @@ export class MultiTransaction {
     return this.currentIndex() > 0;
   }
 
-  nextTransaction(receiverId: string, signerId?: string): MultiTransaction {
-    return this.addTransaction({
-      signerId,
-      receiverId,
-      actions: [],
-    });
+  isEmpty(): boolean {
+    return this.currentIndex() === -1;
   }
 
-  addTransaction(...transaction: Transaction[]): MultiTransaction {
-    this.transactions.push(...transaction);
+  // Create a new transaction without action in original object
+  createTransaction(receiverId: string, signerId?: string): MultiTransaction {
+    this.transactions.push({ signerId, receiverId, actions: [] });
     return this;
   }
 
-  addAction(...action: Action[]): MultiTransaction {
-    this.transactions[this.currentIndex()].actions.push(...action);
+  addTransactions(...transactions: Transaction[]): MultiTransaction {
+    this.transactions.push(...transactions);
+    return this;
+  }
+
+  addActions(...actions: Action[]): MultiTransaction {
+    if (this.isEmpty()) {
+      throw Error(`Error empty transaction, consider calling method '.createTransaction(/* args */)' first`);
+    }
+    this.transactions[this.currentIndex()].actions.push(...actions);
     return this;
   }
 
   static fromTransactions(...transactions: Transaction[]): MultiTransaction {
-    if (transactions.length === 0) {
-      throw Error('Bad transaction(s)');
-    }
-    let multiTransaction: MultiTransaction;
-    transactions.forEach((transaction, index) => {
-      if (index === 0) {
-        const { signerId, receiverId, actions } = transaction;
-        multiTransaction = new MultiTransaction(receiverId, signerId).addAction(...actions);
-      } else {
-        multiTransaction.addTransaction(transaction);
-      }
-    });
-    return multiTransaction!;
+    return MultiTransaction.new().addTransactions(...transactions);
   }
 
   toTransactions(): Transaction[] {
@@ -90,11 +93,10 @@ export class MultiTransaction {
   }
 
   extend(other: MultiTransaction): MultiTransaction {
-    return this.addTransaction(...other.toTransactions());
+    return this.addTransactions(...other.toTransactions());
   }
 
   // ------------------------------------------- Transform -------------------------------------------------
-
   parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
     return this.toTransactions().map((transaction) => {
       return parseNearApiJsTransaction(transaction);
@@ -108,29 +110,28 @@ export class MultiTransaction {
   }
 
   // -------------------------------------------- Action ---------------------------------------------------
-
   createAccount(): MultiTransaction {
-    return this.addAction(ActionFactory.createAccount());
+    return this.addActions(ActionFactory.createAccount());
   }
 
   deleteAccount(beneficiaryId: string): MultiTransaction {
-    return this.addAction(ActionFactory.deleteAccount({ beneficiaryId }));
+    return this.addActions(ActionFactory.deleteAccount({ beneficiaryId }));
   }
 
   addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
-    return this.addAction(ActionFactory.addKey({ publicKey, accessKey }));
+    return this.addActions(ActionFactory.addKey({ publicKey, accessKey }));
   }
 
   deleteKey(publicKey: string): MultiTransaction {
-    return this.addAction(ActionFactory.deleteKey({ publicKey }));
+    return this.addActions(ActionFactory.deleteKey({ publicKey }));
   }
 
   deployContract(code: Uint8Array): MultiTransaction {
-    return this.addAction(ActionFactory.deployContract({ code }));
+    return this.addActions(ActionFactory.deployContract({ code }));
   }
 
   stake(amount: string, publicKey: string): MultiTransaction {
-    return this.addAction(ActionFactory.stake({ amount, publicKey }));
+    return this.addActions(ActionFactory.stake({ amount, publicKey }));
   }
 
   functionCall<Args extends EmptyArgs>({
@@ -139,7 +140,7 @@ export class MultiTransaction {
     attachedDeposit,
     gas,
   }: FunctionCallOptions<Args>): MultiTransaction {
-    return this.addAction(
+    return this.addActions(
       ActionFactory.functionCall({
         methodName,
         args: args ?? {},
@@ -150,7 +151,7 @@ export class MultiTransaction {
   }
 
   transfer(amount: string): MultiTransaction {
-    return this.addAction(ActionFactory.transfer({ amount }));
+    return this.addActions(ActionFactory.transfer({ amount }));
   }
 
   // --------------------------------------------- NEP145 --------------------------------------------------

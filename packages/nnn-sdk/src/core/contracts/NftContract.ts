@@ -20,7 +20,7 @@ export class NftContract extends Contract {
 
   // signed by registrant
   async nftRegister({ registrantId, args, gas, attachedDeposit }: NftRegisterOptions) {
-    const transaction = new MultiTransaction(this.contractId).functionCall<NftRegisterArgs>({
+    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall<NftRegisterArgs>({
       methodName: 'nft_register',
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_MINT_FEE,
@@ -30,7 +30,7 @@ export class NftContract extends Contract {
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
-    const transaction = new MultiTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
       methodName: 'nft_redeem',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -40,7 +40,7 @@ export class NftContract extends Contract {
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
-    const transaction = new MultiTransaction(this.contractId).nft_transfer({
+    const transaction = MultiTransaction.createTransaction(this.contractId).nft_transfer({
       args,
       gas,
     });
