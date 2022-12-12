@@ -121,13 +121,13 @@ export class MultiTransaction {
   }
 
   // ------------------------------------------- Transform -------------------------------------------------
-  parseNearApiJsTransactions(): NearApiJsTransactionLike[] {
+  toNearApiJsTransactions(): NearApiJsTransactionLike[] {
     return this.toTransactions().map((transaction) => {
       return parseNearApiJsTransaction(transaction);
     });
   }
 
-  parseNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
+  toNearWalletSelectorTransactions(): NearWalletSelectorTransactionLike[] {
     return this.toTransactions().map((transaction) => {
       return parseNearWalletSelectorTransaction(transaction);
     });

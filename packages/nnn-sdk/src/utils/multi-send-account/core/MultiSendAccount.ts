@@ -45,7 +45,7 @@ export class MultiSendAccount extends Account {
 
   async send<Value>(transaction: MultiTransaction, options?: MultiSendAccountSendOptions): Promise<Value> {
     const outcomes = await this.signAndSendTransactions({
-      transactions: transaction.parseNearApiJsTransactions(),
+      transactions: transaction.toNearApiJsTransactions(),
     });
     if (options?.throwReceiptsErrorIfAny) {
       outcomes.forEach((outcome) => throwReceiptsErrorIfAny(outcome));

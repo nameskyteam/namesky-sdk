@@ -56,7 +56,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
 
       async send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions): Promise<Value> {
         const wallet = await this.wallet(options?.walletId);
-        const nearWalletSelectorTransactions = transaction.parseNearWalletSelectorTransactions();
+        const nearWalletSelectorTransactions = transaction.toNearWalletSelectorTransactions();
         let outcomes: FinalExecutionOutcome[];
         if (transaction.isMultiple()) {
           outcomes = (await wallet.signAndSendTransactions({
