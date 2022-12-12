@@ -32,8 +32,32 @@ import { Amount } from '../utils';
 import { Gas } from '../utils';
 
 /**
- * Helper class for creating transaction(s)
- * Builder Pattern
+ * @description Helper class for creating transaction(s) with builder pattern
+ *
+ * @example
+ * // Create an account for alice's honey and send some wNEAR
+ * // to this account for a birthday gift
+ * MultiTransaction
+ *   // first transaction for creating account
+ *   .createTransaction('honey.alice.near', 'alice.near')
+ *   .createAccount()
+ *   .transfer(Amount.parseYoctoNear('0.1'))
+ *   .addKey('ed25519:this is a public key', { permission: 'FullAccess' })
+ *   // second transaction for sending wNEAR
+ *   .createTransaction('wrap.near')
+ *   .storage_deposit({
+ *     args: {
+ *       account_id: 'honey.alice.near'
+ *     },
+ *     attachedDeposit: Amount.parseYoctoNear('0.00125')
+ *   })
+ *   .ft_transfer({
+ *     args: {
+ *       receiver_id: 'honey.alice.near',
+ *       amount: Amount.parseYoctoNear('100'),
+ *       memo: 'Happy Birthday'
+ *     }
+ *   })
  */
 export class MultiTransaction {
   transactions: Transaction[];
