@@ -27,6 +27,13 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
       ...selector,
       near,
 
+      getViewer(): MultiSendAccount {
+        if (!this.viewer) {
+          this.viewer = this.multiSendAccount('');
+        }
+        return this.viewer;
+      },
+
       getActiveAccountId(): string | undefined {
         return this.store.getState().accounts.find((accountState) => accountState.active)?.accountId;
       },
@@ -44,10 +51,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
       },
 
       async view<Value, Args extends EmptyArgs>(options: FunctionViewOptions<Args>): Promise<Value> {
-        if (!this.viewer) {
-          this.viewer = this.multiSendAccount('');
-        }
-        return this.viewer.view<Value, Args>(options);
+        return this.getViewer().view<Value, Args>(options);
       },
 
       async send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions): Promise<Value> {

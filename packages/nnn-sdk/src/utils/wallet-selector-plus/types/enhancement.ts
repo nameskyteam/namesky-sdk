@@ -9,6 +9,7 @@ import { MultiSendAccount } from '../../multi-send-account';
 export interface WalletSelectorEnhancement {
   near: Near;
   viewer?: MultiSendAccount;
+  getViewer(): MultiSendAccount;
   getActiveAccountId(): string | undefined;
   getAccountIds(): string[];
   keyStore(): BrowserLocalStorageKeyStore;
