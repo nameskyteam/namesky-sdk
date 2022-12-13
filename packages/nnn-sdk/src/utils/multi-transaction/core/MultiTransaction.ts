@@ -91,8 +91,7 @@ export class MultiTransaction {
 
   // Create a new transaction without action in original object
   createTransaction(receiverId: string, signerId?: string): MultiTransaction {
-    this.transactions.push({ signerId, receiverId, actions: [] });
-    return this;
+    return this.addTransactions({ signerId, receiverId, actions: [] });
   }
 
   addTransactions(...transactions: Transaction[]): MultiTransaction {

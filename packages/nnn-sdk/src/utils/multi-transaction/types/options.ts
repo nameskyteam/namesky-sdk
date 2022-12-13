@@ -11,8 +11,10 @@ export interface FunctionCallOptions<Args extends EmptyArgs> {
 
 export type FunctionViewOptions<Args extends EmptyArgs> = Pick<FunctionCallOptions<Args>, 'methodName' | 'args'> & {
   contractId: string;
-  blockQuery?: BlockId | BlockReference;
+  blockQuery?: BlockQuery;
 };
+
+export type BlockQuery = BlockId | BlockReference;
 
 export type ArgsOptions<Args extends EmptyArgs> = Pick<FunctionCallOptions<Args>, 'args'>;
 

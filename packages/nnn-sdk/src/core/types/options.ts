@@ -1,6 +1,5 @@
-import { ArgsOptions, AttachedDepositOptions, EmptyArgs, GasOptions, NftTransferArgs } from '../../utils';
+import { ArgsOptions, AttachedDepositOptions, BlockQuery, EmptyArgs, GasOptions, NftTransferArgs } from '../../utils';
 import { CreateOfferingArgs, GetAccountViewOfArgs, NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs } from './args';
-import { BlockId, BlockReference } from 'near-api-js/lib/providers/provider';
 
 // ================================================ Call =======================================================
 interface FunctionCallExtraOptions {
@@ -39,7 +38,7 @@ export interface CreateOfferingOptions
 
 // ================================================ View =======================================================
 interface FunctionViewExtraOptions {
-  blockQuery?: BlockId | BlockReference;
+  blockQuery?: BlockQuery;
 }
 
 // ---------------------------------------------- Controller ---------------------------------------------------

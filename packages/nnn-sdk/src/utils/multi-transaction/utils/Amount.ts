@@ -1,4 +1,5 @@
 import Big from 'big.js';
+import { NEAR_DECIMALS, pow } from './common';
 
 export class Amount {
   private constructor() {}
@@ -8,18 +9,26 @@ export class Amount {
   static ONE_NEAR = Amount.parseYoctoNear('1');
 
   static parse(readable: string, decimals: number): string {
-    return Big(readable).mul(Big(10).pow(decimals)).toFixed(0, Big.roundDown);
+    return Amount.parseBig(Big(readable), decimals).toFixed();
   }
 
-  static format(amount: string, decimals: number, round: number): string {
-    return Big(amount).div(Big(10).pow(decimals)).toFixed(round, Big.roundDown);
+  static parseBig(readable: Big, decimals: number): Big {
+    return readable.mul(pow(10, decimals)).round(0, Big.roundDown);
+  }
+
+  static format(amount: string, decimals: number, round?: number): string {
+    return Amount.formatBig(Big(amount), decimals, round).toFixed();
+  }
+
+  static formatBig(amount: Big, decimals: number, round?: number): Big {
+    return amount.div(pow(10, decimals)).round(round, Big.roundDown);
   }
 
   static parseYoctoNear(readable: string): string {
-    return Amount.parse(readable, 24);
+    return Amount.parse(readable, NEAR_DECIMALS);
   }
 
   static formatYoctoNear(amount: string, round: number): string {
-    return Amount.format(amount, 24, round);
+    return Amount.format(amount, NEAR_DECIMALS, round);
   }
 }
