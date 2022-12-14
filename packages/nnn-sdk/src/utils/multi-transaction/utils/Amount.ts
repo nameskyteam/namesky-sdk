@@ -17,12 +17,11 @@ export class Amount {
   }
 
   static formatStr(amount: BigSource, decimals: number, round?: number): string {
-    return Amount.formatBig(amount, decimals, round).toFixed();
+    return Amount.formatBig(amount, decimals).toFixed(round, Big.roundDown);
   }
 
-  static formatBig(amount: BigSource, decimals: number, round?: number): Big {
-    const n = Big(amount).div(pow(10, decimals));
-    return round ? n.round(round, Big.roundDown) : n;
+  static formatBig(amount: BigSource, decimals: number): Big {
+    return Big(amount).div(pow(10, decimals));
   }
 
   static parseYoctoNear(readable: string): string {
