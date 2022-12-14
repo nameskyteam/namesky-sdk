@@ -21,7 +21,8 @@ export class Amount {
   }
 
   static formatBig(amount: BigSource, decimals: number, round?: number): Big {
-    return Big(amount).div(pow(10, decimals)).round(round, Big.roundDown);
+    const n = Big(amount).div(pow(10, decimals));
+    return round ? n.round(round, Big.roundDown) : n;
   }
 
   static parseYoctoNear(readable: string): string {
