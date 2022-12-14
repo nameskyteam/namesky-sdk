@@ -3,7 +3,11 @@ import { NEAR_DECIMALS } from './common';
 
 export type AmountSource = Amount | BigSource;
 
-export type RoundingMod = 0 | 1 | 2 | 3;
+// 0: Amount.roundDown
+// 1: Amount.roundHalfUp
+// 2: Amount.roundHalfEven
+// 3: Amount.roundUp
+export type RoundingMode = 0 | 1 | 2 | 3;
 
 export class Amount {
   inner: Big;
@@ -12,10 +16,10 @@ export class Amount {
   static ONE_YOCTO = '1';
   static ONE_NEAR = Amount.parse(1, NEAR_DECIMALS);
 
-  static roundDown: RoundingMod = Big.roundDown;
-  static roundHalfUp: RoundingMod = Big.roundHalfUp;
-  static roundHalfEven: RoundingMod = Big.roundHalfEven;
-  static roundUp: RoundingMod = Big.roundUp;
+  static roundDown: RoundingMode = Big.roundDown;
+  static roundHalfUp: RoundingMode = Big.roundHalfUp;
+  static roundHalfEven: RoundingMode = Big.roundHalfEven;
+  static roundUp: RoundingMode = Big.roundUp;
 
   private constructor(n: AmountSource) {
     this.inner = new Big(n instanceof Amount ? n.inner : n);
@@ -55,17 +59,17 @@ export class Amount {
 
   // dp: required, decimal places
   // rm: optional, rounding mod, default `Amount.roundDown`
-  round(dp: number, rm?: RoundingMod): Amount {
+  round(dp: number, rm?: RoundingMode): Amount {
     return new Amount(this.inner.round(dp, rm ?? Amount.roundDown));
   }
 
   // dp: optional, decimal places, if not provided, will keep as many decimal places as possible
   // rm: optional, rounding mod, default `Amount.roundDown`
-  toFixed(dp?: number, rm?: RoundingMod): string {
+  toFixed(dp?: number, rm?: RoundingMode): string {
     return this.inner.toFixed(dp, rm ?? Amount.roundDown);
   }
 
-  static parse(readable: AmountSource, decimals: number, overflow?: RoundingMod): Amount {
+  static parse(readable: AmountSource, decimals: number, overflow?: RoundingMode): Amount {
     return Amount.new(readable).mulPow(10, decimals).round(0, overflow);
   }
 
@@ -73,11 +77,11 @@ export class Amount {
     return Amount.new(amount).divPow(10, decimals);
   }
 
-  static parseYoctoNear(readable: AmountSource, overflow?: RoundingMod): string {
+  static parseYoctoNear(readable: AmountSource, overflow?: RoundingMode): string {
     return Amount.parse(readable, NEAR_DECIMALS, overflow).toFixed();
   }
 
-  static formatYoctoNear(amount: AmountSource, dp?: number, rm?: RoundingMod): string {
+  static formatYoctoNear(amount: AmountSource, dp?: number, rm?: RoundingMode): string {
     return Amount.format(amount, NEAR_DECIMALS).toFixed(dp, rm);
   }
 }
