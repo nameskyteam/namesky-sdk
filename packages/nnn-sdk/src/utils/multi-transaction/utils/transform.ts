@@ -5,7 +5,7 @@ import {
   NearWalletSelectorActionLike,
   NearWalletSelectorTransactionLike,
 } from '../types';
-import * as nearApiJs from 'near-api-js';
+import * as nearAPI from 'near-api-js';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { AccessKey } from 'near-api-js/lib/transaction';
 import { Transaction } from '../types';
@@ -13,35 +13,35 @@ import { Transaction } from '../types';
 export function parseNearApiJsAction(action: Action): NearApiJsActionLike {
   switch (action.type) {
     case 'CreateAccount': {
-      return nearApiJs.transactions.createAccount();
+      return nearAPI.transactions.createAccount();
     }
     case 'DeleteAccount': {
       const { beneficiaryId } = action.params;
-      return nearApiJs.transactions.deleteAccount(beneficiaryId);
+      return nearAPI.transactions.deleteAccount(beneficiaryId);
     }
     case 'AddKey': {
       const { publicKey, accessKey } = action.params;
-      return nearApiJs.transactions.addKey(PublicKey.fromString(publicKey), getAccessKey(accessKey.permission));
+      return nearAPI.transactions.addKey(PublicKey.fromString(publicKey), getAccessKey(accessKey.permission));
     }
     case 'DeleteKey': {
       const { publicKey } = action.params;
-      return nearApiJs.transactions.deleteKey(PublicKey.fromString(publicKey));
+      return nearAPI.transactions.deleteKey(PublicKey.fromString(publicKey));
     }
     case 'DeployContract': {
       const { code } = action.params;
-      return nearApiJs.transactions.deployContract(code);
+      return nearAPI.transactions.deployContract(code);
     }
     case 'Stake': {
       const { amount, publicKey } = action.params;
-      return nearApiJs.transactions.stake(amount, PublicKey.fromString(publicKey));
+      return nearAPI.transactions.stake(amount, PublicKey.fromString(publicKey));
     }
     case 'FunctionCall': {
       const { methodName, args, gas, attachedDeposit } = action.params;
-      return nearApiJs.transactions.functionCall(methodName, args, gas, attachedDeposit);
+      return nearAPI.transactions.functionCall(methodName, args, gas, attachedDeposit);
     }
     case 'Transfer': {
       const { amount } = action.params;
-      return nearApiJs.transactions.transfer(amount);
+      return nearAPI.transactions.transfer(amount);
     }
   }
 }
@@ -118,9 +118,9 @@ export function parseNearWalletSelectorTransaction({
 
 function getAccessKey(permission: AccessKeyPermission): AccessKey {
   if (permission === 'FullAccess') {
-    return nearApiJs.transactions.fullAccessKey();
+    return nearAPI.transactions.fullAccessKey();
   } else {
     const { receiverId, methodNames, allowance } = permission;
-    return nearApiJs.transactions.functionCallAccessKey(receiverId, methodNames, allowance);
+    return nearAPI.transactions.functionCallAccessKey(receiverId, methodNames, allowance);
   }
 }
