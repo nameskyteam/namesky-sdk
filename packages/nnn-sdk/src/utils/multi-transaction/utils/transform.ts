@@ -1,47 +1,48 @@
-import { AccessKeyPermission, Action } from '../types';
+import { AccessKey, Action } from '../types';
 import {
   NearApiJsActionLike,
   NearApiJsTransactionLike,
   NearWalletSelectorActionLike,
   NearWalletSelectorTransactionLike,
 } from '../types';
-import * as nearAPI from 'near-api-js';
-import { PublicKey } from 'near-api-js/lib/utils';
-import { AccessKey } from 'near-api-js/lib/transaction';
+import * as nearApiJs from 'near-api-js';
 import { Transaction } from '../types';
 
 export function parseNearApiJsAction(action: Action): NearApiJsActionLike {
   switch (action.type) {
     case 'CreateAccount': {
-      return nearAPI.transactions.createAccount();
+      return nearApiJs.transactions.createAccount();
     }
     case 'DeleteAccount': {
       const { beneficiaryId } = action.params;
-      return nearAPI.transactions.deleteAccount(beneficiaryId);
+      return nearApiJs.transactions.deleteAccount(beneficiaryId);
     }
     case 'AddKey': {
       const { publicKey, accessKey } = action.params;
-      return nearAPI.transactions.addKey(PublicKey.fromString(publicKey), getAccessKey(accessKey.permission));
+      return nearApiJs.transactions.addKey(
+        nearApiJs.utils.PublicKey.fromString(publicKey),
+        parseNearApiJsAccessKey(accessKey)
+      );
     }
     case 'DeleteKey': {
       const { publicKey } = action.params;
-      return nearAPI.transactions.deleteKey(PublicKey.fromString(publicKey));
+      return nearApiJs.transactions.deleteKey(nearApiJs.utils.PublicKey.fromString(publicKey));
     }
     case 'DeployContract': {
       const { code } = action.params;
-      return nearAPI.transactions.deployContract(code);
+      return nearApiJs.transactions.deployContract(code);
     }
     case 'Stake': {
       const { amount, publicKey } = action.params;
-      return nearAPI.transactions.stake(amount, PublicKey.fromString(publicKey));
+      return nearApiJs.transactions.stake(amount, nearApiJs.utils.PublicKey.fromString(publicKey));
     }
     case 'FunctionCall': {
       const { methodName, args, gas, attachedDeposit } = action.params;
-      return nearAPI.transactions.functionCall(methodName, args, gas, attachedDeposit);
+      return nearApiJs.transactions.functionCall(methodName, args, gas, attachedDeposit);
     }
     case 'Transfer': {
       const { amount } = action.params;
-      return nearAPI.transactions.transfer(amount);
+      return nearApiJs.transactions.transfer(amount);
     }
   }
 }
@@ -116,11 +117,12 @@ export function parseNearWalletSelectorTransaction({
   };
 }
 
-function getAccessKey(permission: AccessKeyPermission): AccessKey {
+function parseNearApiJsAccessKey(accessKey: AccessKey): nearApiJs.transactions.AccessKey {
+  const { permission } = accessKey;
   if (permission === 'FullAccess') {
-    return nearAPI.transactions.fullAccessKey();
+    return nearApiJs.transactions.fullAccessKey();
   } else {
     const { receiverId, methodNames, allowance } = permission;
-    return nearAPI.transactions.functionCallAccessKey(receiverId, methodNames, allowance);
+    return nearApiJs.transactions.functionCallAccessKey(receiverId, methodNames, allowance);
   }
 }
