@@ -35,7 +35,7 @@ export class MultiSendAccount extends Account {
     args,
     blockQuery,
   }: FunctionViewOptions<Args>): Promise<Value> {
-    return this.viewFunction({
+    return this.viewFunctionV2({
       contractId,
       methodName,
       args: args ?? {},

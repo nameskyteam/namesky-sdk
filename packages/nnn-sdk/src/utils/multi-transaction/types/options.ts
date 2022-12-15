@@ -1,4 +1,4 @@
-import { BlockId, BlockReference } from 'near-api-js/lib/providers/provider';
+import { BlockReference } from 'near-api-js/lib/providers/provider';
 
 export interface EmptyArgs {}
 
@@ -14,7 +14,7 @@ export type FunctionViewOptions<Args extends EmptyArgs> = Pick<FunctionCallOptio
   blockQuery?: BlockQuery;
 };
 
-export type BlockQuery = BlockId | BlockReference;
+export type BlockQuery = BlockReference;
 
 export type ArgsOptions<Args extends EmptyArgs> = Pick<FunctionCallOptions<Args>, 'args'>;
 
