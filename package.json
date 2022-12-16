@@ -1,7 +1,13 @@
 {
-  "name": "nnn-sdk",
+  "name": "namesky-sdk",
   "version": "1.0.0",
-  "description": "",
+  "description": "NameSky SDK for UI",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsdx build --entry packages/nnn-sdk/src/index.ts",
     "start:testnet": "react-scripts start",
