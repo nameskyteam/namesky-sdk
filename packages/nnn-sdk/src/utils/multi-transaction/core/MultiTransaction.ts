@@ -25,7 +25,6 @@ import {
   NftRevokeAllOptions,
 } from '../types';
 import { ActionFactory } from './ActionFactory';
-import { EmptyArgs } from '../types';
 import { AccessKey, Action } from '../types';
 import { parseNearApiJsTransaction, parseNearWalletSelectorTransaction } from '../utils';
 import { Amount } from '../utils';
@@ -157,7 +156,7 @@ export class MultiTransaction {
     return this.addActions(ActionFactory.stake({ amount, publicKey }));
   }
 
-  functionCall<Args extends EmptyArgs>({
+  functionCall<Args extends object>({
     methodName,
     args,
     attachedDeposit,

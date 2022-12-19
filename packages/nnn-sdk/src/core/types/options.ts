@@ -1,4 +1,4 @@
-import { ArgsOptions, AttachedDepositOptions, BlockQuery, EmptyArgs, GasOptions, NftTransferArgs } from '../../utils';
+import { ArgsOptions, AttachedDepositOptions, BlockQuery, GasOptions, NftTransferArgs } from '../../utils';
 import { CreateOfferingArgs, GetAccountViewOfArgs, NftIsRegisteredArgs, NftRedeemArgs, NftRegisterArgs } from './args';
 
 // ================================================ Call =======================================================
@@ -6,7 +6,7 @@ interface FunctionCallExtraOptions {
   callbackUrl?: string;
 }
 
-type RequiredArgsOptions<Args extends EmptyArgs> = Required<ArgsOptions<Args>>;
+type RequiredArgsOptions<Args extends object> = Required<ArgsOptions<Args>>;
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface SetupControllerOptions {

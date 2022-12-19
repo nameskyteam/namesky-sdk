@@ -2,15 +2,22 @@ import { FinalExecutionOutcome, FinalExecutionStatus } from 'near-api-js/lib/pro
 import { ExecutionStatus } from 'near-api-js/lib/providers/provider';
 import { parseRpcError } from 'near-api-js/lib/utils/rpc_errors';
 import { ErrorMessage } from '../types/outcome';
+import { ResponseParser } from '../types';
 
-export function parseOutcomeValue<Value>(outcome: FinalExecutionOutcome): Value {
+export function parseOutcomeValue<Value>(
+  outcome: FinalExecutionOutcome,
+  parse?: ResponseParser<Value>
+): Value | undefined {
   const successValue = (outcome.status as FinalExecutionStatus).SuccessValue;
   if (successValue) {
-    const decodedValue: string = Buffer.from(successValue, 'base64').toString();
-    return JSON.parse(decodedValue);
-  } else {
-    return void 0 as unknown as Value;
+    const valueRaw = Buffer.from(successValue, 'base64');
+    if (parse) {
+      return parse(valueRaw);
+    }
+    // default JSON parser
+    return JSON.parse(valueRaw.toString());
   }
+  return;
 }
 
 export function throwReceiptsErrorIfAny(outcome: FinalExecutionOutcome) {

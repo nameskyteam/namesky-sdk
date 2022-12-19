@@ -3,7 +3,7 @@ import { resolveNetwork, setupWalletModules } from '../utils';
 import { InMemorySigner, keyStores, Near } from 'near-api-js';
 import { WalletSelectorPlusConfig, WalletSelectorPlus } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { EmptyArgs, FunctionViewOptions, MultiTransaction, throwReceiptsErrorIfAny } from '../../multi-transaction';
+import { FunctionViewOptions, MultiTransaction, throwReceiptsErrorIfAny } from '../../multi-transaction';
 import { parseOutcomeValue } from '../../multi-transaction';
 import { MultiSendAccount } from '../../multi-send-account';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
@@ -50,11 +50,11 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return new MultiSendAccount(this.near.connection, accountId);
       },
 
-      async view<Value, Args extends EmptyArgs>(options: FunctionViewOptions<Args>): Promise<Value> {
+      async view<Value, Args extends object>(options: FunctionViewOptions<Value, Args>): Promise<Value> {
         return this.getViewer().view<Value, Args>(options);
       },
 
-      async send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions): Promise<Value> {
+      async send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions<Value>): Promise<Value> {
         const wallet = await this.wallet(options?.walletId);
         const nearWalletSelectorTransactions = transaction.toNearWalletSelectorTransactions();
         let outcomes: FinalExecutionOutcome[];
@@ -73,7 +73,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         if (options?.throwReceiptsErrorIfAny) {
           outcomes.forEach((outcome) => throwReceiptsErrorIfAny(outcome));
         }
-        return parseOutcomeValue<Value>(outcomes.pop()!);
+        return parseOutcomeValue<Value>(outcomes.pop()!, options?.parse)!;
       },
 
       async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {

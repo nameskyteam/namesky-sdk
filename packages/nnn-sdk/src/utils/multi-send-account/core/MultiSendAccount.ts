@@ -1,6 +1,5 @@
 import { Account } from 'near-api-js';
 import {
-  EmptyArgs,
   FunctionViewOptions,
   MultiTransaction,
   parseOutcomeValue,
@@ -29,27 +28,29 @@ export class MultiSendAccount extends Account {
     return outcomes;
   }
 
-  async view<Value, Args extends EmptyArgs>({
+  async view<Value, Args extends object>({
     contractId,
     methodName,
     args,
     blockQuery,
-  }: FunctionViewOptions<Args>): Promise<Value> {
+    parse,
+  }: FunctionViewOptions<Value, Args>): Promise<Value> {
     return this.viewFunctionV2({
       contractId,
       methodName,
       args: args ?? {},
       blockQuery,
+      parse,
     });
   }
 
-  async send<Value>(transaction: MultiTransaction, options?: MultiSendAccountSendOptions): Promise<Value> {
+  async send<Value>(transaction: MultiTransaction, options?: MultiSendAccountSendOptions<Value>): Promise<Value> {
     const outcomes = await this.signAndSendTransactions({
       transactions: transaction.toNearApiJsTransactions(),
     });
     if (options?.throwReceiptsErrorIfAny) {
       outcomes.forEach((outcome) => throwReceiptsErrorIfAny(outcome));
     }
-    return parseOutcomeValue<Value>(outcomes.pop()!);
+    return parseOutcomeValue<Value>(outcomes.pop()!, options?.parse)!;
   }
 }
