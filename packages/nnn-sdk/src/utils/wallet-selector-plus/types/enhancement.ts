@@ -14,7 +14,7 @@ export interface WalletSelectorEnhancement {
   getAccountIds(): string[];
   keyStore(): BrowserLocalStorageKeyStore;
   multiSendAccount(accountId: string): MultiSendAccount;
-  view<Value, Args extends object>({
+  view<Value, Args extends object | Uint8Array>({
     contractId,
     methodName,
     args,

@@ -50,7 +50,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return new MultiSendAccount(this.near.connection, accountId);
       },
 
-      async view<Value, Args extends object>(options: FunctionViewOptions<Value, Args>): Promise<Value> {
+      async view<Value, Args extends object | Uint8Array>(options: FunctionViewOptions<Value, Args>): Promise<Value> {
         return this.getViewer().view<Value, Args>(options);
       },
 

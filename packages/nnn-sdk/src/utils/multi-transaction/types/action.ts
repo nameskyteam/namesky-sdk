@@ -74,7 +74,7 @@ export interface StakeParams {
 
 export interface FunctionCallParams {
   methodName: string;
-  args: object;
+  args: object | Uint8Array;
   attachedDeposit: string;
   gas: string;
 }

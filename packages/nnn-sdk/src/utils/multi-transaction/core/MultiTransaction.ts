@@ -156,7 +156,7 @@ export class MultiTransaction {
     return this.addActions(ActionFactory.stake({ amount, publicKey }));
   }
 
-  functionCall<Args extends object>({
+  functionCall<Args extends object | Uint8Array>({
     methodName,
     args,
     attachedDeposit,

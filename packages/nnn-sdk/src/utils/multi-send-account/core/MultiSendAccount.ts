@@ -28,7 +28,7 @@ export class MultiSendAccount extends Account {
     return outcomes;
   }
 
-  async view<Value, Args extends object>({
+  async view<Value, Args extends object | Uint8Array>({
     contractId,
     methodName,
     args,

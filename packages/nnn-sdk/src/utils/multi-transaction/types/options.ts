@@ -1,6 +1,6 @@
 import { BlockReference } from 'near-api-js/lib/providers/provider';
 
-export interface FunctionCallOptions<Args extends object> {
+export interface FunctionCallOptions<Args extends object | Uint8Array> {
   methodName: string;
   args?: Args;
   attachedDeposit?: string;
@@ -20,7 +20,7 @@ export type ResponseParser<Value> = (response: Uint8Array) => Value;
 
 export type BlockQuery = BlockReference;
 
-export type ArgsOptions<Args extends object> = Pick<FunctionCallOptions<Args>, 'args'>;
+export type ArgsOptions<Args extends object | Uint8Array> = Pick<FunctionCallOptions<Args>, 'args'>;
 
 export type AttachedDepositOptions = Pick<FunctionCallOptions<any>, 'attachedDeposit'>;
 

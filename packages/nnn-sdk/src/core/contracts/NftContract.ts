@@ -1,7 +1,6 @@
 import { Contract } from '../../utils/Contract';
 import { DEFAULT_MINT_FEE, MultiTransaction } from '../../utils';
 import { Amount } from '../../utils';
-import { NftRegisterArgs } from '../types/args';
 import { NftIsRegisteredOptions, NftRedeemOptions, NftRegisterOptions, NftTransferOptions } from '../types/options';
 
 export class NftContract extends Contract {
@@ -20,7 +19,7 @@ export class NftContract extends Contract {
 
   // signed by registrant
   async nftRegister({ registrantId, args, gas, attachedDeposit }: NftRegisterOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall<NftRegisterArgs>({
+    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
       methodName: 'nft_register',
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_MINT_FEE,

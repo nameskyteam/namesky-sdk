@@ -6,7 +6,7 @@ interface FunctionCallExtraOptions {
   callbackUrl?: string;
 }
 
-type RequiredArgsOptions<Args extends object> = Required<ArgsOptions<Args>>;
+type RequiredArgsOptions<Args extends object | Uint8Array> = Required<ArgsOptions<Args>>;
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface SetupControllerOptions {
