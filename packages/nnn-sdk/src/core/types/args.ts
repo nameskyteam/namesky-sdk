@@ -24,6 +24,23 @@ export interface NftRedeemArgs {
 }
 
 // ------------------------------------------------ Market -----------------------------------------------------
+export interface CreateListingArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+  price: string;
+}
+
+export interface UpdateListingArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+  new_price: string;
+}
+
+export interface RemoveListingArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
 export interface CreateOfferingArgs {
   nft_contract_id: string;
   nft_token_id: string;
@@ -31,6 +48,23 @@ export interface CreateOfferingArgs {
   is_simple_offering: boolean;
 }
 
+export interface UpdateOfferingArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+  new_price: string;
+}
+
+export interface RemoveOfferingArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
 export interface GetAccountViewOfArgs {
   account_id: string;
+}
+
+export interface GetOfferingViewArgs {
+  buyer_id: string;
+  nft_contract_id: string;
+  nft_token_id: string;
 }

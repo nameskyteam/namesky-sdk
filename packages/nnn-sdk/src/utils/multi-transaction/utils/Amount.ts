@@ -53,8 +53,54 @@ export class Amount {
     return this.mul(Amount.new(base).pow(exp));
   }
 
+  gt(n: AmountSource): boolean {
+    return this.inner.gt(Amount.new(n).inner);
+  }
+
+  gte(n: AmountSource): boolean {
+    return this.inner.gte(Amount.new(n).inner);
+  }
+
+  lt(n: AmountSource): boolean {
+    return this.inner.lt(Amount.new(n).inner);
+  }
+
+  lte(n: AmountSource): boolean {
+    return this.inner.lte(Amount.new(n).inner);
+  }
+
+  eq(n: AmountSource): boolean {
+    return this.inner.eq(Amount.new(n).inner);
+  }
+
   divPow(base: AmountSource, exp: number): Amount {
     return this.div(Amount.new(base).pow(exp));
+  }
+
+  sqrt() {
+    return this.inner.sqrt();
+  }
+
+  static max(...values: AmountSource[]): Amount {
+    return values
+      .map((n) => Amount.new(n))
+      .sort((n1, n2) => {
+        if (n1.gte(n2)) {
+          return -1;
+        }
+        return 1;
+      })[0];
+  }
+
+  static min(...values: AmountSource[]): Amount {
+    return values
+      .map((n) => Amount.new(n))
+      .sort((n1, n2) => {
+        if (n1.lte(n2)) {
+          return -1;
+        }
+        return 1;
+      })[0];
   }
 
   // dp: required, decimal places
