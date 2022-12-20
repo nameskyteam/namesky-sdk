@@ -23,6 +23,7 @@ import {
   NftApproveOptions,
   NftRevokeOptions,
   NftRevokeAllOptions,
+  MethodArgs,
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { AccessKey, Action } from '../types';
@@ -156,7 +157,7 @@ export class MultiTransaction {
     return this.addActions(ActionFactory.stake({ amount, publicKey }));
   }
 
-  functionCall<Args extends object | Uint8Array>({
+  functionCall<Args extends MethodArgs>({
     methodName,
     args,
     attachedDeposit,

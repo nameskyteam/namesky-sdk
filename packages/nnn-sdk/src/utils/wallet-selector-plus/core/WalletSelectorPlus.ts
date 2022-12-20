@@ -3,7 +3,7 @@ import { resolveNetwork, setupWalletModules } from '../utils';
 import { InMemorySigner, keyStores, Near } from 'near-api-js';
 import { WalletSelectorPlusConfig, WalletSelectorPlus } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { FunctionViewOptions, MultiTransaction, throwReceiptsErrorIfAny } from '../../multi-transaction';
+import { FunctionViewOptions, MethodArgs, MultiTransaction, throwReceiptsErrorIfAny } from '../../multi-transaction';
 import { parseOutcomeValue } from '../../multi-transaction';
 import { MultiSendAccount } from '../../multi-send-account';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
@@ -50,7 +50,7 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
         return new MultiSendAccount(this.near.connection, accountId);
       },
 
-      async view<Value, Args extends object | Uint8Array>(options: FunctionViewOptions<Value, Args>): Promise<Value> {
+      async view<Value, Args extends MethodArgs>(options: FunctionViewOptions<Value, Args>): Promise<Value> {
         return this.getViewer().view<Value, Args>(options);
       },
 

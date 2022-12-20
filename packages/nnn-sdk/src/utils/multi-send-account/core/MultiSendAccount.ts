@@ -1,6 +1,7 @@
 import { Account } from 'near-api-js';
 import {
   FunctionViewOptions,
+  MethodArgs,
   MultiTransaction,
   parseOutcomeValue,
   throwReceiptsErrorIfAny,
@@ -28,7 +29,7 @@ export class MultiSendAccount extends Account {
     return outcomes;
   }
 
-  async view<Value, Args extends object | Uint8Array>({
+  async view<Value, Args extends MethodArgs>({
     contractId,
     methodName,
     args,
