@@ -53,6 +53,10 @@ export class Amount {
     return this.mul(Amount.new(base).pow(exp));
   }
 
+  divPow(base: AmountSource, exp: number): Amount {
+    return this.div(Amount.new(base).pow(exp));
+  }
+
   gt(n: AmountSource): boolean {
     return this.inner.gt(Amount.new(n).inner);
   }
@@ -71,10 +75,6 @@ export class Amount {
 
   eq(n: AmountSource): boolean {
     return this.inner.eq(Amount.new(n).inner);
-  }
-
-  divPow(base: AmountSource, exp: number): Amount {
-    return this.div(Amount.new(base).pow(exp));
   }
 
   sqrt() {
