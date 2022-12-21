@@ -1,11 +1,7 @@
 // ---------------------------------------------- Controller ---------------------------------------------------
-export interface CleanStateArgs {
-  keys: string[];
-}
+export type CleanStateArgs = Uint8Array;
 
-export interface InitArgs {
-  owner_id: string;
-}
+export type InitArgs = Uint8Array;
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 export interface NftRegisterArgs {

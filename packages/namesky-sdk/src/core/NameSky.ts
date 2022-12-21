@@ -1,4 +1,4 @@
-import { getBase58CodeHash, WalletSelectorPlus } from '../utils';
+import {getBase58CodeHash, NUM_BYTES_DATA_LEN, WalletSelectorPlus} from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -94,7 +94,11 @@ export class NameSky {
 
     // account contract state
     const contractState = await account.viewState('');
-    const contractStateKeys = contractState.map(({ key }) => key.toString('base64'));
+    const contractStateKeys = contractState.reduce((pre, {key}) => {
+      const keyLen = Buffer.alloc(NUM_BYTES_DATA_LEN)
+      keyLen.writeUint32LE(key.length)
+      return Buffer.concat([pre, keyLen, key])
+    }, Buffer.alloc(0))
 
     // account access keys
     const accessKeys = await account.getAccessKeys();
@@ -120,9 +124,7 @@ export class NameSky {
     if (!isContractStateClear) {
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
-        args: {
-          keys: contractStateKeys,
-        },
+        args: contractStateKeys,
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
@@ -131,9 +133,7 @@ export class NameSky {
     // init controller contract
     transaction.functionCall<InitArgs>({
       methodName: 'init',
-      args: {
-        owner_id: this.getCoreContractId(),
-      },
+      args: Buffer.from(this.getCoreContractId()),
       attachedDeposit: Amount.ONE_YOCTO,
       gas: gasForInit,
     });
