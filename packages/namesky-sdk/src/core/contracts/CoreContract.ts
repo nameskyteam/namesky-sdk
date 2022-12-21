@@ -3,7 +3,7 @@ import { DEFAULT_MINT_FEE, MultiTransaction } from '../../utils';
 import { Amount } from '../../utils';
 import { NftIsRegisteredOptions, NftRedeemOptions, NftRegisterOptions, NftTransferOptions } from '../types/options';
 
-export class NftContract extends Contract {
+export class CoreContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
 
   async nft_is_registered({ args, blockQuery }: NftIsRegisteredOptions): Promise<string | null> {

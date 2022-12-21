@@ -28,7 +28,7 @@ export interface SetupControllerOptions {
   gasForInit?: string;
 }
 
-// ------------------------------------------------ Nft --------------------------------------------------------
+// ---------------------------------------------- Core ---------------------------------------------------------
 export interface NftRegisterOptions extends RequiredArgsOptions<NftRegisterArgs>, AttachedDepositOptions, GasOptions {
   registrantId: string;
 }
@@ -40,7 +40,7 @@ export interface NftTransferOptions
     GasOptions,
     FunctionCallExtraOptions {}
 
-// ------------------------------------------------ Market -----------------------------------------------------
+// ---------------------------------------------- Marketplace --------------------------------------------------
 export interface CreateListingOptions
   extends RequiredArgsOptions<CreateListingArgs>,
     GasOptions,
@@ -88,10 +88,10 @@ export interface GetControllerOwnerIdOptions extends FunctionViewExtraOptions {
   registrantId: string;
 }
 
-// ------------------------------------------------ Nft --------------------------------------------------------
+// ---------------------------------------------- Core ---------------------------------------------------------
 export interface NftIsRegisteredOptions extends RequiredArgsOptions<NftIsRegisteredArgs>, FunctionViewExtraOptions {}
 
-// ------------------------------------------------ Market -----------------------------------------------------
+// ---------------------------------------------- Marketplace --------------------------------------------------
 export interface GetAccountViewOfOptions extends RequiredArgsOptions<GetAccountViewOfArgs>, FunctionViewExtraOptions {}
 
 export interface GetOfferingViewOptions extends RequiredArgsOptions<GetOfferingViewArgs>, FunctionViewExtraOptions {}

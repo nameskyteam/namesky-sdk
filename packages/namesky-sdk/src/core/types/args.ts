@@ -7,7 +7,7 @@ export interface InitArgs {
   owner_id: string;
 }
 
-// ------------------------------------------------ Nft --------------------------------------------------------
+// ---------------------------------------------- Core ---------------------------------------------------------
 export interface NftRegisterArgs {
   minter_id: string;
 }
@@ -23,7 +23,7 @@ export interface NftRedeemArgs {
   memo?: string;
 }
 
-// ------------------------------------------------ Market -----------------------------------------------------
+// ---------------------------------------------- Marketplace -----------------------------------------------------
 export interface CreateListingArgs {
   nft_contract_id: string;
   nft_token_id: string;

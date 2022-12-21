@@ -1,6 +1,6 @@
 import { getBase58CodeHash, WalletSelectorPlus } from '../utils';
-import { NftContract } from './contracts';
-import { MarketContract } from './contracts';
+import { CoreContract } from './contracts';
+import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
 import { Network } from '@near-wallet-selector/core';
@@ -14,13 +14,13 @@ import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/opt
 
 export class NameSky {
   selector: WalletSelectorPlus;
-  nftContract: NftContract;
-  marketContract: MarketContract;
+  coreContract: CoreContract;
+  marketplaceContract: MarketplaceContract;
 
-  constructor({ selector, nftContract, marketContract }: NameSkyComponent) {
+  constructor({ selector, coreContract, marketplaceContract }: NameSkyComponent) {
     this.selector = selector;
-    this.nftContract = nftContract;
-    this.marketContract = marketContract;
+    this.coreContract = coreContract;
+    this.marketplaceContract = marketplaceContract;
 
     this.onRequestFullAccess()
       .then(() => console.log('onRequestFullAccess Success'))
@@ -35,12 +35,12 @@ export class NameSky {
     return this.getNetwork().networkId;
   }
 
-  getNftContractId(): string {
-    return this.nftContract.contractId;
+  getCoreContractId(): string {
+    return this.coreContract.contractId;
   }
 
-  getMarketContractId(): string {
-    return this.marketContract.contractId;
+  getMarketplaceContractId(): string {
+    return this.marketplaceContract.contractId;
   }
 
   account(accountId: string): Promise<Account> {
@@ -101,7 +101,7 @@ export class NameSky {
     const publicKeys = accessKeys.map((accessKey) => accessKey.public_key);
 
     const isCodeHashVerified = codeHash === accountCodeHash;
-    const isOwnerIdVerified = ownerId === this.nftContract.contractId;
+    const isOwnerIdVerified = ownerId === this.coreContract.contractId;
     const isContractStateVerified = contractStateKeys.length === 1; // refers to root key 'STATE'
     const isContractStateClear = contractStateKeys.length === 0;
     const isAccessKeyVerified = publicKeys.length === 0;
@@ -132,7 +132,7 @@ export class NameSky {
     transaction.functionCall<InitArgs>({
       methodName: 'init',
       args: {
-        owner_id: this.getNftContractId(),
+        owner_id: this.getCoreContractId(),
       },
       attachedDeposit: Amount.ONE_YOCTO,
       gas: gasForInit,
@@ -161,7 +161,7 @@ export class NameSky {
 
 export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
   const selector = await setupWalletSelectorPlus(config.selector);
-  const nftContract = new NftContract(config.contracts.nftContractId, selector);
-  const marketContract = new MarketContract(config.contracts.marketContractId, selector);
-  return new NameSky({ selector, nftContract, marketContract });
+  const coreContract = new CoreContract(config.contracts.coreContractId, selector);
+  const marketplaceContract = new MarketplaceContract(config.contracts.marketplaceContractId, selector);
+  return new NameSky({ selector, coreContract, marketplaceContract });
 }

@@ -1,18 +1,18 @@
 import { WalletSelectorPlus } from '../../utils';
-import { NftContract } from '../contracts';
-import { MarketContract } from '../contracts';
+import { CoreContract } from '../contracts';
+import { MarketplaceContract } from '../contracts';
 import { WalletSelectorPlusConfig } from '../../utils';
 
 export interface NameSkyComponent {
   selector: WalletSelectorPlus;
-  nftContract: NftContract;
-  marketContract: MarketContract;
+  coreContract: CoreContract;
+  marketplaceContract: MarketplaceContract;
 }
 
 export interface NameSkyConfig {
   selector: WalletSelectorPlusConfig;
   contracts: {
-    nftContractId: string;
-    marketContractId: string;
+    coreContractId: string;
+    marketplaceContractId: string;
   };
 }

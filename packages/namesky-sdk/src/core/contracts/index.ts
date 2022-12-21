@@ -1,2 +1,2 @@
-export * from './MarketContract';
-export * from './NftContract';
+export * from './MarketplaceContract';
+export * from './CoreContract';

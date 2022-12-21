@@ -14,8 +14,8 @@ export const config: Config = {
       keyStorePrefix: 'registrant:keystore:'
     },
     contracts: {
-      nftContractId: 'core.namesky.testnet',
-      marketContractId: 'core.namesky.testnet'
+      coreContractId: 'core.namesky.testnet',
+      marketplaceContractId: 'core.namesky.testnet'
     }
   }
 }

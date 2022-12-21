@@ -18,7 +18,7 @@ import {
 } from '../types/options';
 import { UpdateOfferingArgs } from '../types/args';
 
-export class MarketContract extends Contract {
+export class MarketplaceContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
 
   async get_account_view_of({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView | undefined> {
