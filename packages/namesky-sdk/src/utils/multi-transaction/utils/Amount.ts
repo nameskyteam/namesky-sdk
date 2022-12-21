@@ -1,5 +1,4 @@
 import Big, { BigSource } from 'big.js';
-import { NEAR_DECIMALS } from './common';
 
 export type AmountSource = Amount | BigSource;
 
@@ -12,9 +11,10 @@ export type RoundingMode = 0 | 1 | 2 | 3;
 export class Amount {
   inner: Big;
 
+  static NEAR_LIKE_DECIMALS = 24;
   static ZERO = '0';
   static ONE_YOCTO = '1';
-  static ONE_NEAR = Amount.parse(1, NEAR_DECIMALS);
+  static ONE_NEAR = Amount.parse(1, Amount.NEAR_LIKE_DECIMALS);
 
   static roundDown: RoundingMode = Big.roundDown;
   static roundHalfUp: RoundingMode = Big.roundHalfUp;
@@ -124,10 +124,10 @@ export class Amount {
   }
 
   static parseYoctoNear(readable: AmountSource, overflow?: RoundingMode): string {
-    return Amount.parse(readable, NEAR_DECIMALS, overflow).toFixed();
+    return Amount.parse(readable, Amount.NEAR_LIKE_DECIMALS, overflow).toFixed();
   }
 
   static formatYoctoNear(amount: AmountSource, dp?: number, rm?: RoundingMode): string {
-    return Amount.format(amount, NEAR_DECIMALS).toFixed(dp, rm);
+    return Amount.format(amount, Amount.NEAR_LIKE_DECIMALS).toFixed(dp, rm);
   }
 }
