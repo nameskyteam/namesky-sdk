@@ -1,0 +1,1 @@
+# NameSky SDK for frontend
