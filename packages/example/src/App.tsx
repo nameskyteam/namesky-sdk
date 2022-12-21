@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 import {useNearService} from "./store";
 import {config} from "./config";
 import {setupModal, WalletSelectorModal} from "@near-wallet-selector/modal-ui";
-import {Gas, initNiceNearName} from "../../nnn-sdk/src";
+import {initNameSky} from "../../namesky-sdk/src";
 
 export const App = () => {
   const {nearService, setNearService} = useNearService()
@@ -12,15 +12,15 @@ export const App = () => {
     if (nearService) {
       return
     }
-    initNiceNearName(config.nnn)
-      .then(nnn => {
+    initNameSky(config.namesky)
+      .then(namesky => {
         setNearService({
-          nnn,
-          selector: nnn.selector
+          namesky,
+          selector: namesky.selector
         })
-        const accountId = nnn.selector.store.getState().accounts.find(accountState => accountState.active)?.accountId
+        const accountId = namesky.selector.store.getState().accounts.find(accountState => accountState.active)?.accountId
         setAccountId(accountId)
-        const modal = setupModal(nnn.selector, {contractId: ''})
+        const modal = setupModal(namesky.selector, {contractId: ''})
         setModal(modal)
       })
   }, [nearService])
@@ -36,29 +36,9 @@ export const App = () => {
   }
 
   const requestFullAccess = () => {
-    return nearService!.nnn.requestFullAccess(
+    return nearService!.namesky.requestFullAccess(
       'https://wallet.testnet.near.org',
     )
-  }
-
-  const register = async () => {
-    await nearService!.nnn.nftContract.nftRegister({
-      registrantId: 'cool8.testnet',
-      args: {
-        minter_id: nearService!.selector.getActiveAccountId()!
-      }
-    })
-  }
-
-  const setupController = async () => {
-    const data = await fetch('http://localhost:3000/nnn_controller.wasm')
-    const code = Buffer.from(await data.arrayBuffer())
-    await nearService!.nnn.setupController({
-      registrantId: 'cool8.testnet',
-      code,
-      gasForCleanState: Gas.tera(50),
-      gasForInit: Gas.tera(10)
-    })
   }
 
   return (

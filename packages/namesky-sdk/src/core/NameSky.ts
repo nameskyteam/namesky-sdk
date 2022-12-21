@@ -4,7 +4,7 @@ import { MarketContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
 import { Network } from '@near-wallet-selector/core';
-import { NiceNearNameComponent, NiceNearNameConfig } from './types/config';
+import { NameSkyComponent, NameSkyConfig } from './types/config';
 import { Account } from 'near-api-js';
 import { CleanStateArgs, InitArgs } from './types/args';
 import { MultiTransaction } from '../utils';
@@ -12,12 +12,12 @@ import { Amount } from '../utils';
 import { setupWalletSelectorPlus } from '../utils';
 import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/options';
 
-export class NiceNearName {
+export class NameSky {
   selector: WalletSelectorPlus;
   nftContract: NftContract;
   marketContract: MarketContract;
 
-  constructor({ selector, nftContract, marketContract }: NiceNearNameComponent) {
+  constructor({ selector, nftContract, marketContract }: NameSkyComponent) {
     this.selector = selector;
     this.nftContract = nftContract;
     this.marketContract = marketContract;
@@ -159,9 +159,9 @@ export class NiceNearName {
   }
 }
 
-export async function initNiceNearName(config: NiceNearNameConfig): Promise<NiceNearName> {
+export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
   const selector = await setupWalletSelectorPlus(config.selector);
   const nftContract = new NftContract(config.contracts.nftContractId, selector);
   const marketContract = new MarketContract(config.contracts.marketContractId, selector);
-  return new NiceNearName({ selector, nftContract, marketContract });
+  return new NameSky({ selector, nftContract, marketContract });
 }

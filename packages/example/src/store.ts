@@ -1,10 +1,10 @@
 import create, {SetState} from "zustand";
-import {WalletSelectorPlus} from "../../nnn-sdk/src";
-import {NiceNearName} from "../../nnn-sdk/src";
+import {WalletSelectorPlus} from "../../namesky-sdk/src";
+import {NameSky} from "../../namesky-sdk/src";
 
 export interface NearService {
   selector: WalletSelectorPlus,
-  nnn: NiceNearName,
+  namesky: NameSky,
 }
 
 interface NearServiceStore {

@@ -1,11 +1,11 @@
-import {NiceNearNameConfig} from "../../nnn-sdk/src";
+import {NameSkyConfig} from "../../namesky-sdk/src";
 
 export interface Config {
-  nnn: NiceNearNameConfig
+  namesky: NameSkyConfig
 }
 
 export const config: Config = {
-  nnn: {
+  namesky: {
     selector: {
       network: 'testnet',
       modules:[
@@ -14,8 +14,8 @@ export const config: Config = {
       keyStorePrefix: 'registrant:keystore:'
     },
     contracts: {
-      nftContractId: 'nft.nicenearname.testnet',
-      marketContractId: 'market.nicenearname.testnet'
+      nftContractId: 'core.namesky.testnet',
+      marketContractId: 'core.namesky.testnet'
     }
   }
 }
