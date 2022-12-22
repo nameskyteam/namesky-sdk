@@ -5,7 +5,6 @@ export type GasSource = Gas | BigSource;
 export class Gas {
   inner: Big
 
-  static ONE_TERA = Gas.new('1000000000000');
   static DEFAULT = Gas.tera(30);
 
   private constructor(n: GasSource) {
@@ -32,12 +31,47 @@ export class Gas {
     return Gas.new(this.inner.sub(n instanceof Gas ? n.inner : n));
   }
 
-  // If gas is not integer, will be fixed to integer
+  pow(exp: number): Gas {
+    return Gas.new(this.inner.pow(exp));
+  }
+
+  mulPow(base: GasSource, exp: number): Gas {
+    return this.mul(Gas.new(base).pow(exp));
+  }
+
+  divPow(base: GasSource, exp: number): Gas {
+    return this.div(Gas.new(base).pow(exp));
+  }
+
+  gt(n: GasSource): boolean {
+    return this.inner.gt(Gas.new(n).inner);
+  }
+
+  gte(n: GasSource): boolean {
+    return this.inner.gte(Gas.new(n).inner);
+  }
+
+  lt(n: GasSource): boolean {
+    return this.inner.lt(Gas.new(n).inner);
+  }
+
+  lte(n: GasSource): boolean {
+    return this.inner.lte(Gas.new(n).inner);
+  }
+
+  eq(n: GasSource): boolean {
+    return this.inner.eq(Gas.new(n).inner);
+  }
+
   toFixed(): string {
     return this.inner.toFixed(0, Big.roundDown);
   }
 
-  static tera(_: number): string {
-    return Gas.ONE_TERA.mul(_).toFixed();
+  static parse(tera: GasSource): Gas {
+    return Gas.new(tera).mulPow(10, 12)
+  }
+
+  static tera(_: GasSource): string {
+    return Gas.parse(_).toFixed();
   }
 }

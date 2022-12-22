@@ -2,24 +2,12 @@ import Big, { BigSource } from 'big.js';
 
 export type AmountSource = Amount | BigSource;
 
-// 0: Amount.roundDown
-// 1: Amount.roundHalfUp
-// 2: Amount.roundHalfEven
-// 3: Amount.roundUp
-export type RoundingMode = 0 | 1 | 2 | 3;
-
 export class Amount {
   inner: Big;
 
-  static NEAR_LIKE_DECIMALS = 24;
+  static NEAR_DECIMALS = 24;
   static ZERO = '0';
   static ONE_YOCTO = '1';
-  static ONE_NEAR = Amount.parse(1, Amount.NEAR_LIKE_DECIMALS);
-
-  static roundDown: RoundingMode = Big.roundDown;
-  static roundHalfUp: RoundingMode = Big.roundHalfUp;
-  static roundHalfEven: RoundingMode = Big.roundHalfEven;
-  static roundUp: RoundingMode = Big.roundUp;
 
   private constructor(n: AmountSource) {
     this.inner = new Big(n instanceof Amount ? n.inner : n);
@@ -77,10 +65,6 @@ export class Amount {
     return this.inner.eq(Amount.new(n).inner);
   }
 
-  sqrt() {
-    return this.inner.sqrt();
-  }
-
   static max(...values: AmountSource[]): Amount {
     return values
       .map((n) => Amount.new(n))
@@ -103,31 +87,27 @@ export class Amount {
       })[0];
   }
 
-  // dp: required, decimal places
-  // rm: optional, rounding mod, default `Amount.roundDown`
-  round(dp: number, rm?: RoundingMode): Amount {
-    return new Amount(this.inner.round(dp, rm ?? Amount.roundDown));
+  round(dp: number): Amount {
+    return new Amount(this.inner.round(dp, Big.roundDown));
   }
 
-  // dp: optional, decimal places, if not provided, will keep as many decimal places as possible
-  // rm: optional, rounding mod, default `Amount.roundDown`
-  toFixed(dp?: number, rm?: RoundingMode): string {
-    return this.inner.toFixed(dp, rm ?? Amount.roundDown);
+  toFixed(dp?: number): string {
+    return this.inner.toFixed(dp, Big.roundDown);
   }
 
-  static parse(readable: AmountSource, decimals: number, overflow?: RoundingMode): Amount {
-    return Amount.new(readable).mulPow(10, decimals).round(0, overflow);
+  static parse(readable: AmountSource, decimals: number): Amount {
+    return Amount.new(readable).mulPow(10, decimals).round(0);
   }
 
   static format(amount: AmountSource, decimals: number): Amount {
     return Amount.new(amount).divPow(10, decimals);
   }
 
-  static parseYoctoNear(readable: AmountSource, overflow?: RoundingMode): string {
-    return Amount.parse(readable, Amount.NEAR_LIKE_DECIMALS, overflow).toFixed();
+  static parseYoctoNear(readable: AmountSource): string {
+    return Amount.parse(readable, Amount.NEAR_DECIMALS).toFixed();
   }
 
-  static formatYoctoNear(amount: AmountSource, dp?: number, rm?: RoundingMode): string {
-    return Amount.format(amount, Amount.NEAR_LIKE_DECIMALS).toFixed(dp, rm);
+  static formatYoctoNear(amount: AmountSource, dp?: number): string {
+    return Amount.format(amount, Amount.NEAR_DECIMALS).toFixed(dp);
   }
 }
