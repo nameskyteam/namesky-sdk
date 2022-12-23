@@ -1,5 +1,5 @@
 import { setupWalletSelector } from '@near-wallet-selector/core';
-import { resolveNetwork, setupWalletModules } from '../utils';
+import { resolveNetwork} from '../utils';
 import { InMemorySigner, keyStores, Near } from 'near-api-js';
 import { WalletSelectorPlusConfig, WalletSelectorPlus } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
@@ -13,10 +13,7 @@ let walletSelectorPlus: WalletSelectorPlus | null = null;
 
 export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig): Promise<WalletSelectorPlus> {
   if (!walletSelectorPlus) {
-    const selector = await setupWalletSelector({
-      ...config,
-      modules: setupWalletModules(config.modules),
-    });
+    const selector = await setupWalletSelector({...config});
 
     const near = new Near({
       ...resolveNetwork(config.network),

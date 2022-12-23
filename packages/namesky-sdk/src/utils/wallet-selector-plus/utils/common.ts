@@ -1,26 +1,4 @@
-import { WalletModule } from '../types';
-import { Network, NetworkId, WalletModuleFactory } from '@near-wallet-selector/core';
-import { setupNearWallet } from '@near-wallet-selector/near-wallet';
-import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet';
-import { setupSender } from '@near-wallet-selector/sender';
-import { setupLedger } from '@near-wallet-selector/ledger';
-
-export function setupWalletModules(modules: WalletModule[]) {
-  return modules.map(({ type, params }): WalletModuleFactory => {
-    switch (type) {
-      case 'NearWallet':
-        return setupNearWallet(params);
-      case 'MyNearWallet':
-        return setupMyNearWallet(params);
-      case 'Sender':
-        return setupSender(params);
-      case 'Ledger':
-        return setupLedger(params);
-      default:
-        throw Error(`Wrong wallet type: ${type}`);
-    }
-  });
-}
+import { Network, NetworkId} from '@near-wallet-selector/core';
 
 export const getNetworkPreset = (networkId: NetworkId): Network => {
   switch (networkId) {

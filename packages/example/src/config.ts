@@ -1,4 +1,6 @@
 import {NameSkyConfig} from "../../namesky-sdk/src";
+import {setupNearWallet} from "@near-wallet-selector/near-wallet";
+import {setupMyNearWallet} from "@near-wallet-selector/my-near-wallet";
 
 export interface Config {
   namesky: NameSkyConfig
@@ -9,7 +11,8 @@ export const config: Config = {
     selector: {
       network: 'testnet',
       modules:[
-        { type: "NearWallet" }
+        setupNearWallet(),
+        setupMyNearWallet()
       ],
       keyStorePrefix: 'registrant:keystore:'
     },
