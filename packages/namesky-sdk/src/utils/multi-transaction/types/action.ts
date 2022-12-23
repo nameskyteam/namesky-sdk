@@ -87,7 +87,7 @@ export interface TransferParams {
 
 export interface AccessKey {
   permission: AccessKeyPermission;
-  nonce?: number;
+  nonce: number;
 }
 
 export type AccessKeyPermission = 'FullAccess' | FunctionCallAccess;
