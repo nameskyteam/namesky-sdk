@@ -1,7 +1,8 @@
 {
   "name": "namesky-sdk",
-  "version": "1.0.0",
-  "description": "NameSky SDK for UI",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "description": "NameSky SDK",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -21,8 +22,7 @@
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "crypto-js": "^4.1.1",
-    "near-api-js": "^1.1.0",
-    "next": "^13.1.1"
+    "near-api-js": "^1.1.0"
   },
   "devDependencies": {
     "@types/big.js": "^6.1.6",
