@@ -29,3 +29,8 @@ export interface OfferingView {
   price: string;
   is_simple_offering: boolean;
 }
+
+export interface Approval {
+  owner_id: string;
+  approval_id: number;
+}

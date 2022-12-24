@@ -4,13 +4,26 @@ import {
   DEFAULT_MARKET_STORAGE_DEPOSIT,
   MultiTransaction,
   DEFAULT_APPROVAL_STORAGE_DEPOSIT,
+  StorageBalance,
 } from '../../utils';
-import { AccountView, ListingView, OfferingView } from '../types/data';
+import { AccountView, Approval, ListingView, OfferingView } from '../types/data';
 import {
   CreateListingOptions,
+  CreateMarketAccountOption,
   CreateOfferingOptions,
   GetAccountViewOfOptions,
+  GetListingUniqueIdOptions,
+  GetListingViewOptions,
+  GetListingViewsOfOptions,
+  GetListingViewsOptions,
+  GetNftApprovalOptions,
+  GetNftOfferingViewsOfOptions,
+  GetOfferingUniqueIdOptions,
   GetOfferingViewOptions,
+  GetOfferingViewsOfOptions,
+  GetOfferingViewsOptions,
+  NearDepositOptions,
+  NearWithdrawOptions,
   RemoveListingOptions,
   RemoveOfferingOptions,
   UpdateListingOptions,
@@ -39,7 +52,123 @@ export class MarketplaceContract extends Contract {
     });
   }
 
+  async get_offering_views({ args, blockQuery }: GetOfferingViewsOptions): Promise<OfferingView[]> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_offering_views',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_offering_views_of({ args, blockQuery }: GetOfferingViewsOfOptions): Promise<OfferingView[]> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_offering_views_of',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_nft_offering_views_of({ args, blockQuery }: GetNftOfferingViewsOfOptions): Promise<OfferingView[]> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_nft_offering_views_of',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_offering_unique_id({ args, blockQuery }: GetOfferingUniqueIdOptions): Promise<string> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_offering_unique_id',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_listing_view({ args, blockQuery }: GetListingViewOptions): Promise<ListingView | undefined> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_listing_view',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_listing_views({ args, blockQuery }: GetListingViewsOptions): Promise<ListingView[]> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_listing_views',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_listing_views_of({ args, blockQuery }: GetListingViewsOfOptions): Promise<ListingView[]> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_listing_views_of',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_listing_unique_id({ args, blockQuery }: GetListingUniqueIdOptions): Promise<string> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_listing_unique_id',
+      args,
+      blockQuery,
+    });
+  }
+
+  async get_nft_approval({ args, blockQuery }: GetNftApprovalOptions): Promise<Approval | undefined> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_nft_approval',
+      args,
+      blockQuery,
+    });
+  }
+
   // ------------------------------------------------- Call -------------------------------------------------------
+  // This function is wrap of `storage_deposit`, used when a user doesn't
+  // create any offering or listing in marketplace, but want to have an account
+  async createMarketAccount({
+    args,
+    attachedDeposit,
+    gas,
+    callbackUrl,
+  }: CreateMarketAccountOption): Promise<StorageBalance> {
+    const transaction = MultiTransaction.createTransaction(this.contractId).storage_deposit({
+      args,
+      attachedDeposit: attachedDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
+      gas,
+    });
+    return this.selector.send(transaction, { callbackUrl });
+  }
+
+  async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
+    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+      methodName: 'near_deposit',
+      args,
+      attachedDeposit,
+      gas,
+    });
+    await this.selector.send(transaction, { callbackUrl });
+  }
+
+  async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions) {
+    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+      methodName: 'near_withdraw',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas,
+    });
+    await this.selector.send(transaction, { callbackUrl });
+  }
 
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
     const { nft_contract_id, nft_token_id, price } = args;

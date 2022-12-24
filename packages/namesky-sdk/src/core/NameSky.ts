@@ -1,4 +1,4 @@
-import {getBase58CodeHash, NUM_BYTES_DATA_LEN, WalletSelectorPlus} from '../utils';
+import { getBase58CodeHash, NUM_BYTES_DATA_LEN, WalletSelectorPlus } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -94,11 +94,11 @@ export class NameSky {
 
     // account contract state
     const contractState = await account.viewState('');
-    const contractStateKeys = contractState.reduce((pre, {key}) => {
-      const keyLen = Buffer.alloc(NUM_BYTES_DATA_LEN)
-      keyLen.writeUint32LE(key.length)
-      return Buffer.concat([pre, keyLen, key])
-    }, Buffer.alloc(0))
+    const contractStateKeys = contractState.reduce((pre, { key }) => {
+      const keyLen = Buffer.alloc(NUM_BYTES_DATA_LEN);
+      keyLen.writeUint32LE(key.length);
+      return Buffer.concat([pre, keyLen, key]);
+    }, Buffer.alloc(0));
 
     // account access keys
     const accessKeys = await account.getAccessKeys();

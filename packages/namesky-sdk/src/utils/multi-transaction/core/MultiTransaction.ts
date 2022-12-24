@@ -23,7 +23,8 @@ import {
   NftApproveOptions,
   NftRevokeOptions,
   NftRevokeAllOptions,
-  MethodArgs, Optional,
+  MethodArgs,
+  Optional,
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { AccessKey, Action } from '../types';
@@ -142,7 +143,7 @@ export class MultiTransaction {
   }
 
   addKey(publicKey: string, accessKey: Optional<AccessKey, 'nonce'>): MultiTransaction {
-    const {permission, nonce} = accessKey
+    const { permission, nonce } = accessKey;
     return this.addActions(ActionFactory.addKey({ publicKey, accessKey: { permission, nonce: nonce ?? 0 } }));
   }
 

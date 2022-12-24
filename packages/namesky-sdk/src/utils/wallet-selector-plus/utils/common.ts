@@ -1,4 +1,4 @@
-import { Network, NetworkId} from '@near-wallet-selector/core';
+import { Network, NetworkId } from '@near-wallet-selector/core';
 
 export const getNetworkPreset = (networkId: NetworkId): Network => {
   switch (networkId) {

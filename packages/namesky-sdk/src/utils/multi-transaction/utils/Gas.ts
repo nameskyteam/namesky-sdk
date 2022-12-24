@@ -1,9 +1,9 @@
-import Big, {BigSource} from "big.js";
+import Big, { BigSource } from 'big.js';
 
 export type GasSource = Gas | BigSource;
 
 export class Gas {
-  inner: Big
+  inner: Big;
 
   static DEFAULT = Gas.tera(30);
 
@@ -68,7 +68,7 @@ export class Gas {
   }
 
   static parse(tera: GasSource): Gas {
-    return Gas.new(tera).mulPow(10, 12)
+    return Gas.new(tera).mulPow(10, 12);
   }
 
   static tera(_: GasSource): string {

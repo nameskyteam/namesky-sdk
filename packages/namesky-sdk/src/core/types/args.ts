@@ -20,6 +20,19 @@ export interface NftRedeemArgs {
 }
 
 // ---------------------------------------------- Marketplace -----------------------------------------------------
+export interface CreateMarketAccountArgs {
+  account_id?: string;
+  registration_only?: boolean;
+}
+
+export interface NearDepositArgs {
+  account_id?: string;
+}
+
+export interface NearWithdrawArgs {
+  amount?: string;
+}
+
 export interface CreateListingArgs {
   nft_contract_id: string;
   nft_token_id: string;
@@ -61,6 +74,56 @@ export interface GetAccountViewOfArgs {
 
 export interface GetOfferingViewArgs {
   buyer_id: string;
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
+export interface GetOfferingViewsArgs {
+  offset?: number;
+  limit?: number;
+}
+
+export interface GetOfferingViewsOfArgs {
+  account_id: string;
+  offset?: number;
+  limit?: number;
+}
+
+export interface GetNftOfferingViewsOfArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+  offset?: number;
+  limit?: number;
+}
+
+export interface getOfferingUniqueIdArgs {
+  buyer_id: string;
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
+export interface GetListingViewArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
+export interface GetListingViewsArgs {
+  offset?: number;
+  limit?: number;
+}
+
+export interface GetListingViewsOfArgs {
+  account_id: string;
+  offset?: number;
+  limit?: number;
+}
+
+export interface GetListingUniqueIdArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
+export interface GetNftApprovalArgs {
   nft_contract_id: string;
   nft_token_id: string;
 }

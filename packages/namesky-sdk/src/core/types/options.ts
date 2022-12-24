@@ -1,9 +1,21 @@
 import { ArgsOptions, AttachedDepositOptions, BlockQuery, GasOptions, MethodArgs, NftTransferArgs } from '../../utils';
 import {
   CreateListingArgs,
+  CreateMarketAccountArgs,
   CreateOfferingArgs,
   GetAccountViewOfArgs,
+  GetListingUniqueIdArgs,
+  GetListingViewArgs,
+  GetListingViewsArgs,
+  GetListingViewsOfArgs,
+  GetNftApprovalArgs,
+  GetNftOfferingViewsOfArgs,
+  getOfferingUniqueIdArgs,
   GetOfferingViewArgs,
+  GetOfferingViewsArgs,
+  GetOfferingViewsOfArgs,
+  NearDepositArgs,
+  NearWithdrawArgs,
   NftIsRegisteredArgs,
   NftRedeemArgs,
   NftRegisterArgs,
@@ -41,6 +53,20 @@ export interface NftTransferOptions
     FunctionCallExtraOptions {}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
+export interface CreateMarketAccountOption
+  extends ArgsOptions<CreateMarketAccountArgs>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {}
+
+export interface NearDepositOptions
+  extends ArgsOptions<NearDepositArgs>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {}
+
+export interface NearWithdrawOptions extends ArgsOptions<NearWithdrawArgs>, GasOptions, FunctionCallExtraOptions {}
+
 export interface CreateListingOptions
   extends RequiredArgsOptions<CreateListingArgs>,
     GasOptions,
@@ -95,3 +121,31 @@ export interface NftIsRegisteredOptions extends RequiredArgsOptions<NftIsRegiste
 export interface GetAccountViewOfOptions extends RequiredArgsOptions<GetAccountViewOfArgs>, FunctionViewExtraOptions {}
 
 export interface GetOfferingViewOptions extends RequiredArgsOptions<GetOfferingViewArgs>, FunctionViewExtraOptions {}
+
+export interface GetOfferingViewsOptions extends ArgsOptions<GetOfferingViewsArgs>, FunctionViewExtraOptions {}
+
+export interface GetOfferingViewsOfOptions
+  extends RequiredArgsOptions<GetOfferingViewsOfArgs>,
+    FunctionViewExtraOptions {}
+
+export interface GetNftOfferingViewsOfOptions
+  extends RequiredArgsOptions<GetNftOfferingViewsOfArgs>,
+    FunctionViewExtraOptions {}
+
+export interface GetOfferingUniqueIdOptions
+  extends RequiredArgsOptions<getOfferingUniqueIdArgs>,
+    FunctionViewExtraOptions {}
+
+export interface GetListingViewOptions extends RequiredArgsOptions<GetListingViewArgs>, FunctionViewExtraOptions {}
+
+export interface GetListingViewsOptions extends ArgsOptions<GetListingViewsArgs>, FunctionViewExtraOptions {}
+
+export interface GetListingViewsOfOptions
+  extends RequiredArgsOptions<GetListingViewsOfArgs>,
+    FunctionViewExtraOptions {}
+
+export interface GetListingUniqueIdOptions
+  extends RequiredArgsOptions<GetListingUniqueIdArgs>,
+    FunctionViewExtraOptions {}
+
+export interface GetNftApprovalOptions extends RequiredArgsOptions<GetNftApprovalArgs>, FunctionViewExtraOptions {}

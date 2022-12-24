@@ -13,6 +13,7 @@
     "start:testnet": "react-scripts start",
     "build:testnet": "react-scripts build",
     "lint": "yarn eslint --fix packages/**/*.ts",
+    "prettier": "prettier packages/**/*.ts --write",
     "test": "jest",
     "prepare": "husky install"
   },
