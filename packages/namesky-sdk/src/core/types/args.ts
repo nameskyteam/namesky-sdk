@@ -8,8 +8,43 @@ export interface NftRegisterArgs {
   minter_id: string;
 }
 
+export interface NftUnregisterArgs {
+  registrant_id: string;
+  public_key: string;
+  force?: boolean;
+}
+
 export interface NftIsRegisteredArgs {
   registrant_id: string;
+}
+
+export interface NftRegistrantIdsOfArgs {
+  minter_id: string;
+  from_index?: number;
+  limit?: number;
+}
+
+export interface NftStateArgs {
+  token_id: string;
+}
+
+export interface NftNameSkyTokenArgs {
+  token_id: string;
+}
+
+export interface NftNameSkyTokensArgs {
+  from_index?: number;
+  limit?: number;
+}
+
+export interface NftNameSkyTokensForOwnerArgs {
+  account_id: string;
+  from_index?: number;
+  limit?: number;
+}
+
+export interface NftSupplyForOwnerArgs {
+  account_id: string;
 }
 
 export interface NftRedeemArgs {

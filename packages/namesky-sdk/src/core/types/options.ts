@@ -1,4 +1,13 @@
-import { ArgsOptions, AttachedDepositOptions, BlockQuery, GasOptions, MethodArgs, NftTransferArgs } from '../../utils';
+import {
+  ArgsOptions,
+  AttachedDepositOptions,
+  BlockQuery,
+  GasOptions,
+  MethodArgs,
+  NftApproveArgs,
+  NftRevokeArgs,
+  NftTransferArgs,
+} from '../../utils';
 import {
   CreateListingArgs,
   CreateMarketAccountArgs,
@@ -17,8 +26,15 @@ import {
   NearDepositArgs,
   NearWithdrawArgs,
   NftIsRegisteredArgs,
+  NftNameSkyTokenArgs,
+  NftNameSkyTokensArgs,
+  NftNameSkyTokensForOwnerArgs,
   NftRedeemArgs,
   NftRegisterArgs,
+  NftRegistrantIdsOfArgs,
+  NftStateArgs,
+  NftSupplyForOwnerArgs,
+  NftUnregisterArgs,
   RemoveListingArgs,
   RemoveOfferingArgs,
   UpdateListingArgs,
@@ -45,12 +61,25 @@ export interface NftRegisterOptions extends RequiredArgsOptions<NftRegisterArgs>
   registrantId: string;
 }
 
+export interface NftUnregisterOptions
+  extends RequiredArgsOptions<NftUnregisterArgs>,
+    GasOptions,
+    FunctionCallExtraOptions {}
+
 export interface NftRedeemOptions extends RequiredArgsOptions<NftRedeemArgs>, GasOptions, FunctionCallExtraOptions {}
 
 export interface NftTransferOptions
   extends RequiredArgsOptions<NftTransferArgs>,
     GasOptions,
     FunctionCallExtraOptions {}
+
+export interface NftApproveOptions
+  extends RequiredArgsOptions<NftApproveArgs>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {}
+
+export interface NftRevokeOptions extends RequiredArgsOptions<NftRevokeArgs>, GasOptions, FunctionCallExtraOptions {}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface CreateMarketAccountOption
@@ -116,6 +145,26 @@ export interface GetControllerOwnerIdOptions extends FunctionViewExtraOptions {
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 export interface NftIsRegisteredOptions extends RequiredArgsOptions<NftIsRegisteredArgs>, FunctionViewExtraOptions {}
+
+export interface NftRegistrantIdsOfOptions
+  extends RequiredArgsOptions<NftRegistrantIdsOfArgs>,
+    FunctionViewExtraOptions {}
+
+export interface NftStateOptions extends RequiredArgsOptions<NftStateArgs>, FunctionViewExtraOptions {}
+
+export interface NftNameSkyTokenOptions extends RequiredArgsOptions<NftNameSkyTokenArgs>, FunctionViewExtraOptions {}
+
+export interface NftNameSkyTokensOptions extends ArgsOptions<NftNameSkyTokensArgs>, FunctionViewExtraOptions {}
+
+export interface NftNameSkyTokensForOwnerOptions
+  extends RequiredArgsOptions<NftNameSkyTokensForOwnerArgs>,
+    FunctionViewExtraOptions {}
+
+export interface NftTotalSupplyOptions extends FunctionViewExtraOptions {}
+
+export interface NftSupplyForOwnerOptions
+  extends RequiredArgsOptions<NftSupplyForOwnerArgs>,
+    FunctionViewExtraOptions {}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface GetAccountViewOfOptions extends RequiredArgsOptions<GetAccountViewOfArgs>, FunctionViewExtraOptions {}

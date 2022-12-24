@@ -8,12 +8,12 @@ export interface Config {
 
 export const config: Config = {
   namesky: {
-    selector: {
+    selectorConfig: {
       network: 'testnet',
       modules: [setupNearWallet(), setupMyNearWallet()],
       keyStorePrefix: 'registrant:keystore:',
     },
-    contracts: {
+    contractsConfig: {
       coreContractId: 'core.namesky.testnet',
       marketplaceContractId: 'core.namesky.testnet',
     },

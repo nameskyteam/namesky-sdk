@@ -1,4 +1,4 @@
-import { getBase58CodeHash, NUM_BYTES_DATA_LEN, WalletSelectorPlus } from '../utils';
+import { getBase58CodeHash, NUM_BYTES_DATA_LEN, REGISTRANT_KEYSTORE_PREFIX, WalletSelectorPlus } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -160,8 +160,12 @@ export class NameSky {
 }
 
 export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
-  const selector = await setupWalletSelectorPlus(config.selector);
-  const coreContract = new CoreContract(config.contracts.coreContractId, selector);
-  const marketplaceContract = new MarketplaceContract(config.contracts.marketplaceContractId, selector);
+  const { selectorConfig, contractsConfig } = config;
+  const selector = await setupWalletSelectorPlus({
+    ...selectorConfig,
+    keyStorePrefix: selectorConfig.keyStorePrefix ?? REGISTRANT_KEYSTORE_PREFIX,
+  });
+  const coreContract = new CoreContract(contractsConfig.coreContractId, selector);
+  const marketplaceContract = new MarketplaceContract(contractsConfig.marketplaceContractId, selector);
   return new NameSky({ selector, coreContract, marketplaceContract });
 }

@@ -10,8 +10,8 @@ export interface NameSkyComponent {
 }
 
 export interface NameSkyConfig {
-  selector: WalletSelectorPlusConfig;
-  contracts: {
+  selectorConfig: WalletSelectorPlusConfig;
+  contractsConfig: {
     coreContractId: string;
     marketplaceContractId: string;
   };

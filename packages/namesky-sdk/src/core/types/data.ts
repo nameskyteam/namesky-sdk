@@ -1,6 +1,15 @@
 // ---------------------------------------------- Controller ---------------------------------------------------
 
 // ---------------------------------------------- Core ---------------------------------------------------------
+import { Token } from '../../utils';
+
+export type TokenState = 'Active' | 'Minting' | 'Redeeming' | Frozen;
+
+type Frozen = { Frozen: { memo: string } };
+
+export interface NameSkyToken extends Token {
+  token_state: TokenState;
+}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface AccountView {
