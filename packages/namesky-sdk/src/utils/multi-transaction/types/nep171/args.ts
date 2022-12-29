@@ -33,3 +33,5 @@ export interface NftIsApprovedArgs {
   approved_account_id: string;
   approval_id?: number;
 }
+
+export interface NftMetadataArgs {}

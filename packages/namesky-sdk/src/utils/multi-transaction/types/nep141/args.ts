@@ -13,3 +13,5 @@ export interface FtBalanceOfArgs {
 }
 
 export interface FtTotalSupplyArgs {}
+
+export interface FtMetadataArgs {}
