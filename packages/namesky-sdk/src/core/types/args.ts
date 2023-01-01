@@ -68,6 +68,11 @@ export interface NearWithdrawArgs {
   amount?: string;
 }
 
+export interface BuyListingArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
 export interface CreateListingArgs {
   nft_contract_id: string;
   nft_token_id: string;
@@ -81,6 +86,12 @@ export interface UpdateListingArgs {
 }
 
 export interface RemoveListingArgs {
+  nft_contract_id: string;
+  nft_token_id: string;
+}
+
+export interface AcceptOfferingArgs {
+  buyer_id: string;
   nft_contract_id: string;
   nft_token_id: string;
 }

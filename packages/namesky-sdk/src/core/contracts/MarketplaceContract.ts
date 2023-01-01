@@ -8,6 +8,8 @@ import {
 } from '../../utils';
 import { AccountView, Approval, ListingView, OfferingView } from '../types/data';
 import {
+  AcceptOfferingOptions,
+  BuyListingOptions,
   CreateListingOptions,
   CreateMarketAccountOption,
   CreateOfferingOptions,
@@ -170,6 +172,16 @@ export class MarketplaceContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
+  async buyListing({ args, attachedDeposit, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
+    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+      methodName: 'buy_listing',
+      args,
+      attachedDeposit,
+      gas,
+    });
+    return this.selector.send(transaction, { callbackUrl, throwReceiptsErrorIfAny: true });
+  }
+
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
     const { nft_contract_id, nft_token_id, price } = args;
     const transaction = MultiTransaction.createTransaction(this.contractId)
@@ -216,6 +228,16 @@ export class MarketplaceContract extends Contract {
       gas,
     });
     return this.selector.send(transaction, { callbackUrl });
+  }
+
+  async acceptOffering({ args, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
+    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+      methodName: 'accept_offering',
+      args,
+      attachedDeposit: Amount.ONE_YOCTO,
+      gas,
+    });
+    return this.selector.send(transaction, { callbackUrl, throwReceiptsErrorIfAny: true });
   }
 
   // We have two type of offerings, Simple Offering & Pro Offering

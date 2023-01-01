@@ -9,6 +9,8 @@ import {
   NftTransferArgs,
 } from '../../utils';
 import {
+  AcceptOfferingArgs,
+  BuyListingArgs,
   CreateListingArgs,
   CreateMarketAccountArgs,
   CreateOfferingArgs,
@@ -96,6 +98,12 @@ export interface NearDepositOptions
 
 export interface NearWithdrawOptions extends ArgsOptions<NearWithdrawArgs>, GasOptions, FunctionCallExtraOptions {}
 
+export interface BuyListingOptions
+  extends RequiredArgsOptions<BuyListingArgs>,
+    AttachedDepositOptions,
+    GasOptions,
+    FunctionCallExtraOptions {}
+
 export interface CreateListingOptions
   extends RequiredArgsOptions<CreateListingArgs>,
     GasOptions,
@@ -113,6 +121,11 @@ export interface UpdateListingOptions
 
 export interface RemoveListingOptions
   extends RequiredArgsOptions<RemoveListingArgs>,
+    GasOptions,
+    FunctionCallExtraOptions {}
+
+export interface AcceptOfferingOptions
+  extends RequiredArgsOptions<AcceptOfferingArgs>,
     GasOptions,
     FunctionCallExtraOptions {}
 
