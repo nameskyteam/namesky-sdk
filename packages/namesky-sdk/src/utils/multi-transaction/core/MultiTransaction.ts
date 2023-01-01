@@ -24,7 +24,6 @@ import {
   NftRevokeOptions,
   NftRevokeAllOptions,
   MethodArgs,
-  Optional,
 } from '../types';
 import { ActionFactory } from './ActionFactory';
 import { AccessKey, Action } from '../types';
@@ -142,9 +141,8 @@ export class MultiTransaction {
     return this.addActions(ActionFactory.deleteAccount({ beneficiaryId }));
   }
 
-  addKey(publicKey: string, accessKey: Optional<AccessKey, 'nonce'>): MultiTransaction {
-    const { permission, nonce } = accessKey;
-    return this.addActions(ActionFactory.addKey({ publicKey, accessKey: { permission, nonce: nonce ?? 0 } }));
+  addKey(publicKey: string, accessKey: AccessKey): MultiTransaction {
+    return this.addActions(ActionFactory.addKey({ publicKey, accessKey }));
   }
 
   deleteKey(publicKey: string): MultiTransaction {
