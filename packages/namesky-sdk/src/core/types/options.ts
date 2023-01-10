@@ -127,7 +127,9 @@ export interface RemoveListingOptions
 export interface AcceptOfferingOptions
   extends RequiredArgsOptions<AcceptOfferingArgs>,
     GasOptions,
-    FunctionCallExtraOptions {}
+    FunctionCallExtraOptions {
+  approvalStorageDeposit?: string;
+}
 
 export interface CreateOfferingOptions
   extends RequiredArgsOptions<CreateOfferingArgs>,

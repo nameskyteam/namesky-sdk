@@ -230,13 +230,23 @@ export class MarketplaceContract extends Contract {
     return this.selector.send(transaction, { callbackUrl });
   }
 
-  async acceptOffering({ args, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
-      methodName: 'accept_offering',
-      args,
-      attachedDeposit: Amount.ONE_YOCTO,
-      gas,
-    });
+  async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
+    const transaction = MultiTransaction.createTransaction(args.nft_contract_id)
+      .nft_approve({
+        args: {
+          token_id: args.nft_token_id,
+          account_id: this.contractId,
+          msg: '',
+        },
+        attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
+      })
+      .createTransaction(this.contractId)
+      .functionCall({
+        methodName: 'accept_offering',
+        args,
+        attachedDeposit: Amount.ONE_YOCTO,
+        gas,
+      });
     return this.selector.send(transaction, { callbackUrl, throwReceiptsErrorIfAny: true });
   }
 
