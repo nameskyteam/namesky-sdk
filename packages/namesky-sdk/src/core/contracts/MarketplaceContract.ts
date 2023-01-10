@@ -183,7 +183,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
-    const { nft_contract_id, nft_token_id, price } = args;
+    const { nft_contract_id, nft_token_id, price, expire_time } = args;
     const transaction = MultiTransaction.createTransaction(this.contractId)
       // first user needs to deposit for storage of new listing
       .storage_deposit({
@@ -195,7 +195,7 @@ export class MarketplaceContract extends Contract {
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
-        msg: JSON.stringify({ CreateListing: { price } }),
+        msg: JSON.stringify({ CreateListing: { price, expire_time } }),
       },
       attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
@@ -205,13 +205,13 @@ export class MarketplaceContract extends Contract {
   }
 
   async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
-    const { nft_contract_id, nft_token_id, new_price } = args;
+    const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
     // call `nft_approve` to update listing
     const transaction = MultiTransaction.createTransaction(nft_contract_id).nft_approve({
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
-        msg: JSON.stringify({ UpdateListing: { new_price } }),
+        msg: JSON.stringify({ UpdateListing: { new_price, new_expire_time } }),
       },
       attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
@@ -304,29 +304,41 @@ export class MarketplaceContract extends Contract {
   // if pro offering, we recommend user to make up the insufficient part
   async updateOffering({ args, gas, callbackUrl }: UpdateOfferingOptions) {
     const { nft_contract_id, nft_token_id, new_price } = args;
-    const offering = (await this.get_offering_view({
-      args: { buyer_id: this.selector.getActiveAccountId()!, nft_contract_id, nft_token_id },
-    }))!;
-    const insufficientBalance = Amount.max(Amount.new(new_price).sub(offering.price), 0);
 
     const transaction = MultiTransaction.createTransaction(this.contractId);
 
-    if (offering.is_simple_offering) {
-      // update offering and deposit insufficient balance
-      transaction.functionCall<UpdateOfferingArgs>({
-        methodName: 'update_offering',
-        args,
-        attachedDeposit: insufficientBalance.gt(0) ? insufficientBalance.toFixed() : Amount.ONE_YOCTO,
-        gas,
-      });
-    } else {
-      // deposit insufficient balance
-      if (insufficientBalance.gt(0)) {
+    if (new_price) {
+      // if price need to be updated
+      const offering = (await this.get_offering_view({
+        args: { buyer_id: this.selector.getActiveAccountId()!, nft_contract_id, nft_token_id },
+      }))!;
+      const insufficientBalance = Amount.max(Amount.new(new_price).sub(offering.price), 0);
+      if (offering.is_simple_offering) {
+        // update offering and deposit insufficient balance
+        transaction.functionCall<UpdateOfferingArgs>({
+          methodName: 'update_offering',
+          args,
+          attachedDeposit: insufficientBalance.gt(0) ? insufficientBalance.toFixed() : Amount.ONE_YOCTO,
+          gas,
+        });
+      } else {
+        // deposit insufficient balance
+        if (insufficientBalance.gt(0)) {
+          transaction.functionCall({
+            methodName: 'near_deposit',
+            attachedDeposit: insufficientBalance.toFixed(),
+          });
+        }
+        // update offering
         transaction.functionCall({
-          methodName: 'near_deposit',
-          attachedDeposit: insufficientBalance.toFixed(),
+          methodName: 'update_offering',
+          args,
+          attachedDeposit: Amount.ONE_YOCTO,
+          gas,
         });
       }
+    } else {
+      // if price doesn't need to be updated.
       // update offering
       transaction.functionCall({
         methodName: 'update_offering',

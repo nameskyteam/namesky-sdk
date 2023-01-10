@@ -77,12 +77,14 @@ export interface CreateListingArgs {
   nft_contract_id: string;
   nft_token_id: string;
   price: string;
+  expire_time?: number;
 }
 
 export interface UpdateListingArgs {
   nft_contract_id: string;
   nft_token_id: string;
-  new_price: string;
+  new_price?: string;
+  new_expire_time?: number;
 }
 
 export interface RemoveListingArgs {
@@ -101,12 +103,14 @@ export interface CreateOfferingArgs {
   nft_token_id: string;
   price: string;
   is_simple_offering: boolean;
+  expire_time: number;
 }
 
 export interface UpdateOfferingArgs {
   nft_contract_id: string;
   nft_token_id: string;
-  new_price: string;
+  new_price?: string;
+  new_expire_time?: number;
 }
 
 export interface RemoveOfferingArgs {
