@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "target": "ESNext",
+    "module": "CommonJS",
     "lib": ["DOM"],
     "importHelpers": true,
     // output .d.ts declaration files for consumers
@@ -25,7 +26,7 @@
     // significant perf increase by skipping checking .d.ts files, particularly those in node_modules. Recommended by TS
     "skipLibCheck": true,
     // error out if import and file system have a casing mismatch. Recommended by TS
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": true
     // `tsdx build` ignores this option, but it is commonly used when type-checking separately with `tsc`
     // "noEmit": true,
   }

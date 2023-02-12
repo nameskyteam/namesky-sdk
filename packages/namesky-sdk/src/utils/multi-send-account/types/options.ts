@@ -6,5 +6,5 @@ export interface SignAndSendTransactionsOptions {
 
 export interface MultiSendAccountSendOptions<Value> {
   throwReceiptsErrorIfAny?: boolean;
-  parse: ResponseParser<Value>;
+  parse?: ResponseParser<Value>;
 }
