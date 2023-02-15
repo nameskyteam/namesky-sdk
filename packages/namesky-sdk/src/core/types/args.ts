@@ -1,3 +1,9 @@
+export type UpdateWrapper<T> =
+  | {
+      UpdateSome: T;
+    }
+  | 'UpdateNone';
+
 // ---------------------------------------------- Controller ---------------------------------------------------
 export type CleanStateArgs = Uint8Array;
 
@@ -84,7 +90,7 @@ export interface UpdateListingArgs {
   nft_contract_id: string;
   nft_token_id: string;
   new_price?: string;
-  new_expire_time?: number;
+  new_expire_time?: UpdateWrapper<number>;
 }
 
 export interface RemoveListingArgs {
@@ -110,7 +116,7 @@ export interface UpdateOfferingArgs {
   nft_contract_id: string;
   nft_token_id: string;
   new_price?: string;
-  new_expire_time?: number;
+  new_expire_time?: UpdateWrapper<number>;
 }
 
 export interface RemoveOfferingArgs {
