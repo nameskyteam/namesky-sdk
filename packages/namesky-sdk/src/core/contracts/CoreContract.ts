@@ -2,6 +2,8 @@ import { Contract } from '../../utils/Contract';
 import { DEFAULT_APPROVAL_STORAGE_DEPOSIT, DEFAULT_MINT_FEE, MultiTransaction } from '../../utils';
 import { Amount } from '../../utils';
 import {
+  GetLatestControllerCodeHashOptions,
+  GetLatestControllerCodeOptions,
   NftApproveOptions,
   NftIsRegisteredOptions,
   NftNameSkyTokenOptions,
@@ -89,6 +91,22 @@ export class CoreContract extends Contract {
     return this.selector.view({
       contractId: this.contractId,
       methodName: 'nft_total_supply',
+      blockQuery,
+    });
+  }
+
+  async get_latest_controller_code({ blockQuery }: GetLatestControllerCodeOptions): Promise<string> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_latest_controller_code',
+      blockQuery,
+    });
+  }
+
+  async get_latest_controller_code_hash({ blockQuery }: GetLatestControllerCodeHashOptions): Promise<string> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_latest_controller_code_hash',
       blockQuery,
     });
   }

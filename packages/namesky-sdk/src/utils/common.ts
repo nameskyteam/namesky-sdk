@@ -12,3 +12,13 @@ export function getBase58CodeHash(code: Buffer): string {
   const hash = sha256(code);
   return base58CryptoHash(hash);
 }
+
+export function buildContractStateKeysRaw(state: { key: Buffer; value: Buffer }[]): Buffer {
+  return state.reduce((pre, { key }) => {
+    // 4 bytes for key len
+    const keyLen = Buffer.alloc(NUM_BYTES_DATA_LEN);
+    keyLen.writeUint32LE(key.length);
+    // borsh like, key_len + key_data
+    return Buffer.concat([pre, keyLen, key]);
+  }, Buffer.alloc(0));
+}

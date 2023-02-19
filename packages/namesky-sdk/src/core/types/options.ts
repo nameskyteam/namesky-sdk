@@ -181,6 +181,10 @@ export interface NftSupplyForOwnerOptions
   extends RequiredArgsOptions<NftSupplyForOwnerArgs>,
     FunctionViewExtraOptions {}
 
+export interface GetLatestControllerCodeOptions extends FunctionViewExtraOptions {}
+
+export interface GetLatestControllerCodeHashOptions extends FunctionViewExtraOptions {}
+
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface GetAccountViewOfOptions extends RequiredArgsOptions<GetAccountViewOfArgs>, FunctionViewExtraOptions {}
 
