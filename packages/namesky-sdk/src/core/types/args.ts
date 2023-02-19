@@ -109,7 +109,7 @@ export interface CreateOfferingArgs {
   nft_token_id: string;
   price: string;
   is_simple_offering: boolean;
-  expire_time: number;
+  expire_time?: number;
 }
 
 export interface UpdateOfferingArgs {
