@@ -106,8 +106,8 @@ export class NameSky {
 
     const isCodeHashVerified = codeHash === accountCodeHash;
     const isOwnerIdVerified = ownerId === this.coreContract.contractId;
-    const isContractStateVerified = contractStateKeys.length === 1; // refers to root key 'STATE'
-    const isContractStateClear = contractStateKeys.length === 0;
+    const isContractStateVerified = contractState.length === 1;
+    const isContractStateClear = contractState.length === 0;
     const isAccessKeyVerified = publicKeys.length === 0;
 
     if (isCodeHashVerified && isOwnerIdVerified && isContractStateVerified && isAccessKeyVerified) {
