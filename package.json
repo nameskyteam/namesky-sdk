@@ -17,7 +17,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@near-wallet-selector/core": "^7.3.0",
+    "@near-wallet-selector/core": "^7.8.0",
     "big.js": "^6.2.1",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",

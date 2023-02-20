@@ -604,12 +604,12 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@near-wallet-selector/core@^7.3.0":
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-7.3.0.tgz#4cbd93067f1fd052acfe87edd7c58aed340cc50a"
-  integrity sha512-kmW3/taTfX3KjsXkaAbPtQUYTSpax5HY8aFE/66wlGgmm7PboEOPYys04PkG/f6SJ3UJoTn49Ek87C0eu5hSDA==
+"@near-wallet-selector/core@^7.8.0":
+  version "7.8.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-7.8.0.tgz#690a9f20deb20dbcfb40074933a4fbcd280662e6"
+  integrity sha512-hFYbWE4aUwhaCqYHXQ7eyhu2dZQl5EIi1TFwkaEcaaQirHBhLda8vpHARAzrZ9H5po2yUhqxv1lw/5O6uAcF4Q==
   dependencies:
-    rxjs "^7.5.7"
+    rxjs "^7.8.0"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -3168,6 +3168,13 @@ rxjs@^7.5.7:
   version "7.5.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.5.7.tgz#2ec0d57fdc89ece220d2e702730ae8f1e49def39"
   integrity sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==
+  dependencies:
+    tslib "^2.1.0"
+
+rxjs@^7.8.0:
+  version "7.8.0"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.0.tgz#90a938862a82888ff4c7359811a595e14e1e09a4"
+  integrity sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==
   dependencies:
     tslib "^2.1.0"
 
