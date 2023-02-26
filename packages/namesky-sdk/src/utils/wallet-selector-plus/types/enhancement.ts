@@ -22,6 +22,7 @@ export interface WalletSelectorEnhancement {
   }: FunctionViewOptions<Value, Args>): Promise<Value>;
   send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions<Value>): Promise<Value>;
   sendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value>;
+  isLoginAccessKeyActive(accountId?: string): Promise<boolean>;
 }
 
 /**

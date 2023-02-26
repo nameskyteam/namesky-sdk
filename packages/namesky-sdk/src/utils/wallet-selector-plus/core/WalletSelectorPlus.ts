@@ -3,11 +3,19 @@ import { resolveNetwork } from '../utils';
 import { InMemorySigner, keyStores, Near } from 'near-api-js';
 import { WalletSelectorPlusConfig, WalletSelectorPlus } from '../types';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { FunctionViewOptions, MethodArgs, MultiTransaction, throwReceiptsErrorIfAny } from '../../multi-transaction';
+import {
+  Amount,
+  FunctionViewOptions,
+  MethodArgs,
+  MultiTransaction,
+  throwReceiptsErrorIfAny,
+} from '../../multi-transaction';
 import { parseOutcomeValue } from '../../multi-transaction';
 import { MultiSendAccount } from '../../multi-send-account';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { WalletSelectorPlusSendOptions } from '../types';
+import { FunctionCallPermissionView } from 'near-api-js/lib/providers/provider';
+import { PublicKey } from 'near-api-js/lib/utils';
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;
 
@@ -75,6 +83,37 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
 
       async sendWithLocalKey<Value>(signerID: string, transaction: MultiTransaction): Promise<Value> {
         return this.multiSendAccount(signerID).send<Value>(transaction);
+      },
+
+      async isLoginAccessKeyActive(accountId?: string): Promise<boolean> {
+        accountId = accountId ?? this.getActiveAccountId();
+        if (!accountId) {
+          return false;
+        }
+
+        const loginAccount = await this.wallet()
+          .then((wallet) => wallet.getAccounts())
+          .then((accounts) => accounts.find((account) => account.accountId === accountId));
+        const loginPublicKey = loginAccount?.publicKey;
+
+        if (!loginPublicKey) {
+          return false;
+        }
+
+        const accessKeys = await this.multiSendAccount(accountId).getAccessKeys();
+        const loginAccessKey = accessKeys.find(
+          (accessKey) =>
+            PublicKey.fromString(accessKey.public_key).toString() === PublicKey.fromString(loginPublicKey).toString()
+        );
+
+        if (!loginAccessKey) {
+          return false;
+        }
+
+        const remainingAllowance = Amount.new(
+          (loginAccessKey.access_key.permission as FunctionCallPermissionView).FunctionCall.allowance
+        );
+        return remainingAllowance.gte(Amount.parseYoctoNear('0.05'));
       },
     };
   }

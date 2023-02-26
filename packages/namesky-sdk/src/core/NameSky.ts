@@ -1,10 +1,4 @@
-import {
-  buildContractStateKeysRaw,
-  getBase58CodeHash,
-  NUM_BYTES_DATA_LEN,
-  REGISTRANT_KEYSTORE_PREFIX,
-  WalletSelectorPlus,
-} from '../utils';
+import { buildContractStateKeysRaw, getBase58CodeHash, REGISTRANT_KEYSTORE_PREFIX, WalletSelectorPlus } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
