@@ -110,9 +110,11 @@ export async function setupWalletSelectorPlus(config: WalletSelectorPlusConfig):
           return false;
         }
 
-        const remainingAllowance = Amount.new(
-          (loginAccessKey.access_key.permission as FunctionCallPermissionView).FunctionCall.allowance
-        );
+        if (loginAccessKey.access_key.permission === 'FullAccess') {
+          return true;
+        }
+
+        const remainingAllowance = Amount.new(loginAccessKey.access_key.permission.FunctionCall.allowance);
         return remainingAllowance.gte(Amount.parseYoctoNear('0.05'));
       },
     };
