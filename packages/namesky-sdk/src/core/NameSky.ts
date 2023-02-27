@@ -11,6 +11,7 @@ import { MultiTransaction } from '../utils';
 import { Amount } from '../utils';
 import { setupWalletSelectorPlus } from '../utils';
 import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/options';
+import { UserSettingContract } from './contracts/UserSettingContract';
 
 export class NameSky {
   selector: WalletSelectorPlus;
@@ -163,5 +164,6 @@ export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
   });
   const coreContract = new CoreContract(contractsConfig.coreContractId, selector);
   const marketplaceContract = new MarketplaceContract(contractsConfig.marketplaceContractId, selector);
-  return new NameSky({ selector, coreContract, marketplaceContract });
+  const userSettingContract = new UserSettingContract(contractsConfig.userSettingContractId, selector);
+  return new NameSky({ selector, coreContract, marketplaceContract, userSettingContract });
 }
