@@ -183,3 +183,36 @@ export interface GetNftApprovalArgs {
   nft_contract_id: string;
   nft_token_id: string;
 }
+
+// ---------------------------------------------- User Setting --------------------------------------------------
+export interface LikeArgs {
+  token_id: string;
+}
+
+export interface UnlikeArgs {
+  token_id: string;
+}
+
+export interface WatchArgs {
+  token_id: string;
+}
+
+export interface UnwatchArgs {
+  token_id: string;
+}
+
+export interface ReadNotificationAtArgs {
+  timestamp?: string;
+}
+
+export interface GetUserLikesArgs {
+  account_id: string;
+}
+
+export interface GetUserWatchListArgs {
+  account_id: string;
+}
+
+export interface GetUserLastReadNotificationTimeArgs {
+  account_id: string;
+}

@@ -25,6 +25,10 @@ import {
   GetOfferingViewArgs,
   GetOfferingViewsArgs,
   GetOfferingViewsOfArgs,
+  GetUserLastReadNotificationTimeArgs,
+  GetUserLikesArgs,
+  GetUserWatchListArgs,
+  LikeArgs,
   NearDepositArgs,
   NearWithdrawArgs,
   NftIsRegisteredArgs,
@@ -37,10 +41,14 @@ import {
   NftStateArgs,
   NftSupplyForOwnerArgs,
   NftUnregisterArgs,
+  ReadNotificationAtArgs,
   RemoveListingArgs,
   RemoveOfferingArgs,
+  UnlikeArgs,
+  UnwatchArgs,
   UpdateListingArgs,
   UpdateOfferingArgs,
+  WatchArgs,
 } from './args';
 
 // ================================================ Call =======================================================
@@ -148,6 +156,20 @@ export interface RemoveOfferingOptions
     GasOptions,
     FunctionCallExtraOptions {}
 
+// ---------------------------------------------- User Setting --------------------------------------------------
+export interface LikeOptions extends RequiredArgsOptions<LikeArgs>, GasOptions, FunctionCallExtraOptions {}
+
+export interface UnlikeOptions extends RequiredArgsOptions<UnlikeArgs>, GasOptions, FunctionCallExtraOptions {}
+
+export interface WatchOptions extends RequiredArgsOptions<WatchArgs>, GasOptions, FunctionCallExtraOptions {}
+
+export interface UnwatchOptions extends RequiredArgsOptions<UnwatchArgs>, GasOptions, FunctionCallExtraOptions {}
+
+export interface ReadNotificationAtOptions
+  extends ArgsOptions<ReadNotificationAtArgs>,
+    GasOptions,
+    FunctionCallExtraOptions {}
+
 // ================================================ View =======================================================
 interface FunctionViewExtraOptions {
   blockQuery?: BlockQuery;
@@ -217,3 +239,12 @@ export interface GetListingUniqueIdOptions
     FunctionViewExtraOptions {}
 
 export interface GetNftApprovalOptions extends RequiredArgsOptions<GetNftApprovalArgs>, FunctionViewExtraOptions {}
+
+// ---------------------------------------------- User Setting --------------------------------------------------
+export interface GetUserLikesOptions extends RequiredArgsOptions<GetUserLikesArgs>, FunctionViewExtraOptions {}
+
+export interface GetUserWatchListOptions extends RequiredArgsOptions<GetUserWatchListArgs>, FunctionViewExtraOptions {}
+
+export interface GetUserLastReadNotificationTimeOptions
+  extends RequiredArgsOptions<GetUserLastReadNotificationTimeArgs>,
+    FunctionViewExtraOptions {}
