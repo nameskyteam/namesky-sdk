@@ -17,11 +17,13 @@ export class NameSky {
   selector: WalletSelectorPlus;
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
+  userSettingContract: UserSettingContract;
 
-  constructor({ selector, coreContract, marketplaceContract }: NameSkyComponent) {
+  constructor({ selector, coreContract, marketplaceContract, userSettingContract }: NameSkyComponent) {
     this.selector = selector;
     this.coreContract = coreContract;
     this.marketplaceContract = marketplaceContract;
+    this.userSettingContract = userSettingContract;
 
     this.onRequestFullAccess()
       .then(() => console.log('onRequestFullAccess Success'))
@@ -42,6 +44,10 @@ export class NameSky {
 
   getMarketplaceContractId(): string {
     return this.marketplaceContract.contractId;
+  }
+
+  getUserSettingContractId(): string {
+    return this.userSettingContract.contractId;
   }
 
   account(accountId: string): Promise<Account> {
