@@ -14,7 +14,6 @@ import { parseOutcomeValue } from '../../multi-transaction';
 import { MultiSendAccount } from '../../multi-send-account';
 import { FinalExecutionOutcome } from 'near-api-js/lib/providers';
 import { WalletSelectorPlusSendOptions } from '../types';
-import { FunctionCallPermissionView } from 'near-api-js/lib/providers/provider';
 import { PublicKey } from 'near-api-js/lib/utils';
 
 let walletSelectorPlus: WalletSelectorPlus | null = null;

@@ -1,4 +1,4 @@
-import { buildContractStateKeysRaw, getBase58CodeHash, REGISTRANT_KEYSTORE_PREFIX, WalletSelectorPlus } from '../utils';
+import { buildContractStateKeysRaw, REGISTRANT_KEYSTORE_PREFIX, WalletSelectorPlus } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -12,6 +12,7 @@ import { Amount } from '../utils';
 import { setupWalletSelectorPlus } from '../utils';
 import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
+import { getBase58CodeHash } from '../utils/crypto';
 
 export class NameSky {
   selector: WalletSelectorPlus;
