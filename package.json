@@ -10,9 +10,8 @@
     "src"
   ],
   "scripts": {
-    "build": "tsup packages/namesky-sdk/src --minify --dts",
-    "lint": "yarn eslint --fix packages/**/*.ts",
-    "prettier": "prettier packages/**/*.ts --write",
+    "build": "tsup src --minify --dts",
+    "lint": "eslint src/**/*.ts --fix",
     "test": "jest",
     "prepare": "husky install"
   },
