@@ -1,4 +1,4 @@
-import { buildContractStateKeysRaw, REGISTRANT_KEYSTORE_PREFIX, WalletSelectorPlus } from '../utils';
+import { buildContractStateKeysRaw, REGISTRANT_KEYSTORE_PREFIX } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -7,14 +7,13 @@ import { Network } from '@near-wallet-selector/core';
 import { NameSkyComponent, NameSkyConfig } from './types/config';
 import { Account } from 'near-api-js';
 import { CleanStateArgs, InitArgs } from './types/args';
-import { setupWalletSelectorPlus } from '../utils';
 import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import { getBase58CodeHash } from '../utils';
-import { Amount, MultiTransaction } from 'multi-transaction';
+import { Amount, MultiSendWalletSelector, MultiTransaction, setupMultiSendWalletSelector } from 'multi-transaction';
 
 export class NameSky {
-  selector: WalletSelectorPlus;
+  selector: MultiSendWalletSelector;
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
   userSettingContract: UserSettingContract;
@@ -164,7 +163,7 @@ export class NameSky {
 
 export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
   const { selectorConfig, contractsConfig } = config;
-  const selector = await setupWalletSelectorPlus({
+  const selector = await setupMultiSendWalletSelector({
     ...selectorConfig,
     keyStorePrefix: selectorConfig.keyStorePrefix ?? REGISTRANT_KEYSTORE_PREFIX,
   });
