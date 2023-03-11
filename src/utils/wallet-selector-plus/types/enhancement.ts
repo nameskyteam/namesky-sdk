@@ -3,8 +3,7 @@ import { WalletSelector } from '@near-wallet-selector/core';
 import { Near } from 'near-api-js';
 import { WalletSelectorPlusSendOptions } from './options';
 import { BrowserLocalStorageKeyStore } from 'near-api-js/lib/key_stores';
-import { FunctionViewOptions, MethodArgs, MultiTransaction } from '../../multi-transaction';
-import { MultiSendAccount } from '../../multi-send-account';
+import { ViewFunctionOptions, MultiTransaction, MultiSendAccount } from 'multi-transaction';
 
 export interface WalletSelectorEnhancement {
   near: Near;
@@ -14,18 +13,13 @@ export interface WalletSelectorEnhancement {
   getAccountIds(): string[];
   keyStore(): BrowserLocalStorageKeyStore;
   multiSendAccount(accountId: string): MultiSendAccount;
-  view<Value, Args extends MethodArgs>({
-    contractId,
-    methodName,
-    args,
-    blockQuery,
-  }: FunctionViewOptions<Value, Args>): Promise<Value>;
-  send<Value>(transaction: MultiTransaction, options?: WalletSelectorPlusSendOptions<Value>): Promise<Value>;
-  sendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value>;
+  view<Value, Args>(options: ViewFunctionOptions<Value, Args>): Promise<Value>;
+  send<Value>(
+    transaction: MultiTransaction,
+    options?: WalletSelectorPlusSendOptions<Value>
+  ): Promise<Value | undefined>;
+  sendWithLocalKey<Value>(signerId: string, transaction: MultiTransaction): Promise<Value | undefined>;
   isLoginAccessKeyActive(accountId?: string): Promise<boolean>;
 }
 
-/**
- * Enhancement of `NearWalletSelector` based on `MultiTransaction` and `MultiSendAccount`
- */
 export type WalletSelectorPlus = Modify<WalletSelector, WalletSelectorEnhancement>;

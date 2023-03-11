@@ -1,6 +1,6 @@
 import { Contract } from '../../utils/Contract';
-import { DEFAULT_APPROVAL_STORAGE_DEPOSIT, DEFAULT_MINT_FEE, MultiTransaction } from '../../utils';
-import { Amount } from '../../utils';
+import { DEFAULT_APPROVAL_STORAGE_DEPOSIT, DEFAULT_MINT_FEE } from '../../utils';
+import { Amount, MultiTransaction } from 'multi-transaction';
 import {
   GetLatestControllerCodeHashOptions,
   GetLatestControllerCodeOptions,
@@ -131,7 +131,9 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send(transaction, { callbackUrl, throwReceiptsErrorIfAny: true });
+    return this.selector
+      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
+      .then((value) => value!);
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
@@ -141,7 +143,9 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send(transaction, { callbackUrl, throwReceiptsErrorIfAny: true });
+    return this.selector
+      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
+      .then((value) => value!);
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
@@ -164,7 +168,6 @@ export class CoreContract extends Contract {
   async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
     const transaction = MultiTransaction.createTransaction(this.contractId).nft_revoke({
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
     await this.selector.send(transaction, { callbackUrl });

@@ -2791,6 +2791,16 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
+multi-transaction@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-0.1.0.tgz#7edb0ffc01eb065046f6c6f9ce8a50afd076ba91"
+  integrity sha512-3FMWcV9GBNEm3JH49EOVKQzGIle2o39Zo5zEP4Nm+sYMnrlSkBpAuwdw4jGEe1hXx2qLA9QSoN/cKJCyoiwstQ==
+  dependencies:
+    "@near-wallet-selector/core" "^7.8.0"
+    big.js "^6.2.1"
+    buffer "^6.0.3"
+    near-api-js "^1.1.0"
+
 mustache@^4.0.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/mustache/-/mustache-4.2.0.tgz#e5892324d60a12ec9c2a73359edca52972bf6f64"

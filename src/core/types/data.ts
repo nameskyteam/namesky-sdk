@@ -1,7 +1,8 @@
+import { Token } from 'multi-transaction';
+
 // ---------------------------------------------- Controller ---------------------------------------------------
 
 // ---------------------------------------------- Core ---------------------------------------------------------
-import { Token } from '../../utils';
 
 export type TokenState = 'Active' | 'Minting' | 'Redeeming' | Frozen;
 

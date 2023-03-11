@@ -1,8 +1,8 @@
-import { ResponseParser } from '../../multi-transaction';
+import { ValueParser } from 'multi-transaction';
 
 export interface WalletSelectorPlusSendOptions<Value> {
   walletId?: string;
   callbackUrl?: string;
-  throwReceiptsErrorIfAny?: boolean;
-  parse?: ResponseParser<Value>;
+  throwReceiptErrorsIfAny?: boolean;
+  parse?: ValueParser<Value>;
 }
