@@ -1,5 +1,5 @@
 import { Contract } from '../../utils/Contract';
-import { MultiTransaction } from '../../utils';
+import { MultiTransaction } from 'multi-transaction';
 import {
   GetUserLastReadNotificationTimeOptions,
   GetUserLikesOptions,

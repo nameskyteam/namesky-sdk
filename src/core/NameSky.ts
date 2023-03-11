@@ -7,12 +7,11 @@ import { Network } from '@near-wallet-selector/core';
 import { NameSkyComponent, NameSkyConfig } from './types/config';
 import { Account } from 'near-api-js';
 import { CleanStateArgs, InitArgs } from './types/args';
-import { MultiTransaction } from '../utils';
-import { Amount } from '../utils';
 import { setupWalletSelectorPlus } from '../utils';
 import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
-import { getBase58CodeHash } from '../utils/crypto';
+import { getBase58CodeHash } from '../utils';
+import { Amount, MultiTransaction } from 'multi-transaction';
 
 export class NameSky {
   selector: WalletSelectorPlus;

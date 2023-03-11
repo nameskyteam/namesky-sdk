@@ -1,11 +1,5 @@
 import { Contract } from '../../utils/Contract';
-import {
-  Amount,
-  DEFAULT_MARKET_STORAGE_DEPOSIT,
-  MultiTransaction,
-  DEFAULT_APPROVAL_STORAGE_DEPOSIT,
-  StorageBalance,
-} from '../../utils';
+import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT } from '../../utils';
 import { AccountView, Approval, ListingView, OfferingView } from '../types/data';
 import {
   AcceptOfferingOptions,
@@ -32,6 +26,7 @@ import {
   UpdateOfferingOptions,
 } from '../types/options';
 import { UpdateOfferingArgs } from '../types/args';
+import { Amount, MultiTransaction, StorageBalance } from 'multi-transaction';
 
 export class MarketplaceContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
@@ -149,7 +144,7 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: attachedDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       gas,
     });
-    return this.selector.send(transaction, { callbackUrl });
+    return this.selector.send<StorageBalance>(transaction, { callbackUrl }).then((value) => value!);
   }
 
   async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
@@ -179,7 +174,9 @@ export class MarketplaceContract extends Contract {
       attachedDeposit,
       gas,
     });
-    return this.selector.send(transaction, { callbackUrl, throwReceiptsErrorIfAny: true });
+    return this.selector
+      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
+      .then((value) => value!);
   }
 
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
@@ -227,7 +224,7 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send(transaction, { callbackUrl });
+    return this.selector.send<ListingView>(transaction, { callbackUrl }).then((value) => value!);
   }
 
   async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
@@ -247,7 +244,9 @@ export class MarketplaceContract extends Contract {
         attachedDeposit: Amount.ONE_YOCTO,
         gas,
       });
-    return this.selector.send(transaction, { callbackUrl, throwReceiptsErrorIfAny: true });
+    return this.selector
+      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
+      .then((value) => value!);
   }
 
   // We have two type of offerings, Simple Offering & Pro Offering
@@ -358,6 +357,6 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send(transaction, { callbackUrl });
+    return this.selector.send<OfferingView>(transaction, { callbackUrl }).then((value) => value!);
   }
 }
