@@ -57,7 +57,7 @@ export class NameSky {
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey;
-    const keystore = this.selector.keyStore();
+    const keystore = this.selector.keyStore;
     const networkId = this.getNetworkId();
     await keystore.setKey(networkId, pendingAccountId, keyPair);
     const newUrl = new URL(webWalletBaseUrl + '/login/');
@@ -76,7 +76,7 @@ export class NameSky {
       return;
     }
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString();
-    const keystore = this.selector.keyStore();
+    const keystore = this.selector.keyStore;
     const networkId = this.getNetworkId();
     const keyPair = await keystore.getKey(networkId, pendingAccountId);
     if (!keyPair) {
