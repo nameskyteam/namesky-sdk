@@ -1,10 +1,10 @@
-import { WalletSelectorPlus } from './wallet-selector-plus';
+import { MultiSendWalletSelector } from 'multi-transaction';
 
 export class Contract {
   contractId: string;
-  selector: WalletSelectorPlus;
+  selector: MultiSendWalletSelector;
 
-  constructor(contractId: string, selector: WalletSelectorPlus) {
+  constructor(contractId: string, selector: MultiSendWalletSelector) {
     this.contractId = contractId;
     this.selector = selector;
   }

@@ -1,18 +1,17 @@
-import { WalletSelectorPlus } from '../../utils';
 import { CoreContract } from '../contracts';
 import { MarketplaceContract } from '../contracts';
-import { WalletSelectorPlusConfig } from '../../utils';
 import { UserSettingContract } from '../contracts/UserSettingContract';
+import { MultiSendWalletSelector, MultiSendWalletSelectorConfig } from 'multi-transaction';
 
 export interface NameSkyComponent {
-  selector: WalletSelectorPlus;
+  selector: MultiSendWalletSelector;
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
   userSettingContract: UserSettingContract;
 }
 
 export interface NameSkyConfig {
-  selectorConfig: WalletSelectorPlusConfig;
+  selectorConfig: MultiSendWalletSelectorConfig;
   contractsConfig: {
     coreContractId: string;
     marketplaceContractId: string;
