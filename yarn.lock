@@ -611,6 +611,13 @@
   dependencies:
     rxjs "^7.8.0"
 
+"@near-wallet-selector/core@^7.9.0":
+  version "7.9.0"
+  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-7.9.0.tgz#33dcfa589983d5aa10f0590e181e2f1e538c044d"
+  integrity sha512-VbHNdO1yRILsgjrX3Qxg5C3oJZpC3f1PjHLY0h37FXRBTIyVEycMl+8qVaBHck5j8FIOJMfyS9d6tC+TKRp7Og==
+  dependencies:
+    rxjs "^7.8.0"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -2791,12 +2798,12 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-multi-transaction@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-1.0.0.tgz#5b279c63628e5e7a155fa611d113681566d06bf1"
-  integrity sha512-oBsmJSqw06xZaxzAMi+XbRbsh0+sDus1JObBLvc/gMzCAIpaKvL6LCApC+mvzF8ayWlFktj9++NshktZf4rnQw==
+multi-transaction@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-1.1.0.tgz#a30e7d2209092e2752235d9d169a7736a2e20727"
+  integrity sha512-R6+a8MqTmskn2tJBSXyegb5stmRiotioVATJy5S//YAPbAB3XxeozfoCmGfPKQK7qy6fV+IbJaoTr3G00itGIg==
   dependencies:
-    "@near-wallet-selector/core" "^7.8.0"
+    "@near-wallet-selector/core" "^7.9.0"
     big.js "^6.2.1"
     buffer "^6.0.3"
     near-api-js "^1.1.0"
