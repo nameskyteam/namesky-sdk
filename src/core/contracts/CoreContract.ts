@@ -4,6 +4,8 @@ import { Amount, MultiTransaction } from 'multi-transaction';
 import {
   GetLatestControllerCodeHashOptions,
   GetLatestControllerCodeOptions,
+  GetMintFeeOptions,
+  GetRoyaltyOptions,
   NftApproveOptions,
   NftIsRegisteredOptions,
   NftNameSkyTokenOptions,
@@ -19,7 +21,7 @@ import {
   NftTransferOptions,
   NftUnregisterOptions,
 } from '../types/options';
-import { NameSkyToken, TokenState } from '../types/data';
+import { NameSkyToken, RoyaltyView, TokenState } from '../types/data';
 
 export class CoreContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
@@ -109,6 +111,24 @@ export class CoreContract extends Contract {
       methodName: 'get_latest_controller_code_hash',
       blockQuery,
     });
+  }
+
+  async get_mint_fee({ blockQuery }: GetMintFeeOptions): Promise<string> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_mint_fee',
+      blockQuery,
+    });
+  }
+
+  async get_royalty({ blockQuery }: GetRoyaltyOptions): Promise<number> {
+    return this.selector
+      .view<RoyaltyView>({
+        contractId: this.contractId,
+        methodName: 'get_royalty',
+        blockQuery,
+      })
+      .then(({ royalty, divisor }) => royalty / divisor);
   }
 
   // -------------------------------------------------- Call -------------------------------------------------------

@@ -12,6 +12,11 @@ export interface NameSkyToken extends Token {
   token_state: TokenState;
 }
 
+export interface RoyaltyView {
+  royalty: number;
+  divisor: number;
+}
+
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface AccountView {
   account_id: string;
@@ -43,4 +48,18 @@ export interface OfferingView {
 export interface Approval {
   owner_id: string;
   approval_id: number;
+}
+
+export interface MarketplaceConfig {
+  // 10000 = 100.00 %
+  listing_trading_fee: number;
+  // 10000 = 100.00 %
+  offering_trading_fee: number;
+  // min storage usage
+  min_storage_usage: number;
+}
+
+export interface TradingFeeRate {
+  listing: number;
+  offering: number;
 }

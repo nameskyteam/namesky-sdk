@@ -1,6 +1,6 @@
 import { Contract } from '../../utils/Contract';
-import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT } from '../../utils';
-import { AccountView, Approval, ListingView, OfferingView } from '../types/data';
+import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils';
+import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
   AcceptOfferingOptions,
   BuyListingOptions,
@@ -12,12 +12,14 @@ import {
   GetListingViewOptions,
   GetListingViewsOfOptions,
   GetListingViewsOptions,
+  GetMarketplaceConfigOptions,
   GetNftApprovalOptions,
   GetNftOfferingViewsOfOptions,
   GetOfferingUniqueIdOptions,
   GetOfferingViewOptions,
   GetOfferingViewsOfOptions,
   GetOfferingViewsOptions,
+  GetTradingFeeRateOptions,
   NearDepositOptions,
   NearWithdrawOptions,
   RemoveListingOptions,
@@ -128,6 +130,19 @@ export class MarketplaceContract extends Contract {
       args,
       blockQuery,
     });
+  }
+
+  async get_trading_fee_rate({ blockQuery }: GetTradingFeeRateOptions): Promise<TradingFeeRate> {
+    return this.selector
+      .view<MarketplaceConfig>({
+        contractId: this.contractId,
+        methodName: 'get_config',
+        blockQuery,
+      })
+      .then(({ listing_trading_fee, offering_trading_fee }) => ({
+        listing: listing_trading_fee / FEE_DIVISOR,
+        offering: offering_trading_fee / FEE_DIVISOR,
+      }));
   }
 
   // ------------------------------------------------- Call -------------------------------------------------------

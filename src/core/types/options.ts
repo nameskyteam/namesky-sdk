@@ -206,6 +206,10 @@ export interface GetLatestControllerCodeOptions extends ViewFunctionExtraOptions
 
 export interface GetLatestControllerCodeHashOptions extends ViewFunctionExtraOptions {}
 
+export interface GetMintFeeOptions extends ViewFunctionExtraOptions {}
+
+export interface GetRoyaltyOptions extends ViewFunctionExtraOptions {}
+
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface GetAccountViewOfOptions extends RequiredArgsOptions<GetAccountViewOfArgs>, ViewFunctionExtraOptions {}
 
@@ -238,6 +242,10 @@ export interface GetListingUniqueIdOptions
     ViewFunctionExtraOptions {}
 
 export interface GetNftApprovalOptions extends RequiredArgsOptions<GetNftApprovalArgs>, ViewFunctionExtraOptions {}
+
+export interface GetMarketplaceConfigOptions extends ViewFunctionExtraOptions {}
+
+export interface GetTradingFeeRateOptions extends ViewFunctionExtraOptions {}
 
 // ---------------------------------------------- User Setting --------------------------------------------------
 export interface GetUserLikesOptions extends RequiredArgsOptions<GetUserLikesArgs>, ViewFunctionExtraOptions {}

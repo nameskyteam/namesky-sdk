@@ -6,6 +6,7 @@ export const DEFAULT_MARKET_STORAGE_DEPOSIT = Amount.parseYoctoNear(0.02);
 export const DEFAULT_APPROVAL_STORAGE_DEPOSIT = Amount.parseYoctoNear(0.005);
 export const DEFAULT_MINT_FEE = Amount.parseYoctoNear(0.1);
 export const NUM_BYTES_DATA_LEN = 4;
+export const FEE_DIVISOR = 10000;
 
 export function buildContractStateKeysRaw(state: { key: Buffer; value: Buffer }[]): Buffer {
   return state.reduce((pre, { key }) => {
