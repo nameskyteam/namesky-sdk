@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tsup src --minify --dts",
     "lint": "eslint src/**/*.ts --fix",
+    "prettier": "prettier src/**/*.ts --write",
     "test": "jest",
     "prepare": "husky install"
   },

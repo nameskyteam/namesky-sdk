@@ -243,8 +243,6 @@ export interface GetListingUniqueIdOptions
 
 export interface GetNftApprovalOptions extends RequiredArgsOptions<GetNftApprovalArgs>, ViewFunctionExtraOptions {}
 
-export interface GetMarketplaceConfigOptions extends ViewFunctionExtraOptions {}
-
 export interface GetTradingFeeRateOptions extends ViewFunctionExtraOptions {}
 
 // ---------------------------------------------- User Setting --------------------------------------------------

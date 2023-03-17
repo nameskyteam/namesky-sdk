@@ -12,7 +12,6 @@ import {
   GetListingViewOptions,
   GetListingViewsOfOptions,
   GetListingViewsOptions,
-  GetMarketplaceConfigOptions,
   GetNftApprovalOptions,
   GetNftOfferingViewsOfOptions,
   GetOfferingUniqueIdOptions,

@@ -154,8 +154,8 @@ export class NameSky {
         methodName: 'get_owner_id',
         blockQuery,
       });
-    } catch (e) {
-      console.warn(`Get controller owner id failed, registrant id: ${registrantId}, message: ${(e as any).message}`);
+    } catch (e: any) {
+      console.warn(`Get controller owner id failed, registrant id: ${registrantId}, message: ${e.message}`);
       return void 0;
     }
   }
