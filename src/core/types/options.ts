@@ -66,7 +66,7 @@ export interface SetupControllerOptions {
 }
 
 // ---------------------------------------------- Core ---------------------------------------------------------
-export interface NftRegisterOptions extends RequiredArgsOptions<NftRegisterArgs>, AttachedDepositOptions, GasOptions {
+export interface NftRegisterOptions extends RequiredArgsOptions<NftRegisterArgs>, GasOptions {
   registrantId: string;
 }
 

@@ -1,5 +1,5 @@
 import { Contract } from '../../utils/Contract';
-import { DEFAULT_APPROVAL_STORAGE_DEPOSIT, DEFAULT_MINT_FEE } from '../../utils';
+import { DEFAULT_APPROVAL_STORAGE_DEPOSIT } from '../../utils';
 import { Amount, MultiTransaction } from 'multi-transaction';
 import {
   GetLatestControllerCodeHashOptions,
@@ -134,11 +134,12 @@ export class CoreContract extends Contract {
   // -------------------------------------------------- Call -------------------------------------------------------
 
   // signed by registrant
-  async nftRegister({ registrantId, args, gas, attachedDeposit }: NftRegisterOptions) {
+  async nftRegister({ registrantId, args, gas }: NftRegisterOptions) {
+    const mintFee = await this.get_mint_fee({});
     const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
       methodName: 'nft_register',
       args,
-      attachedDeposit: attachedDeposit ?? DEFAULT_MINT_FEE,
+      attachedDeposit: mintFee,
       gas,
     });
     await this.selector.sendWithLocalKey(registrantId, transaction);
