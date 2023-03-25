@@ -206,6 +206,8 @@ export interface GetLatestControllerCodeOptions extends ViewFunctionExtraOptions
 
 export interface GetLatestControllerCodeHashOptions extends ViewFunctionExtraOptions {}
 
+export interface GetControllerCodeViewsOptions extends ViewFunctionExtraOptions {}
+
 export interface GetMintFeeOptions extends ViewFunctionExtraOptions {}
 
 export interface GetRoyaltyOptions extends ViewFunctionExtraOptions {}

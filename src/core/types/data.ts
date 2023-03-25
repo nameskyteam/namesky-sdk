@@ -17,6 +17,14 @@ export interface RoyaltyView {
   divisor: number;
 }
 
+export interface ControllerCodeView {
+  version: number;
+  code_hash: string;
+  code_len: number;
+  code_memo?: string;
+  is_state_broken: boolean;
+}
+
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface AccountView {
   account_id: string;

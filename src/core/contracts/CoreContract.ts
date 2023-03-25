@@ -2,6 +2,7 @@ import { Contract } from '../../utils/Contract';
 import { DEFAULT_APPROVAL_STORAGE_DEPOSIT } from '../../utils';
 import { Amount, MultiTransaction } from 'multi-transaction';
 import {
+  GetControllerCodeViewsOptions,
   GetLatestControllerCodeHashOptions,
   GetLatestControllerCodeOptions,
   GetMintFeeOptions,
@@ -21,7 +22,7 @@ import {
   NftTransferOptions,
   NftUnregisterOptions,
 } from '../types/options';
-import { NameSkyToken, RoyaltyView, TokenState } from '../types/data';
+import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../types/data';
 
 export class CoreContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
@@ -109,6 +110,14 @@ export class CoreContract extends Contract {
     return this.selector.view({
       contractId: this.contractId,
       methodName: 'get_latest_controller_code_hash',
+      blockQuery,
+    });
+  }
+
+  async get_controller_code_views({ blockQuery }: GetControllerCodeViewsOptions): Promise<ControllerCodeView[]> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_controller_code_views',
       blockQuery,
     });
   }
