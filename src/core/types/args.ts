@@ -26,7 +26,7 @@ export interface NftIsRegisteredArgs {
 
 export interface NftRegistrantIdsOfArgs {
   minter_id: string;
-  from_index?: number;
+  from_index?: string;
   limit?: number;
 }
 
@@ -39,13 +39,13 @@ export interface NftNameSkyTokenArgs {
 }
 
 export interface NftNameSkyTokensArgs {
-  from_index?: number;
+  from_index?: string;
   limit?: number;
 }
 
 export interface NftNameSkyTokensForOwnerArgs {
   account_id: string;
-  from_index?: number;
+  from_index?: string;
   limit?: number;
 }
 
