@@ -11,6 +11,9 @@ import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/opt
 import { UserSettingContract } from './contracts/UserSettingContract';
 import { getBase58CodeHash } from '../utils';
 import { Amount, MultiSendWalletSelector, MultiTransaction, setupMultiSendWalletSelector } from 'multi-transaction';
+import { Provider } from 'near-api-js/lib/providers';
+import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
+import { NameSkyNFTSafety } from './types/data';
 
 export class NameSky {
   selector: MultiSendWalletSelector;
@@ -53,6 +56,10 @@ export class NameSky {
     return this.selector.near.account(accountId);
   }
 
+  rpc(): Provider {
+    return this.selector.near.connection.provider;
+  }
+
   async requestFullAccess(webWalletBaseUrl: string, successUrl?: string, failureUrl?: string) {
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
@@ -88,31 +95,32 @@ export class NameSky {
 
   // signed by registrant
   async setupController({ registrantId, code, gasForCleanState, gasForInit }: SetupControllerOptions) {
+    /*
+      We don't need to check follow conditions at the same block,
+      because these are only used to check whether to skip `setupController`
+    */
     const account = await this.account(registrantId);
 
-    // account code hash
-    const accountState = await account.state();
-    const accountCodeHash = accountState.code_hash;
+    // code hash
+    const accountView = await account.state();
+    const accountCodeHash = accountView.code_hash;
     const codeHash = getBase58CodeHash(code);
 
-    // account controller owner id
-    const ownerId = await this.get_owner_id({ controllerAccountId: registrantId });
+    // controller owner id
+    const controllerOwnerId = await this.getControllerOwnerId({ accountId: registrantId });
 
-    // account contract state
-    const contractState = await account.viewState('');
-    const contractStateKeys = buildContractStateKeysRaw(contractState);
+    // state
+    const state = await account.viewState('');
 
-    // account access keys
+    // access keys
     const accessKeys = await account.getAccessKeys();
-    const publicKeys = accessKeys.map((accessKey) => accessKey.public_key);
 
-    const isCodeHashVerified = codeHash === accountCodeHash;
-    const isOwnerIdVerified = ownerId === this.coreContract.contractId;
-    const isContractStateVerified = contractState.length === 1;
-    const isContractStateClear = contractState.length === 0;
-    const isAccessKeyVerified = publicKeys.length === 0;
+    const isCodeHashVerified = accountCodeHash === codeHash;
+    const isControllerOwnerIdVerified = controllerOwnerId === this.coreContract.contractId;
+    const isStateVerified = state.length === 1;
+    const isAccessKeysVerified = accessKeys.length === 0;
 
-    if (isCodeHashVerified && isOwnerIdVerified && isContractStateVerified && isAccessKeyVerified) {
+    if (isCodeHashVerified && isControllerOwnerIdVerified && isStateVerified && isAccessKeysVerified) {
       // skip
       return;
     }
@@ -123,10 +131,10 @@ export class NameSky {
     transaction.deployContract(code);
 
     // clean account state if needed
-    if (!isContractStateClear) {
+    if (state.length !== 0) {
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
-        args: contractStateKeys,
+        args: buildContractStateKeysRaw(state),
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
@@ -141,23 +149,62 @@ export class NameSky {
     });
 
     // delete all access keys
-    publicKeys.forEach((publicKey) => transaction.deleteKey(publicKey));
+    accessKeys.forEach((accessKey) => transaction.deleteKey(accessKey.public_key));
 
     await this.selector.sendWithLocalKey(registrantId, transaction);
   }
 
-  // controller owner id
-  async get_owner_id({ controllerAccountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string | undefined> {
+  async getNFTAccountSafety(accountId: string): Promise<NameSkyNFTSafety> {
+    /*
+      We need to check follow conditions at the same block for account security reason
+    */
+    const {
+      header: { height },
+    } = await this.rpc().block({ finality: 'optimistic' });
+
+    // code hash
+    const accountView = await this.rpc().query<AccountView>({
+      request_type: 'view_account',
+      account_id: accountId,
+      blockId: height,
+    });
+    const codeHash = accountView.code_hash;
+    const controllerCodeViews = await this.coreContract.get_controller_code_views({ blockQuery: { blockId: height } });
+
+    // controller owner id
+    const controllerOwnerId = await this.getControllerOwnerId({
+      accountId,
+      blockQuery: { blockId: height },
+    });
+
+    // state
+    const account = await this.account(accountId);
+    const state = await account.viewState('', { blockId: height });
+
+    // access keys
+    const { keys: accessKeys } = await this.rpc().query<AccessKeyList>({
+      request_type: 'view_access_key_list',
+      account_id: accountId,
+      blockId: height,
+    });
+
+    const isCodeHashCorrect = controllerCodeViews.some((view) => view.code_hash === codeHash);
+    const isControllerOwnerIdCorrect = controllerOwnerId === this.coreContract.contractId;
+    const isStateCleaned = state.length === 1; // Only one state key left which save the controller owner id
+    const isAccessKeysDeleted = accessKeys.length === 0;
+
+    return { isCodeHashCorrect, isControllerOwnerIdCorrect, isStateCleaned, isAccessKeysDeleted };
+  }
+
+  async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string | undefined> {
     try {
       return await this.selector.view({
-        contractId: controllerAccountId,
+        contractId: accountId,
         methodName: 'get_owner_id',
         blockQuery,
       });
     } catch (e: any) {
-      console.warn(
-        `Get controller owner id failed, controller account id: ${controllerAccountId}, message: ${e.message}`
-      );
+      console.warn(`Get controller owner id failed, account id: ${accountId}, message: ${e.message}`);
       return undefined;
     }
   }

@@ -1,6 +1,12 @@
 import { Token } from 'multi-transaction';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
+export interface NameSkyNFTSafety {
+  isCodeHashCorrect: boolean;
+  isControllerOwnerIdCorrect: boolean;
+  isStateCleaned: boolean;
+  isAccessKeysDeleted: boolean;
+}
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 

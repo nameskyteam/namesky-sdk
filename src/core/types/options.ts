@@ -176,7 +176,7 @@ interface ViewFunctionExtraOptions {
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface GetControllerOwnerIdOptions extends ViewFunctionExtraOptions {
-  controllerAccountId: string;
+  accountId: string;
 }
 
 // ---------------------------------------------- Core ---------------------------------------------------------
