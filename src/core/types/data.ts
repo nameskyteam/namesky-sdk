@@ -10,7 +10,7 @@ export interface NameSkyNFTSafety {
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 
-export type TokenState = 'Active' | 'Minting' | 'Redeeming' | Frozen;
+export type TokenState = 'Active' | 'OnMinting' | 'OnBurning' | Frozen;
 
 type Frozen = { Frozen: { memo: string } };
 

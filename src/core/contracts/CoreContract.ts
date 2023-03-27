@@ -27,7 +27,7 @@ import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../ty
 export class CoreContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async nft_is_registered({ args, blockQuery }: NftIsRegisteredOptions): Promise<boolean> {
+  async nft_is_registered({ args, blockQuery }: NftIsRegisteredOptions): Promise<string | undefined> {
     return this.selector.view({
       contractId: this.contractId,
       methodName: 'nft_is_registered',
