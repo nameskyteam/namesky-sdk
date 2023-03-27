@@ -96,7 +96,7 @@ export class NameSky {
     const codeHash = getBase58CodeHash(code);
 
     // account controller owner id
-    const ownerId = await this.get_owner_id({ registrantId });
+    const ownerId = await this.get_owner_id({ controllerAccountId: registrantId });
 
     // account contract state
     const contractState = await account.viewState('');
@@ -147,16 +147,18 @@ export class NameSky {
   }
 
   // controller owner id
-  async get_owner_id({ registrantId, blockQuery }: GetControllerOwnerIdOptions): Promise<string | undefined> {
+  async get_owner_id({ controllerAccountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string | undefined> {
     try {
       return await this.selector.view({
-        contractId: registrantId,
+        contractId: controllerAccountId,
         methodName: 'get_owner_id',
         blockQuery,
       });
     } catch (e: any) {
-      console.warn(`Get controller owner id failed, registrant id: ${registrantId}, message: ${e.message}`);
-      return void 0;
+      console.warn(
+        `Get controller owner id failed, controller account id: ${controllerAccountId}, message: ${e.message}`
+      );
+      return undefined;
     }
   }
 }
