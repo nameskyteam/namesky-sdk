@@ -10,7 +10,13 @@ import { CleanStateArgs, InitArgs } from './types/args';
 import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import { getBase58CodeHash } from '../utils';
-import { Amount, MultiSendWalletSelector, MultiTransaction, setupMultiSendWalletSelector } from 'multi-transaction';
+import {
+  Amount,
+  BlockQuery,
+  MultiSendWalletSelector,
+  MultiTransaction,
+  setupMultiSendWalletSelector,
+} from 'multi-transaction';
 import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
 import { NameSkyNFTSafety } from './types/data';
@@ -162,31 +168,32 @@ export class NameSky {
       header: { height },
     } = await this.rpc().block({ finality: 'optimistic' });
 
-    // code hash
-    const accountView = await this.rpc().query<AccountView>({
-      request_type: 'view_account',
-      account_id: accountId,
-      blockId: height,
-    });
-    const codeHash = accountView.code_hash;
-    const controllerCodeViews = await this.coreContract.get_controller_code_views({ blockQuery: { blockId: height } });
+    const blockQuery: BlockQuery = { blockId: height };
 
-    // controller owner id
-    const controllerOwnerId = await this.getControllerOwnerId({
-      accountId,
-      blockQuery: { blockId: height },
-    });
+    const [codeHash, controllerCodeViews, controllerOwnerId, state, { keys: accessKeys }] = await Promise.all([
+      this.rpc()
+        .query<AccountView>({
+          ...blockQuery,
+          request_type: 'view_account',
+          account_id: accountId,
+        })
+        .then((accountView) => accountView.code_hash),
 
-    // state
-    const account = await this.account(accountId);
-    const state = await account.viewState('', { blockId: height });
+      this.coreContract.get_controller_code_views({ blockQuery }),
 
-    // access keys
-    const { keys: accessKeys } = await this.rpc().query<AccessKeyList>({
-      request_type: 'view_access_key_list',
-      account_id: accountId,
-      blockId: height,
-    });
+      this.getControllerOwnerId({
+        accountId,
+        blockQuery,
+      }),
+
+      this.account(accountId).then((account) => account.viewState('', blockQuery)),
+
+      this.rpc().query<AccessKeyList>({
+        ...blockQuery,
+        request_type: 'view_access_key_list',
+        account_id: accountId,
+      }),
+    ]);
 
     const isCodeHashCorrect = controllerCodeViews.some((view) => view.code_hash === codeHash);
     const isControllerOwnerIdCorrect = controllerOwnerId === this.coreContract.contractId;
