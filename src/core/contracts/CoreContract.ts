@@ -144,11 +144,14 @@ export class CoreContract extends Contract {
 
   // signed by registrant
   async nftRegister({ registrantId, args, gas }: NftRegisterOptions) {
-    const mintFee = await this.get_mint_fee({});
+    const [mintFee, minterId] = await Promise.all([
+      this.get_mint_fee({}),
+      this.nft_get_minter_id({ args: { registrant_id: registrantId } }),
+    ]);
     const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
       methodName: 'nft_register',
       args,
-      attachedDeposit: mintFee,
+      attachedDeposit: minterId ? Amount.ONE_YOCTO : mintFee,
       gas,
     });
     await this.selector.sendWithLocalKey(registrantId, transaction);
