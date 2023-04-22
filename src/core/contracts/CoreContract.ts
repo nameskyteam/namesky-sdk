@@ -8,7 +8,7 @@ import {
   GetMintFeeOptions,
   GetRoyaltyOptions,
   NftApproveOptions,
-  NftIsRegisteredOptions,
+  NftGetMinterIdOptions,
   NftNameSkyTokenOptions,
   NftNameSkyTokensForOwnerOptions,
   NftNameSkyTokensOptions,
@@ -27,10 +27,10 @@ import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../ty
 export class CoreContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async nft_is_registered({ args, blockQuery }: NftIsRegisteredOptions): Promise<string | undefined> {
+  async nft_get_minter_id({ args, blockQuery }: NftGetMinterIdOptions): Promise<string | undefined> {
     return this.selector.view({
       contractId: this.contractId,
-      methodName: 'nft_is_registered',
+      methodName: 'nft_get_minter_id',
       args,
       blockQuery,
     });

@@ -20,7 +20,7 @@ export interface NftUnregisterArgs {
   force?: boolean;
 }
 
-export interface NftIsRegisteredArgs {
+export interface NftGetMinterIdArgs {
   registrant_id: string;
 }
 

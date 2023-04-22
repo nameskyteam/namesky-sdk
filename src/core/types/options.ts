@@ -30,7 +30,7 @@ import {
   LikeArgs,
   NearDepositArgs,
   NearWithdrawArgs,
-  NftIsRegisteredArgs,
+  NftGetMinterIdArgs,
   NftNameSkyTokenArgs,
   NftNameSkyTokensArgs,
   NftNameSkyTokensForOwnerArgs,
@@ -180,7 +180,7 @@ export interface GetControllerOwnerIdOptions extends ViewFunctionExtraOptions {
 }
 
 // ---------------------------------------------- Core ---------------------------------------------------------
-export interface NftIsRegisteredOptions extends RequiredArgsOptions<NftIsRegisteredArgs>, ViewFunctionExtraOptions {}
+export interface NftGetMinterIdOptions extends RequiredArgsOptions<NftGetMinterIdArgs>, ViewFunctionExtraOptions {}
 
 export interface NftRegistrantIdsOfOptions
   extends RequiredArgsOptions<NftRegistrantIdsOfArgs>,
