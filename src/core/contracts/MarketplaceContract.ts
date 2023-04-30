@@ -281,7 +281,7 @@ export class MarketplaceContract extends Contract {
       transaction.functionCall({
         methodName: 'create_offering',
         args,
-        attachedDeposit: args.price,
+        attachedDeposit: args.price === '0' ? Amount.ONE_YOCTO : args.price,
         gas,
       });
     } else {
