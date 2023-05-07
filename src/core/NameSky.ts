@@ -34,7 +34,11 @@ export class NameSky {
     this.userSettingContract = userSettingContract;
 
     this.onRequestFullAccess()
-      .then(() => console.log('onRequestFullAccess Success'))
+      .then((success) => {
+        if (success) {
+          console.log('onRequestFullAccess Success');
+        }
+      })
       .catch((reason) => console.error('onRequestFullAccess Failed', reason));
   }
 
@@ -81,22 +85,23 @@ export class NameSky {
   }
 
   // auto callback
-  private async onRequestFullAccess() {
+  private async onRequestFullAccess(): Promise<boolean> {
     const currentUrl = new URL(window.location.href);
     const publicKey = currentUrl.searchParams.get('public_key');
     const accountId = currentUrl.searchParams.get('account_id');
     if (!publicKey || !accountId) {
-      return;
+      return false;
     }
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString();
     const keystore = this.selector.keyStore;
     const networkId = this.getNetworkId();
     const keyPair = await keystore.getKey(networkId, pendingAccountId);
     if (!keyPair) {
-      return;
+      return false;
     }
     await keystore.setKey(networkId, accountId, keyPair);
     await keystore.removeKey(networkId, pendingAccountId);
+    return true;
   }
 
   // signed by registrant
