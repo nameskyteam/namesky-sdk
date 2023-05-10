@@ -216,7 +216,6 @@ export class NameSky {
         blockQuery,
       });
     } catch (e: any) {
-      console.warn(`Get controller owner id failed, account id: ${accountId}, message: ${e.message}`);
       return undefined;
     }
   }
