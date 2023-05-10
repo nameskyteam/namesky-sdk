@@ -216,6 +216,7 @@ export class NameSky {
         blockQuery,
       });
     } catch (e: any) {
+      console.warn(`Account(${accountId}) is not NameSky NFT yet`);
       return undefined;
     }
   }
