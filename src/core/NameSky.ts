@@ -142,11 +142,9 @@ export class NameSky {
     }
 
     const transaction = MultiTransaction.createTransaction(registrantId);
-    let actionCount = 0;
 
     // deploy controller contract
     transaction.deployContract(code);
-    actionCount += 1;
 
     // clean account state if needed
     if (state.length !== 0) {
@@ -156,7 +154,6 @@ export class NameSky {
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
-      actionCount += 1;
     }
 
     // init controller contract
@@ -166,7 +163,6 @@ export class NameSky {
       attachedDeposit: Amount.ONE_YOCTO,
       gas: gasForInit,
     });
-    actionCount += 1;
 
     // delete all access keys
     const keyPair = await this.selector.keyStore.getKey(this.getNetworkId(), registrantId);
