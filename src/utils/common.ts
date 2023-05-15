@@ -16,3 +16,22 @@ export function buildContractStateKeysRaw(state: { key: Buffer; value: Buffer }[
     return Buffer.concat([pre, keyLen, key]);
   }, Buffer.alloc(0));
 }
+
+export function extractRegistrantPublicKey(
+  publicKey: string,
+  publicKeys: string[]
+): {
+  registrantPublicKey: string | undefined;
+  restPublicKeys: string[];
+} {
+  const result: string[] = [];
+  for (const publicKey of publicKeys) {
+    if (publicKey !== publicKey) {
+      result.push(publicKey);
+    }
+  }
+  return {
+    registrantPublicKey: result.length < publicKeys.length ? publicKey : undefined,
+    restPublicKeys: result,
+  };
+}

@@ -1,4 +1,4 @@
-import { buildContractStateKeysRaw, REGISTRANT_KEYSTORE_PREFIX } from '../utils';
+import { buildContractStateKeysRaw, extractRegistrantPublicKey, REGISTRANT_KEYSTORE_PREFIX } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -160,7 +160,25 @@ export class NameSky {
     });
 
     // delete all access keys
-    accessKeys.forEach((accessKey) => transaction.deleteKey(accessKey.public_key));
+    const publicKeys = accessKeys.map((accessKey) => accessKey.public_key);
+    const keyPair = await this.selector.keyStore.getKey(this.getNetworkId(), registrantId);
+    if (!keyPair) {
+      throw Error(`No access key found locally for Account(${registrantId}) to sign transaction.`);
+    }
+    const publicKey = keyPair.getPublicKey().toString();
+    const { registrantPublicKey, restPublicKeys } = extractRegistrantPublicKey(publicKey, publicKeys);
+    if (!registrantPublicKey) {
+      throw Error(`No matching public key found for Account(${registrantId}) to sign transaction.`);
+    }
+
+    // batch delete rest public keys
+    while (restPublicKeys.length > 0) {
+      transaction.createTransaction(registrantId);
+      restPublicKeys.splice(0, 100).forEach((publicKey) => transaction.deleteKey(publicKey));
+    }
+
+    // delete last public key
+    transaction.createTransaction(registrantId).deleteKey(registrantPublicKey);
 
     await this.selector.sendWithLocalKey(registrantId, transaction);
   }
