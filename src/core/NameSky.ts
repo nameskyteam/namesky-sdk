@@ -1,4 +1,9 @@
-import { buildContractStateKeysRaw, extractRegistrantPublicKey, REGISTRANT_KEYSTORE_PREFIX } from '../utils';
+import {
+  ACTION_MAX_NUM,
+  buildContractStateKeysRaw,
+  moveRegistrantPublicKeyToEnd,
+  REGISTRANT_KEYSTORE_PREFIX,
+} from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -137,9 +142,11 @@ export class NameSky {
     }
 
     const transaction = MultiTransaction.createTransaction(registrantId);
+    let actionCount = 0;
 
     // deploy controller contract
     transaction.deployContract(code);
+    actionCount += 1;
 
     // clean account state if needed
     if (state.length !== 0) {
@@ -149,6 +156,7 @@ export class NameSky {
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
+      actionCount += 1;
     }
 
     // init controller contract
@@ -158,27 +166,26 @@ export class NameSky {
       attachedDeposit: Amount.ONE_YOCTO,
       gas: gasForInit,
     });
+    actionCount += 1;
 
     // delete all access keys
-    const publicKeys = accessKeys.map((accessKey) => accessKey.public_key);
     const keyPair = await this.selector.keyStore.getKey(this.getNetworkId(), registrantId);
+
     if (!keyPair) {
       throw Error(`No access key found locally for Account(${registrantId}) to sign transaction.`);
     }
-    const publicKey = keyPair.getPublicKey().toString();
-    const { registrantPublicKey, restPublicKeys } = extractRegistrantPublicKey(publicKey, publicKeys);
-    if (!registrantPublicKey) {
-      throw Error(`No matching public key found for Account(${registrantId}) to sign transaction.`);
-    }
 
-    // batch delete rest public keys
-    while (restPublicKeys.length > 0) {
-      transaction.createTransaction(registrantId);
-      restPublicKeys.splice(0, 100).forEach((publicKey) => transaction.deleteKey(publicKey));
-    }
+    const registrantPublicKey = keyPair.getPublicKey().toString();
+    let publicKeys = accessKeys.map((accessKey) => accessKey.public_key);
+    publicKeys = moveRegistrantPublicKeyToEnd(registrantPublicKey, publicKeys);
 
-    // delete last public key
-    transaction.createTransaction(registrantId).deleteKey(registrantPublicKey);
+    for (const publicKey of publicKeys) {
+      if (transaction.currentActionCount() < ACTION_MAX_NUM) {
+        transaction.deleteKey(publicKey);
+      } else {
+        transaction.createTransaction(registrantId).deleteKey(publicKey);
+      }
+    }
 
     await this.selector.sendWithLocalKey(registrantId, transaction);
   }

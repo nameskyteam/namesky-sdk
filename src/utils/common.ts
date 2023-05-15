@@ -6,6 +6,7 @@ export const DEFAULT_MARKET_STORAGE_DEPOSIT = Amount.parseYoctoNear(0.0125);
 export const DEFAULT_APPROVAL_STORAGE_DEPOSIT = Amount.parseYoctoNear(0.005);
 export const NUM_BYTES_DATA_LEN = 4;
 export const FEE_DIVISOR = 10000;
+export const ACTION_MAX_NUM = 100;
 
 export function buildContractStateKeysRaw(state: { key: Buffer; value: Buffer }[]): Buffer {
   return state.reduce((pre, { key }) => {
@@ -17,21 +18,13 @@ export function buildContractStateKeysRaw(state: { key: Buffer; value: Buffer }[
   }, Buffer.alloc(0));
 }
 
-export function extractRegistrantPublicKey(
-  publicKey: string,
-  publicKeys: string[]
-): {
-  registrantPublicKey: string | undefined;
-  restPublicKeys: string[];
-} {
+export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {
   const result: string[] = [];
   for (const publicKey of publicKeys) {
-    if (publicKey !== publicKey) {
+    if (publicKey !== registrantPublicKey) {
       result.push(publicKey);
     }
   }
-  return {
-    registrantPublicKey: result.length < publicKeys.length ? publicKey : undefined,
-    restPublicKeys: result,
-  };
+  result.push(registrantPublicKey);
+  return result;
 }
