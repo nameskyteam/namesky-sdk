@@ -1,3 +1,5 @@
+import { NftTokenArgs, NftTokensArgs, NftTokensForOwnerArgs } from 'multi-transaction';
+
 export type UpdateWrapper<T> =
   | {
       UpdateSome: T;
@@ -34,24 +36,11 @@ export interface NftStateArgs {
   token_id: string;
 }
 
-export interface NftNameSkyTokenArgs {
-  token_id: string;
-}
+export type NftNameSkyTokenArgs = NftTokenArgs;
 
-export interface NftNameSkyTokensArgs {
-  from_index?: string;
-  limit?: number;
-}
+export type NftNameSkyTokensArgs = NftTokensArgs;
 
-export interface NftNameSkyTokensForOwnerArgs {
-  account_id: string;
-  from_index?: string;
-  limit?: number;
-}
-
-export interface NftSupplyForOwnerArgs {
-  account_id: string;
-}
+export type NftNameSkyTokensForOwnerArgs = NftTokensForOwnerArgs;
 
 export interface NftRedeemArgs {
   token_id: string;

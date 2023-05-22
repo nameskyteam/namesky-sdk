@@ -5,6 +5,7 @@ import {
   GasOptions,
   NftApproveArgs,
   NftRevokeArgs,
+  NftSupplyForOwnerArgs,
   NftTransferArgs,
 } from 'multi-transaction';
 import {
@@ -38,7 +39,6 @@ import {
   NftRegisterArgs,
   NftRegistrantIdsOfArgs,
   NftStateArgs,
-  NftSupplyForOwnerArgs,
   NftUnregisterArgs,
   ReadNotificationAtArgs,
   RemoveListingArgs,
