@@ -184,6 +184,8 @@ export class NameSky {
     }
 
     await this.selector.sendWithLocalKey(registrantId, transaction);
+    await this.selector.keyStore.removeKey(this.getNetworkId(), registrantId);
+    console.log(`Removed local full access key, registrant id: ${registrantId}`);
   }
 
   async getNFTAccountSafety(accountId: string): Promise<NameSkyNFTSafety> {
