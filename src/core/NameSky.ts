@@ -38,13 +38,7 @@ export class NameSky {
     this.marketplaceContract = marketplaceContract;
     this.userSettingContract = userSettingContract;
 
-    this.onRequestFullAccess()
-      .then((success) => {
-        if (success) {
-          console.log('onRequestFullAccess Success');
-        }
-      })
-      .catch((reason) => console.error('onRequestFullAccess Failed', reason));
+    this.onRequestFullAccess().catch((reason) => console.error('onRequestFullAccess Failed', reason));
   }
 
   getNetwork(): Network {
@@ -90,23 +84,23 @@ export class NameSky {
   }
 
   // auto callback
-  private async onRequestFullAccess(): Promise<boolean> {
+  private async onRequestFullAccess(): Promise<void> {
     const currentUrl = new URL(window.location.href);
     const publicKey = currentUrl.searchParams.get('public_key');
     const accountId = currentUrl.searchParams.get('account_id');
     if (!publicKey || !accountId) {
-      return false;
+      return;
     }
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString();
     const keystore = this.selector.keyStore;
     const networkId = this.getNetworkId();
     const keyPair = await keystore.getKey(networkId, pendingAccountId);
     if (!keyPair) {
-      return false;
+      return;
     }
     await keystore.setKey(networkId, accountId, keyPair);
     await keystore.removeKey(networkId, pendingAccountId);
-    return true;
+    console.log(`onRequestFullAccess Succeeded`);
   }
 
   // signed by registrant
