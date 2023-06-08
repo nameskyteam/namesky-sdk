@@ -1,5 +1,5 @@
 import { Contract } from '../../utils/Contract';
-import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils';
+import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR, max } from '../../utils';
 import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
   AcceptOfferingOptions,
@@ -291,7 +291,7 @@ export class MarketplaceContract extends Contract {
         },
       });
 
-      const insufficientBalance = Amount.max(Amount.new(args.price).sub(accountView?.near_balance ?? 0), 0);
+      const insufficientBalance = max(Amount.from(args.price).sub(accountView?.near_balance ?? 0), Amount.from(0));
 
       if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
@@ -325,7 +325,7 @@ export class MarketplaceContract extends Contract {
       const offering = (await this.get_offering_view({
         args: { buyer_id: this.selector.getActiveAccountId()!, nft_contract_id, nft_token_id },
       }))!;
-      const insufficientBalance = Amount.max(Amount.new(new_price).sub(offering.price), 0);
+      const insufficientBalance = max(Amount.from(new_price).sub(offering.price), Amount.from(0));
       if (offering.is_simple_offering) {
         // update offering and deposit insufficient balance
         transaction.functionCall<UpdateOfferingArgs>({
