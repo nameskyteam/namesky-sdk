@@ -9,11 +9,7 @@ export const ACTION_MAX_NUM = 100;
 
 export function buildContractStateKeysRaw(state: { key: Buffer; value: Buffer }[]): Buffer {
   const keys = state.map(({ key }) => key);
-  return stringifyBorsh(
-    BorshSchema.new(),
-    keys,
-    BorshTypes.FixedArray(BorshTypes.DynamicArray(BorshTypes.u8()), keys.length)
-  );
+  return stringifyBorsh(BorshSchema.new(), keys, BorshTypes.array(BorshTypes.vec(BorshTypes.u8()), keys.length));
 }
 
 export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {
