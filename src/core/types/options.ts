@@ -1,13 +1,4 @@
-import {
-  ArgsOptions,
-  AttachedDepositOptions,
-  BlockQuery,
-  GasOptions,
-  NftApproveArgs,
-  NftRevokeArgs,
-  NftSupplyForOwnerArgs,
-  NftTransferArgs,
-} from 'multi-transaction';
+import { BlockQuery, NftApproveArgs, NftRevokeArgs, NftSupplyForOwnerArgs, NftTransferArgs } from 'multi-transaction';
 import {
   AcceptOfferingArgs,
   BuyListingArgs,
@@ -55,8 +46,6 @@ interface ChangeFunctionExtraOptions {
   callbackUrl?: string;
 }
 
-type RequiredArgsOptions<Args> = Required<ArgsOptions<Args>>;
-
 // ---------------------------------------------- Controller ---------------------------------------------------
 export interface SetupControllerOptions {
   registrantId: string;
@@ -66,108 +55,127 @@ export interface SetupControllerOptions {
 }
 
 // ---------------------------------------------- Core ---------------------------------------------------------
-export interface NftRegisterOptions extends RequiredArgsOptions<NftRegisterArgs>, GasOptions {
+export interface NftRegisterOptions {
   registrantId: string;
+  args: NftRegisterArgs;
+  gas?: string;
 }
 
-export interface NftUnregisterOptions
-  extends RequiredArgsOptions<NftUnregisterArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface NftUnregisterOptions extends ChangeFunctionExtraOptions {
+  args: NftUnregisterArgs;
+  gas?: string;
+}
 
-export interface NftRedeemOptions extends RequiredArgsOptions<NftRedeemArgs>, GasOptions, ChangeFunctionExtraOptions {}
+export interface NftRedeemOptions extends ChangeFunctionExtraOptions {
+  args: NftRedeemArgs;
+  gas?: string;
+}
 
-export interface NftTransferOptions
-  extends RequiredArgsOptions<NftTransferArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface NftTransferOptions extends ChangeFunctionExtraOptions {
+  args: NftTransferArgs;
+  gas?: string;
+}
 
-export interface NftApproveOptions
-  extends RequiredArgsOptions<NftApproveArgs>,
-    AttachedDepositOptions,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface NftApproveOptions extends ChangeFunctionExtraOptions {
+  args: NftApproveArgs;
+  attachedDeposit?: string;
+  gas?: string;
+}
 
-export interface NftRevokeOptions extends RequiredArgsOptions<NftRevokeArgs>, GasOptions, ChangeFunctionExtraOptions {}
+export interface NftRevokeOptions extends ChangeFunctionExtraOptions {
+  args: NftRevokeArgs;
+  gas?: string;
+}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
-export interface CreateMarketAccountOption
-  extends ArgsOptions<CreateMarketAccountArgs>,
-    AttachedDepositOptions,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface CreateMarketAccountOption extends ChangeFunctionExtraOptions {
+  args?: CreateMarketAccountArgs;
+  attachedDeposit?: string;
+  gas?: string;
+}
 
-export interface NearDepositOptions
-  extends ArgsOptions<NearDepositArgs>,
-    AttachedDepositOptions,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface NearDepositOptions extends ChangeFunctionExtraOptions {
+  args?: NearDepositArgs;
+  attachedDeposit?: string;
+  gas?: string;
+}
 
-export interface NearWithdrawOptions extends ArgsOptions<NearWithdrawArgs>, GasOptions, ChangeFunctionExtraOptions {}
+export interface NearWithdrawOptions extends ChangeFunctionExtraOptions {
+  args?: NearWithdrawArgs;
+  gas?: string;
+}
 
-export interface BuyListingOptions
-  extends RequiredArgsOptions<BuyListingArgs>,
-    AttachedDepositOptions,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface BuyListingOptions extends ChangeFunctionExtraOptions {
+  args: BuyListingArgs;
+  attachedDeposit?: string;
+  gas?: string;
+}
 
-export interface CreateListingOptions
-  extends RequiredArgsOptions<CreateListingArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {
+export interface CreateListingOptions extends ChangeFunctionExtraOptions {
+  args: CreateListingArgs;
   listingStorageDeposit?: string;
   approvalStorageDeposit?: string;
+  gas?: string;
 }
 
-export interface UpdateListingOptions
-  extends RequiredArgsOptions<UpdateListingArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {
+export interface UpdateListingOptions extends ChangeFunctionExtraOptions {
+  args: UpdateListingArgs;
   approvalStorageDeposit?: string;
+  gas?: string;
 }
 
-export interface RemoveListingOptions
-  extends RequiredArgsOptions<RemoveListingArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface RemoveListingOptions extends ChangeFunctionExtraOptions {
+  args: RemoveListingArgs;
+  gas?: string;
+}
 
-export interface AcceptOfferingOptions
-  extends RequiredArgsOptions<AcceptOfferingArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {
+export interface AcceptOfferingOptions extends ChangeFunctionExtraOptions {
+  args: AcceptOfferingArgs;
   approvalStorageDeposit?: string;
+  gas?: string;
 }
 
-export interface CreateOfferingOptions
-  extends RequiredArgsOptions<CreateOfferingArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {
+export interface CreateOfferingOptions extends ChangeFunctionExtraOptions {
+  args: CreateOfferingArgs;
   offeringStorageDeposit?: string;
+  gas?: string;
 }
 
-export interface UpdateOfferingOptions
-  extends RequiredArgsOptions<UpdateOfferingArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface UpdateOfferingOptions extends ChangeFunctionExtraOptions {
+  args: UpdateOfferingArgs;
+  gas?: string;
+}
 
-export interface RemoveOfferingOptions
-  extends RequiredArgsOptions<RemoveOfferingArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface RemoveOfferingOptions extends ChangeFunctionExtraOptions {
+  args: RemoveOfferingArgs;
+  gas?: string;
+}
 
 // ---------------------------------------------- User Setting --------------------------------------------------
-export interface LikeOptions extends RequiredArgsOptions<LikeArgs>, GasOptions, ChangeFunctionExtraOptions {}
+export interface LikeOptions extends ChangeFunctionExtraOptions {
+  args: LikeArgs;
+  gas?: string;
+}
 
-export interface UnlikeOptions extends RequiredArgsOptions<UnlikeArgs>, GasOptions, ChangeFunctionExtraOptions {}
+export interface UnlikeOptions extends ChangeFunctionExtraOptions {
+  args: UnlikeArgs;
+  gas?: string;
+}
 
-export interface WatchOptions extends RequiredArgsOptions<WatchArgs>, GasOptions, ChangeFunctionExtraOptions {}
+export interface WatchOptions extends ChangeFunctionExtraOptions {
+  args: WatchArgs;
+  gas?: string;
+}
 
-export interface UnwatchOptions extends RequiredArgsOptions<UnwatchArgs>, GasOptions, ChangeFunctionExtraOptions {}
+export interface UnwatchOptions extends ChangeFunctionExtraOptions {
+  args: UnwatchArgs;
+  gas?: string;
+}
 
-export interface ReadNotificationAtOptions
-  extends ArgsOptions<ReadNotificationAtArgs>,
-    GasOptions,
-    ChangeFunctionExtraOptions {}
+export interface ReadNotificationAtOptions extends ChangeFunctionExtraOptions {
+  args?: ReadNotificationAtArgs;
+  gas?: string;
+}
 
 // ================================================ View =======================================================
 interface ViewFunctionExtraOptions {
@@ -180,27 +188,35 @@ export interface GetControllerOwnerIdOptions extends ViewFunctionExtraOptions {
 }
 
 // ---------------------------------------------- Core ---------------------------------------------------------
-export interface NftGetMinterIdOptions extends RequiredArgsOptions<NftGetMinterIdArgs>, ViewFunctionExtraOptions {}
+export interface NftGetMinterIdOptions extends ViewFunctionExtraOptions {
+  args: NftGetMinterIdArgs;
+}
 
-export interface NftRegistrantIdsOfOptions
-  extends RequiredArgsOptions<NftRegistrantIdsOfArgs>,
-    ViewFunctionExtraOptions {}
+export interface NftRegistrantIdsOfOptions extends ViewFunctionExtraOptions {
+  args: NftRegistrantIdsOfArgs;
+}
 
-export interface NftStateOptions extends RequiredArgsOptions<NftStateArgs>, ViewFunctionExtraOptions {}
+export interface NftStateOptions extends ViewFunctionExtraOptions {
+  args: NftStateArgs;
+}
 
-export interface NftNameSkyTokenOptions extends RequiredArgsOptions<NftNameSkyTokenArgs>, ViewFunctionExtraOptions {}
+export interface NftNameSkyTokenOptions extends ViewFunctionExtraOptions {
+  args: NftNameSkyTokenArgs;
+}
 
-export interface NftNameSkyTokensOptions extends ArgsOptions<NftNameSkyTokensArgs>, ViewFunctionExtraOptions {}
+export interface NftNameSkyTokensOptions extends ViewFunctionExtraOptions {
+  args?: NftNameSkyTokensArgs;
+}
 
-export interface NftNameSkyTokensForOwnerOptions
-  extends RequiredArgsOptions<NftNameSkyTokensForOwnerArgs>,
-    ViewFunctionExtraOptions {}
+export interface NftNameSkyTokensForOwnerOptions extends ViewFunctionExtraOptions {
+  args: NftNameSkyTokensForOwnerArgs;
+}
 
 export interface NftTotalSupplyOptions extends ViewFunctionExtraOptions {}
 
-export interface NftSupplyForOwnerOptions
-  extends RequiredArgsOptions<NftSupplyForOwnerArgs>,
-    ViewFunctionExtraOptions {}
+export interface NftSupplyForOwnerOptions extends ViewFunctionExtraOptions {
+  args: NftSupplyForOwnerArgs;
+}
 
 export interface GetLatestControllerCodeOptions extends ViewFunctionExtraOptions {}
 
@@ -213,45 +229,61 @@ export interface GetMintFeeOptions extends ViewFunctionExtraOptions {}
 export interface GetRoyaltyOptions extends ViewFunctionExtraOptions {}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
-export interface GetAccountViewOfOptions extends RequiredArgsOptions<GetAccountViewOfArgs>, ViewFunctionExtraOptions {}
+export interface GetAccountViewOfOptions extends ViewFunctionExtraOptions {
+  args: GetAccountViewOfArgs;
+}
 
-export interface GetOfferingViewOptions extends RequiredArgsOptions<GetOfferingViewArgs>, ViewFunctionExtraOptions {}
+export interface GetOfferingViewOptions extends ViewFunctionExtraOptions {
+  args: GetOfferingViewArgs;
+}
 
-export interface GetOfferingViewsOptions extends ArgsOptions<GetOfferingViewsArgs>, ViewFunctionExtraOptions {}
+export interface GetOfferingViewsOptions extends ViewFunctionExtraOptions {
+  args?: GetOfferingViewsArgs;
+}
 
-export interface GetOfferingViewsOfOptions
-  extends RequiredArgsOptions<GetOfferingViewsOfArgs>,
-    ViewFunctionExtraOptions {}
+export interface GetOfferingViewsOfOptions extends ViewFunctionExtraOptions {
+  args: GetOfferingViewsOfArgs;
+}
 
-export interface GetNftOfferingViewsOfOptions
-  extends RequiredArgsOptions<GetNftOfferingViewsOfArgs>,
-    ViewFunctionExtraOptions {}
+export interface GetNftOfferingViewsOfOptions extends ViewFunctionExtraOptions {
+  args: GetNftOfferingViewsOfArgs;
+}
 
-export interface GetOfferingUniqueIdOptions
-  extends RequiredArgsOptions<getOfferingUniqueIdArgs>,
-    ViewFunctionExtraOptions {}
+export interface GetOfferingUniqueIdOptions extends ViewFunctionExtraOptions {
+  args: getOfferingUniqueIdArgs;
+}
 
-export interface GetListingViewOptions extends RequiredArgsOptions<GetListingViewArgs>, ViewFunctionExtraOptions {}
+export interface GetListingViewOptions extends ViewFunctionExtraOptions {
+  args: GetListingViewArgs;
+}
 
-export interface GetListingViewsOptions extends ArgsOptions<GetListingViewsArgs>, ViewFunctionExtraOptions {}
+export interface GetListingViewsOptions extends ViewFunctionExtraOptions {
+  args?: GetListingViewsArgs;
+}
 
-export interface GetListingViewsOfOptions
-  extends RequiredArgsOptions<GetListingViewsOfArgs>,
-    ViewFunctionExtraOptions {}
+export interface GetListingViewsOfOptions extends ViewFunctionExtraOptions {
+  args: GetListingViewsOfArgs;
+}
 
-export interface GetListingUniqueIdOptions
-  extends RequiredArgsOptions<GetListingUniqueIdArgs>,
-    ViewFunctionExtraOptions {}
+export interface GetListingUniqueIdOptions extends ViewFunctionExtraOptions {
+  args: GetListingUniqueIdArgs;
+}
 
-export interface GetNftApprovalOptions extends RequiredArgsOptions<GetNftApprovalArgs>, ViewFunctionExtraOptions {}
+export interface GetNftApprovalOptions extends ViewFunctionExtraOptions {
+  args: GetNftApprovalArgs;
+}
 
 export interface GetTradingFeeRateOptions extends ViewFunctionExtraOptions {}
 
 // ---------------------------------------------- User Setting --------------------------------------------------
-export interface GetUserLikesOptions extends RequiredArgsOptions<GetUserLikesArgs>, ViewFunctionExtraOptions {}
+export interface GetUserLikesOptions extends ViewFunctionExtraOptions {
+  args: GetUserLikesArgs;
+}
 
-export interface GetUserWatchListOptions extends RequiredArgsOptions<GetUserWatchListArgs>, ViewFunctionExtraOptions {}
+export interface GetUserWatchListOptions extends ViewFunctionExtraOptions {
+  args: GetUserWatchListArgs;
+}
 
-export interface GetUserLastReadNotificationTimeOptions
-  extends RequiredArgsOptions<GetUserLastReadNotificationTimeArgs>,
-    ViewFunctionExtraOptions {}
+export interface GetUserLastReadNotificationTimeOptions extends ViewFunctionExtraOptions {
+  args: GetUserLastReadNotificationTimeArgs;
+}
