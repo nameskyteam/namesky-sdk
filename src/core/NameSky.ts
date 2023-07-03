@@ -1,9 +1,4 @@
-import {
-  ACTION_MAX_NUM,
-  buildContractStateKeysRaw,
-  moveRegistrantPublicKeyToEnd,
-  REGISTRANT_KEYSTORE_PREFIX,
-} from '../utils';
+import { ACTION_MAX_NUM, moveRegistrantPublicKeyToEnd, REGISTRANT_KEYSTORE_PREFIX } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -17,10 +12,13 @@ import { UserSettingContract } from './contracts/UserSettingContract';
 import { getBase58CodeHash } from '../utils';
 import {
   Amount,
+  array,
   BlockQuery,
   MultiSendWalletSelector,
   MultiTransaction,
   setupMultiSendWalletSelector,
+  vec,
+  wrap,
 } from 'multi-transaction';
 import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
@@ -142,9 +140,11 @@ export class NameSky {
 
     // clean account state if needed
     if (state.length !== 0) {
+      const stateKeys = state.map(({ key }) => key);
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
-        args: buildContractStateKeysRaw(state),
+        args: wrap(stateKeys, array(vec('u8'), stateKeys.length)),
+        stringify: 'borsh',
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });

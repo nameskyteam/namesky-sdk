@@ -7,7 +7,9 @@ export type UpdateWrapper<T> =
   | 'UpdateNone';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
-export type CleanStateArgs = Uint8Array;
+export interface CleanStateArgs {
+  value: Uint8Array[];
+}
 
 export type InitArgs = Uint8Array;
 
