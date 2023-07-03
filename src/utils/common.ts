@@ -1,4 +1,4 @@
-import { Amount, BorshSchema, BorshTypes, stringifyBorsh } from 'multi-transaction';
+import { Amount, array, stringifyBorsh, vec, wrap } from 'multi-transaction';
 
 export const REQUEST_ACCESS_PENDING_KEY_PREFIX = 'request_access_pending_key:';
 export const REGISTRANT_KEYSTORE_PREFIX = 'registrant:keystore:';
@@ -9,7 +9,7 @@ export const ACTION_MAX_NUM = 100;
 
 export function buildContractStateKeysRaw(state: { key: Buffer; value: Buffer }[]): Buffer {
   const keys = state.map(({ key }) => key);
-  return stringifyBorsh(BorshSchema.new(), keys, BorshTypes.array(BorshTypes.vec(BorshTypes.u8()), keys.length));
+  return stringifyBorsh(wrap(keys, array(vec('u8'), keys.length)));
 }
 
 export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {

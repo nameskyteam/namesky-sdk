@@ -304,6 +304,14 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
+"@dao-xyz/borsh@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@dao-xyz/borsh/-/borsh-5.1.5.tgz#f932e81ad939f9dd5f7270f1359200cb160b0d34"
+  integrity sha512-F2p+jUPEu/0F1b5CBg1sL2chKP1STByV5rt8ulQnu6s9Pm++Nm7oWFZ9Deb4SljQ7KoAfXe8mWQ3z4XSUf2jpg==
+  dependencies:
+    "@protobufjs/float" "^1.0.2"
+    "@protobufjs/utf8" "^1.1.0"
+
 "@esbuild/android-arm@0.15.18":
   version "0.15.18"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm/-/android-arm-0.15.18.tgz#266d40b8fdcf87962df8af05b76219bc786b4f80"
@@ -631,6 +639,16 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@protobufjs/float@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@protobufjs/float/-/float-1.0.2.tgz#5e9e1abdcb73fc0a7cb8b291df78c8cbd97b87d1"
+  integrity sha512-Ddb+kVXlXst9d+R9PfTIxh1EdNkgoRe5tOX6t01f1lYWOvJnSPDBlG241QLzcyPdoNTsblLUdujGSE4RzrTZGQ==
+
+"@protobufjs/utf8@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
+  integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"
@@ -2791,15 +2809,15 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-multi-transaction@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-3.4.1.tgz#dd658a96adca65194f9220055ca3e3422ff36d2e"
-  integrity sha512-pM+e2ZuR6QAZ4fu1ObPGv0J4TydWm4IUX2EvrNY/H73aEDY0+bKuWEZDPns6W3q7kcsn6Xq45mXAbrN2VmOMhQ==
+multi-transaction@^3.5.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-3.5.0.tgz#b8325a0ac3f66109108bc7d664885f2716efdc94"
+  integrity sha512-WTWc/8m6yEpd+HibRvVdHdU+HiRAMaxh8IQsBws711uO+YDI7kPkLwkkdNZ8IihmYeujY0AIygl1tzTCfKPDIQ==
   dependencies:
+    "@dao-xyz/borsh" "^5.1.5"
     "@near-wallet-selector/core" "^7.9.0"
     big.js "^6.2.1"
     bn.js "^5.2.1"
-    borsh "^0.7.0"
     buffer "^6.0.3"
     near-api-js "^1.1.0"
 
