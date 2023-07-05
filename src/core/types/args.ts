@@ -1,4 +1,4 @@
-import { NftTokenArgs, NftTokensArgs, NftTokensForOwnerArgs } from 'multi-transaction';
+import { NftTokenArgs, NftTokensArgs, NftTokensForOwnerArgs, Wrapper } from 'multi-transaction';
 
 export type UpdateWrapper<T> =
   | {
@@ -7,9 +7,7 @@ export type UpdateWrapper<T> =
   | 'UpdateNone';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
-export interface CleanStateArgs {
-  value: Uint8Array[];
-}
+export type CleanStateArgs = Wrapper<Buffer[]>;
 
 export type InitArgs = Uint8Array;
 
