@@ -2809,10 +2809,10 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-multi-transaction@^3.6.1:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-3.6.1.tgz#4ed24b3dc1baccd44c0f3162197b0e2161e895d5"
-  integrity sha512-Llbf3aw++iTeoBZ7UYUYezpUBFK1BZbfUJOLfCWSWlFvxM1rXuq8cn4bx9/k2djfE9ogJ+I7FzOcr1H/FOX9Rg==
+multi-transaction@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-3.6.2.tgz#5a61e422dbf4bbe89667e4878cc30e15dcb70ffa"
+  integrity sha512-Sr5st6C5C2YmXCnweezxdB89QnaTd8rJCoCGhWrA58dJy1nFwZSG+7uqLa6OrpQy7UdrjJhRstPHIsA2Ho3koQ==
   dependencies:
     "@dao-xyz/borsh" "^5.1.5"
     "@near-wallet-selector/core" "^7.9.0"
