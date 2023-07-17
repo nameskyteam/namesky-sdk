@@ -148,7 +148,7 @@ export class CoreContract extends Contract {
       this.get_mint_fee({}),
       this.nft_get_minter_id({ args: { registrant_id: registrantId } }),
     ]);
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_register',
       args,
       attachedDeposit: minterId ? Amount.ONE_YOCTO : mintFee,
@@ -158,7 +158,7 @@ export class CoreContract extends Contract {
   }
 
   async nftUnregister({ args, gas, callbackUrl }: NftUnregisterOptions): Promise<boolean> {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_unregister',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -170,7 +170,7 @@ export class CoreContract extends Contract {
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_redeem',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
@@ -182,7 +182,7 @@ export class CoreContract extends Contract {
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).nft_transfer({
+    const transaction = MultiTransaction.batch(this.contractId).nft_transfer({
       args,
       gas,
     });
@@ -190,7 +190,7 @@ export class CoreContract extends Contract {
   }
 
   async nftApprove({ args, attachedDeposit, gas, callbackUrl }: NftApproveOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).nft_approve({
+    const transaction = MultiTransaction.batch(this.contractId).nft_approve({
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
@@ -199,7 +199,7 @@ export class CoreContract extends Contract {
   }
 
   async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).nft_revoke({
+    const transaction = MultiTransaction.batch(this.contractId).nft_revoke({
       args,
       gas,
     });

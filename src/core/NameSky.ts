@@ -18,7 +18,7 @@ import {
   MultiTransaction,
   setupMultiSendWalletSelector,
   vec,
-  wrap,
+  borshWrap,
 } from 'multi-transaction';
 import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
@@ -133,7 +133,7 @@ export class NameSky {
       return;
     }
 
-    const transaction = MultiTransaction.createTransaction(registrantId);
+    const transaction = MultiTransaction.batch(registrantId);
 
     // deploy controller contract
     transaction.deployContract(code);
@@ -143,7 +143,7 @@ export class NameSky {
       const stateKeys = state.map(({ key }) => key);
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
-        args: wrap(stateKeys, array(vec('u8'), stateKeys.length)),
+        args: borshWrap(stateKeys, array(vec('u8'), stateKeys.length)),
         stringify: 'borsh',
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
@@ -170,10 +170,10 @@ export class NameSky {
     publicKeys = moveRegistrantPublicKeyToEnd(registrantPublicKey, publicKeys);
 
     for (const publicKey of publicKeys) {
-      if (transaction.currentActionCount() < ACTION_MAX_NUM) {
+      if (transaction.actionCount() < ACTION_MAX_NUM) {
         transaction.deleteKey(publicKey);
       } else {
-        transaction.createTransaction(registrantId).deleteKey(publicKey);
+        transaction.batch(registrantId).deleteKey(publicKey);
       }
     }
 

@@ -47,7 +47,7 @@ export class UserSettingContract extends Contract {
   // -------------------------------------------------- Call -------------------------------------------------------
 
   async like({ args, gas, callbackUrl }: LikeOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'like',
       args,
       gas,
@@ -56,7 +56,7 @@ export class UserSettingContract extends Contract {
   }
 
   async unlike({ args, gas, callbackUrl }: UnlikeOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'unlike',
       args,
       gas,
@@ -65,7 +65,7 @@ export class UserSettingContract extends Contract {
   }
 
   async watch({ args, gas, callbackUrl }: WatchOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'watch',
       args,
       gas,
@@ -74,7 +74,7 @@ export class UserSettingContract extends Contract {
   }
 
   async unwatch({ args, gas, callbackUrl }: UnwatchOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'unwatch',
       args,
       gas,
@@ -83,7 +83,7 @@ export class UserSettingContract extends Contract {
   }
 
   async readNotificationAt({ args, gas, callbackUrl }: ReadNotificationAtOptions) {
-    const transaction = MultiTransaction.createTransaction(this.contractId).functionCall({
+    const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'read_notification_at',
       args,
       gas,
