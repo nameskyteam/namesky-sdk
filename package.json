@@ -17,12 +17,12 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@near-wallet-selector/core": "^7.9.0",
+    "@near-wallet-selector/core": "^8.2.0",
     "big.js": "^6.2.1",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
-    "multi-transaction": "^4.0.2",
-    "near-api-js": "^1.1.0",
+    "multi-transaction": "^4.1.1",
+    "near-api-js": "^2.1.4",
     "sha256": "^0.2.0"
   },
   "devDependencies": {
