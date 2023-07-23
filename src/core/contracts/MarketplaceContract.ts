@@ -1,5 +1,5 @@
 import { Contract } from '../../utils/Contract';
-import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR, max } from '../../utils';
+import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils';
 import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
   AcceptOfferingOptions,
@@ -27,7 +27,7 @@ import {
   UpdateOfferingOptions,
 } from '../types/options';
 import { UpdateOfferingArgs } from '../types/args';
-import { Amount, MultiTransaction, StorageBalance } from 'multi-transaction';
+import { Amount, BigNumber, MultiTransaction, StorageBalance } from 'multi-transaction';
 
 export class MarketplaceContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
@@ -153,7 +153,7 @@ export class MarketplaceContract extends Contract {
     gas,
     callbackUrl,
   }: CreateMarketAccountOption): Promise<StorageBalance> {
-    const transaction = MultiTransaction.batch(this.contractId).storage_deposit({
+    const transaction = MultiTransaction.batch(this.contractId).nep145.storage_deposit({
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       gas,
@@ -188,21 +188,19 @@ export class MarketplaceContract extends Contract {
       attachedDeposit,
       gas,
     });
-    return this.selector
-      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
-      .then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
   }
 
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
     const { nft_contract_id, nft_token_id, price, expire_time } = args;
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new listing
-      .storage_deposit({
+      .nep145.storage_deposit({
         attachedDeposit: listingStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
     // call `nft_approve` to create listing
-    transaction.batch(nft_contract_id).nft_approve({
+    transaction.batch(nft_contract_id).nep171.nft_approve({
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
@@ -218,7 +216,7 @@ export class MarketplaceContract extends Contract {
   async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
     const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
     // call `nft_approve` to update listing
-    const transaction = MultiTransaction.batch(nft_contract_id).nft_approve({
+    const transaction = MultiTransaction.batch(nft_contract_id).nep171.nft_approve({
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
@@ -243,7 +241,7 @@ export class MarketplaceContract extends Contract {
 
   async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
     const transaction = MultiTransaction.batch(args.nft_contract_id)
-      .nft_approve({
+      .nep171.nft_approve({
         args: {
           token_id: args.nft_token_id,
           account_id: this.contractId,
@@ -258,9 +256,7 @@ export class MarketplaceContract extends Contract {
         attachedDeposit: Amount.ONE_YOCTO,
         gas,
       });
-    return this.selector
-      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
-      .then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
   }
 
   // We have two type of offerings, Simple Offering & Pro Offering
@@ -269,7 +265,7 @@ export class MarketplaceContract extends Contract {
   async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions) {
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new offering
-      .storage_deposit({
+      .nep145.storage_deposit({
         attachedDeposit: offeringStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
@@ -291,7 +287,7 @@ export class MarketplaceContract extends Contract {
         },
       });
 
-      const insufficientBalance = max(Amount.from(args.price).sub(accountView?.near_balance ?? 0), Amount.from(0));
+      const insufficientBalance = BigNumber.max(BigNumber(args.price).minus(accountView?.near_balance ?? 0), 0);
 
       if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
@@ -325,7 +321,7 @@ export class MarketplaceContract extends Contract {
       const offering = (await this.get_offering_view({
         args: { buyer_id: this.selector.getActiveAccountId()!, nft_contract_id, nft_token_id },
       }))!;
-      const insufficientBalance = max(Amount.from(new_price).sub(offering.price), Amount.from(0));
+      const insufficientBalance = BigNumber.max(BigNumber(new_price).minus(offering.price), 0);
       if (offering.is_simple_offering) {
         // update offering and deposit insufficient balance
         transaction.functionCall<UpdateOfferingArgs>({

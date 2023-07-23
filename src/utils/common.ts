@@ -17,11 +17,3 @@ export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, public
   result.push(registrantPublicKey);
   return result;
 }
-
-export function max(...ns: Amount[]): Amount {
-  return ns.sort((n1, n2) => n2.cmp(n1))[0];
-}
-
-export function min(...ns: Amount[]): Amount {
-  return ns.sort((n1, n2) => n1.cmp(n2))[0];
-}

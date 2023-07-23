@@ -843,11 +843,6 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/big.js@^6.1.6":
-  version "6.1.6"
-  resolved "https://registry.yarnpkg.com/@types/big.js/-/big.js-6.1.6.tgz#3d417e758483d55345a03a087f7e0c87137ca444"
-  integrity sha512-0r9J+Zz9rYm2hOTwiMAVkm3XFQ4u5uTK37xrQMhc9bysn/sf/okzovWMYYIBMFTn/yrEZ11pusgLEaoarTlQbA==
-
 "@types/graceful-fs@^4.1.3":
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.5.tgz#21ffba0d98da4350db64891f92a9e5db3cdb4e15"
@@ -1244,10 +1239,10 @@ base64-js@^1.3.1:
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
-big.js@^6.2.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/big.js/-/big.js-6.2.1.tgz#7205ce763efb17c2e41f26f121c420c6a7c2744f"
-  integrity sha512-bCtHMwL9LeDIozFn+oNhhFoq+yQ3BNdnsLSASUxLciOb1vgvpHsIO1dsENiGMgbb4SkP5TrzWzRiLddn8ahVOQ==
+bignumber.js@^9.1.1:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.1.tgz#c4df7dc496bd849d4c9464344c1aa74228b4dac6"
+  integrity sha512-pHm4LsMJ6lzgNGVfZHjMoO8sdoRhOzOH4MLmY65Jg70bpxCKu5iOHNJyfF6OyvYw7t8Fpf35RuzUyqnQsj8Vig==
 
 binary-extensions@^2.0.0:
   version "2.2.0"
@@ -2962,14 +2957,13 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-multi-transaction@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-4.2.0.tgz#e61e15fe622adddc5a2a43a8651806d7f8cf69e3"
-  integrity sha512-r/49oj0aeUdMA8IgGwHu1rK+2DZ5iXzbas5c8PdYiQ/LafZpR5q5ZwV4xePWofe7wwHfsOiDd1v5jyjyLoBTYg==
+multi-transaction@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-4.3.1.tgz#58be51c0980db86d094fbea7a1403fdf2ff89dc6"
+  integrity sha512-O/fc0fUUSw7wYEbE11GnBtLxz/Y+zfASFwasE82yVAPC4zI993XMdQqQs42GKvgAiEoy0qKZPkqdZnXtLEA2zg==
   dependencies:
-    "@dao-xyz/borsh" "^5.1.5"
     "@near-wallet-selector/core" "^8.2.0"
-    big.js "^6.2.1"
+    bignumber.js "^9.1.1"
     bn.js "^5.2.1"
     buffer "^6.0.3"
     near-api-js "^2.1.4"

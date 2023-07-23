@@ -164,9 +164,7 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector
-      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
-      .then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
@@ -176,13 +174,11 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector
-      .send<boolean>(transaction, { callbackUrl, throwReceiptErrorsIfAny: true })
-      .then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nft_transfer({
+    const transaction = MultiTransaction.batch(this.contractId).nep171.nft_transfer({
       args,
       gas,
     });
@@ -190,7 +186,7 @@ export class CoreContract extends Contract {
   }
 
   async nftApprove({ args, attachedDeposit, gas, callbackUrl }: NftApproveOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nft_approve({
+    const transaction = MultiTransaction.batch(this.contractId).nep171.nft_approve({
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
@@ -199,7 +195,7 @@ export class CoreContract extends Contract {
   }
 
   async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nft_revoke({
+    const transaction = MultiTransaction.batch(this.contractId).nep171.nft_revoke({
       args,
       gas,
     });

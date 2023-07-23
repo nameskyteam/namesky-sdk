@@ -12,17 +12,16 @@ import { UserSettingContract } from './contracts/UserSettingContract';
 import { getBase58CodeHash } from '../utils';
 import {
   Amount,
-  array,
   BlockQuery,
   MultiSendWalletSelector,
   MultiTransaction,
   setupMultiSendWalletSelector,
-  vec,
-  borshWrap,
 } from 'multi-transaction';
 import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
 import { NameSkyNFTSafety } from './types/data';
+import * as borsh from '@dao-xyz/borsh';
+import { Buffer } from 'buffer';
 
 export class NameSky {
   selector: MultiSendWalletSelector;
@@ -143,8 +142,14 @@ export class NameSky {
       const stateKeys = state.map(({ key }) => key);
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
-        args: borshWrap(stateKeys, array(vec('u8'), stateKeys.length)),
-        stringify: 'borsh',
+        args: stateKeys,
+        stringify: (args) => {
+          class Wrapper {
+            @borsh.field({ type: borsh.fixedArray(Uint8Array, args.length) })
+            value = args;
+          }
+          return Buffer.from(borsh.serialize(new Wrapper()));
+        },
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
@@ -170,7 +175,7 @@ export class NameSky {
     publicKeys = moveRegistrantPublicKeyToEnd(registrantPublicKey, publicKeys);
 
     for (const publicKey of publicKeys) {
-      if (transaction.actionCount() < ACTION_MAX_NUM) {
+      if (transaction.countActions() < ACTION_MAX_NUM) {
         transaction.deleteKey(publicKey);
       } else {
         transaction.batch(registrantId).deleteKey(publicKey);
