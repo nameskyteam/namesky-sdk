@@ -21,7 +21,7 @@
     "@near-wallet-selector/core": "^8.2.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
-    "multi-transaction": "^4.3.3",
+    "multi-transaction": "^4.3.4",
     "near-api-js": "^2.1.4",
     "sha256": "^0.2.0"
   },
