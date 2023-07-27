@@ -175,7 +175,7 @@ export class MarketplaceContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_withdraw',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
     await this.selector.send(transaction, { callbackUrl });
@@ -233,7 +233,7 @@ export class MarketplaceContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'remove_listing',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
     return this.selector.send<ListingView>(transaction, { callbackUrl }).then((value) => value!);
@@ -253,7 +253,7 @@ export class MarketplaceContract extends Contract {
       .functionCall({
         methodName: 'accept_offering',
         args,
-        attachedDeposit: Amount.ONE_YOCTO,
+        attachedDeposit: Amount.oneYocto(),
         gas,
       });
     return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
@@ -277,7 +277,7 @@ export class MarketplaceContract extends Contract {
       transaction.functionCall({
         methodName: 'create_offering',
         args,
-        attachedDeposit: args.price === '0' ? Amount.ONE_YOCTO : args.price,
+        attachedDeposit: args.price === '0' ? Amount.oneYocto() : args.price,
         gas,
       });
     } else {
@@ -301,7 +301,7 @@ export class MarketplaceContract extends Contract {
       transaction.functionCall({
         methodName: 'create_offering',
         args,
-        attachedDeposit: Amount.ONE_YOCTO,
+        attachedDeposit: Amount.oneYocto(),
         gas,
       });
     }
@@ -327,7 +327,7 @@ export class MarketplaceContract extends Contract {
         transaction.functionCall<UpdateOfferingArgs>({
           methodName: 'update_offering',
           args,
-          attachedDeposit: insufficientBalance.gt(0) ? insufficientBalance.toFixed() : Amount.ONE_YOCTO,
+          attachedDeposit: insufficientBalance.gt(0) ? insufficientBalance.toFixed() : Amount.oneYocto(),
           gas,
         });
       } else {
@@ -342,7 +342,7 @@ export class MarketplaceContract extends Contract {
         transaction.functionCall({
           methodName: 'update_offering',
           args,
-          attachedDeposit: Amount.ONE_YOCTO,
+          attachedDeposit: Amount.oneYocto(),
           gas,
         });
       }
@@ -352,7 +352,7 @@ export class MarketplaceContract extends Contract {
       transaction.functionCall({
         methodName: 'update_offering',
         args,
-        attachedDeposit: Amount.ONE_YOCTO,
+        attachedDeposit: Amount.oneYocto(),
         gas,
       });
     }
@@ -364,7 +364,7 @@ export class MarketplaceContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'remove_offering',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
     return this.selector.send<OfferingView>(transaction, { callbackUrl }).then((value) => value!);

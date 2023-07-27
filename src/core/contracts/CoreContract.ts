@@ -151,7 +151,7 @@ export class CoreContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_register',
       args,
-      attachedDeposit: minterId ? Amount.ONE_YOCTO : mintFee,
+      attachedDeposit: minterId ? Amount.oneYocto() : mintFee,
       gas,
     });
     await this.selector.sendWithLocalKey(registrantId, transaction);
@@ -161,7 +161,7 @@ export class CoreContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_unregister',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
     return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
@@ -171,7 +171,7 @@ export class CoreContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_redeem',
       args,
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas,
     });
     return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);

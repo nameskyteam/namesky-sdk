@@ -150,7 +150,7 @@ export class NameSky {
           }
           return Buffer.from(borsh.serialize(new Wrapper()));
         },
-        attachedDeposit: Amount.ONE_YOCTO,
+        attachedDeposit: Amount.oneYocto(),
         gas: gasForCleanState,
       });
     }
@@ -159,7 +159,7 @@ export class NameSky {
     transaction.functionCall<InitArgs>({
       methodName: 'init',
       args: Buffer.from(this.getCoreContractId()),
-      attachedDeposit: Amount.ONE_YOCTO,
+      attachedDeposit: Amount.oneYocto(),
       gas: gasForInit,
     });
 
