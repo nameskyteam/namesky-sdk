@@ -2957,10 +2957,10 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-multi-transaction@^4.4.2:
-  version "4.4.2"
-  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-4.4.2.tgz#15d2505bc73e5382c714e385e8a5132db5323ad4"
-  integrity sha512-p+4o3zTiQrL0/tINtItBB90ZG2TMHWtxpfHRu04sfD3bz6/oY31J7WZ0dn/BUPi7utNFXHQEkeIcW6mBa5Yx3w==
+multi-transaction@^4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-4.4.3.tgz#ba07a64aa1703a0052189689b1e83abb9e853a99"
+  integrity sha512-g4bA/Q0lZEjjWqZ35CElbp58SqWrYiwJoX5rxwmX/WzSOIOwbNN/MZPqR5bNHB+hGMpmJRqu2bo7sPFH2kLJxA==
   dependencies:
     "@near-wallet-selector/core" "^8.2.0"
     bignumber.js "^9.1.1"
