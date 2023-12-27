@@ -20,8 +20,9 @@ import {
 import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
 import { NameSkyNFTSafety } from './types/data';
-import * as borsh from '@dao-xyz/borsh';
+import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
+import { Schema } from 'inspector';
 
 export class NameSky {
   selector: MultiSendWalletSelector;
@@ -143,12 +144,10 @@ export class NameSky {
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
         args: stateKeys,
-        stringify: (args) => {
-          class Wrapper {
-            @borsh.field({ type: borsh.fixedArray(Uint8Array, args.length) })
-            value = args;
-          }
-          return Buffer.from(borsh.serialize(new Wrapper()));
+        stringify: (stateKeys) => {
+          // borsh serialize `[Vec<u8>; len]`
+          const schema: borsh.Schema = { array: { type: { array: { type: 'u8' } }, len: stateKeys.length } };
+          return Buffer.from(borsh.serialize(schema, stateKeys));
         },
         attachedDeposit: Amount.oneYocto(),
         gas: gasForCleanState,
@@ -158,7 +157,7 @@ export class NameSky {
     // init controller contract
     transaction.functionCall<InitArgs>({
       methodName: 'init',
-      args: Buffer.from(this.getCoreContractId()),
+      args: Buffer.from(this.getCoreContractId()), // raw args
       attachedDeposit: Amount.oneYocto(),
       gas: gasForInit,
     });
