@@ -17,8 +17,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@dao-xyz/borsh": "^5.1.5",
     "@near-wallet-selector/core": "^8.2.0",
+    "borsh": "^2.0.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
     "multi-transaction": "^4.4.3",
