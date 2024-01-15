@@ -13,16 +13,16 @@ import { getBase58CodeHash } from '../utils';
 import {
   Amount,
   BlockQuery,
+  BorshSchema,
   MultiSendWalletSelector,
   MultiTransaction,
   setupMultiSendWalletSelector,
+  Stringifier,
 } from 'multi-transaction';
 import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
 import { NameSkyNFTSafety } from './types/data';
-import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
-import { Schema } from 'inspector';
 
 export class NameSky {
   selector: MultiSendWalletSelector;
@@ -144,12 +144,8 @@ export class NameSky {
       transaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
         args: stateKeys,
-        stringify: (stateKeys) => {
-          // borsh serialize `[Vec<u8>; len]`
-          const schema: borsh.Schema = { array: { type: { array: { type: 'u8' } }, len: stateKeys.length } };
-          return Buffer.from(borsh.serialize(schema, stateKeys));
-        },
-        attachedDeposit: Amount.oneYocto(),
+        stringifier: Stringifier.borsh(BorshSchema.Array(BorshSchema.Vec(BorshSchema.u8), stateKeys.length)),
+        attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
     }
@@ -158,7 +154,7 @@ export class NameSky {
     transaction.functionCall<InitArgs>({
       methodName: 'init',
       args: Buffer.from(this.getCoreContractId()), // raw args
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas: gasForInit,
     });
 

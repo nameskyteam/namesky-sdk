@@ -151,7 +151,7 @@ export class CoreContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_register',
       args,
-      attachedDeposit: minterId ? Amount.oneYocto() : mintFee,
+      attachedDeposit: minterId ? Amount.ONE_YOCTO : mintFee,
       gas,
     });
     await this.selector.sendWithLocalKey(registrantId, transaction);
@@ -161,7 +161,7 @@ export class CoreContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_unregister',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
     return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
@@ -171,14 +171,14 @@ export class CoreContract extends Contract {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_redeem',
       args,
-      attachedDeposit: Amount.oneYocto(),
+      attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
     return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nep171.nft_transfer({
+    const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_transfer({
       args,
       gas,
     });
@@ -186,7 +186,7 @@ export class CoreContract extends Contract {
   }
 
   async nftApprove({ args, attachedDeposit, gas, callbackUrl }: NftApproveOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nep171.nft_approve({
+    const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_approve({
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
@@ -195,7 +195,7 @@ export class CoreContract extends Contract {
   }
 
   async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nep171.nft_revoke({
+    const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_revoke({
       args,
       gas,
     });
