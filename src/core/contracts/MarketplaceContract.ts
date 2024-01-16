@@ -153,7 +153,7 @@ export class MarketplaceContract extends Contract {
     gas,
     callbackUrl,
   }: CreateMarketAccountOption): Promise<StorageBalance> {
-    const transaction = MultiTransaction.batch(this.contractId).storageManagement.storage_deposit({
+    const transaction = MultiTransaction.batch(this.contractId).storageManagement.storageDeposit({
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       gas,
@@ -195,12 +195,12 @@ export class MarketplaceContract extends Contract {
     const { nft_contract_id, nft_token_id, price, expire_time } = args;
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new listing
-      .storageManagement.storage_deposit({
+      .storageManagement.storageDeposit({
         attachedDeposit: listingStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
     // call `nft_approve` to create listing
-    transaction.batch(nft_contract_id).nonFungibleToken.nft_approve({
+    transaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
@@ -216,7 +216,7 @@ export class MarketplaceContract extends Contract {
   async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
     const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
     // call `nft_approve` to update listing
-    const transaction = MultiTransaction.batch(nft_contract_id).nonFungibleToken.nft_approve({
+    const transaction = MultiTransaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
@@ -241,7 +241,7 @@ export class MarketplaceContract extends Contract {
 
   async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
     const transaction = MultiTransaction.batch(args.nft_contract_id)
-      .nonFungibleToken.nft_approve({
+      .nonFungibleToken.nftApprove({
         args: {
           token_id: args.nft_token_id,
           account_id: this.contractId,
@@ -265,7 +265,7 @@ export class MarketplaceContract extends Contract {
   async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions) {
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new offering
-      .storageManagement.storage_deposit({
+      .storageManagement.storageDeposit({
         attachedDeposit: offeringStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 

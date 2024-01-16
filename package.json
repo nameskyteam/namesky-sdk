@@ -10,7 +10,7 @@
     "src"
   ],
   "scripts": {
-    "build": "tsup src --minify --dts",
+    "build": "rm -rf dist && tsup src --minify --dts",
     "lint": "eslint src/**/*.ts --fix",
     "prettier": "prettier src/**/*.ts --write",
     "test": "jest",
@@ -20,7 +20,7 @@
     "@near-wallet-selector/core": "^8.2.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
-    "multi-transaction": "^5.0.1",
+    "multi-transaction": "^5.1.0",
     "near-api-js": "^2.1.4",
     "sha256": "^0.2.0"
   },
