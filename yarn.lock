@@ -709,14 +709,6 @@
     bn.js "5.2.1"
     borsh "^0.7.0"
 
-"@near-wallet-selector/core@^8.2.0":
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.2.0.tgz#5be2f5e371d84bba99edfcef2b056c03fc99d0c7"
-  integrity sha512-IHIGfT2Ce7CI5z9srC4tQkhHw/2acAIrZWIcTWLbfzN9u6eWB143hLxTe3eTD1hUVeJBXVxfZR+Ano9nKKBypw==
-  dependencies:
-    events "3.3.0"
-    rxjs "7.8.1"
-
 "@near-wallet-selector/core@^8.9.2":
   version "8.9.2"
   resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-8.9.2.tgz#738583255f2a7a57a9731de503e187f6a651abfb"
