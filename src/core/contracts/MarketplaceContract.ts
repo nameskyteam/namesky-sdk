@@ -132,16 +132,16 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_trading_fee_rate({ blockQuery }: GetTradingFeeRateOptions): Promise<TradingFeeRate> {
-    return this.selector
-      .view<MarketplaceConfig>({
-        contractId: this.contractId,
-        methodName: 'get_config',
-        blockQuery,
-      })
-      .then(({ listing_trading_fee, offering_trading_fee }) => ({
-        listing: listing_trading_fee / FEE_DIVISOR,
-        offering: offering_trading_fee / FEE_DIVISOR,
-      }));
+    const { listing_trading_fee, offering_trading_fee } = await this.selector.view<MarketplaceConfig>({
+      contractId: this.contractId,
+      methodName: 'get_config',
+      blockQuery,
+    });
+
+    return {
+      listing: listing_trading_fee / FEE_DIVISOR,
+      offering: offering_trading_fee / FEE_DIVISOR,
+    };
   }
 
   // ------------------------------------------------- Call -------------------------------------------------------
@@ -158,7 +158,8 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: attachedDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       gas,
     });
-    return this.selector.send<StorageBalance>(transaction, { callbackUrl });
+
+    return this.selector.send(transaction, { callbackUrl });
   }
 
   async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
@@ -168,6 +169,7 @@ export class MarketplaceContract extends Contract {
       attachedDeposit,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -178,6 +180,7 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -188,7 +191,8 @@ export class MarketplaceContract extends Contract {
       attachedDeposit,
       gas,
     });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
+
+    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
@@ -236,6 +240,7 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
+
     return this.selector.send<ListingView>(transaction, { callbackUrl });
   }
 
@@ -256,7 +261,8 @@ export class MarketplaceContract extends Contract {
         attachedDeposit: Amount.ONE_YOCTO,
         gas,
       });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
+
+    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   // We have two type of offerings, Simple Offering & Pro Offering
@@ -281,9 +287,15 @@ export class MarketplaceContract extends Contract {
         gas,
       });
     } else {
+      const accountId = this.selector.getActiveAccountId();
+
+      if (!accountId) {
+        throw Error(`Active account id not found`);
+      }
+
       const accountView = await this.get_account_view_of({
         args: {
-          account_id: this.selector.getActiveAccountId()!,
+          account_id: accountId,
         },
       });
 
@@ -312,16 +324,36 @@ export class MarketplaceContract extends Contract {
   // if simple offering, user must make up the insufficient part
   // if pro offering, we recommend user to make up the insufficient part
   async updateOffering({ args, gas, callbackUrl }: UpdateOfferingOptions) {
-    const { nft_contract_id, nft_token_id, new_price } = args;
+    const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
+
+    if (!new_price && !new_expire_time) {
+      throw Error('Must provide `new_price` or `new_expire_time`');
+    }
 
     const transaction = MultiTransaction.batch(this.contractId);
 
     if (new_price) {
       // if price need to be updated
-      const offering = (await this.get_offering_view({
-        args: { buyer_id: this.selector.getActiveAccountId()!, nft_contract_id, nft_token_id },
-      }))!;
+      const accountId = this.selector.getActiveAccountId();
+
+      if (!accountId) {
+        throw Error(`Active account id not found`);
+      }
+
+      const offering = await this.get_offering_view({
+        args: {
+          buyer_id: accountId,
+          nft_contract_id,
+          nft_token_id,
+        },
+      });
+
+      if (!offering) {
+        throw Error('Offering not found');
+      }
+
       const insufficientBalance = BigNumber.max(BigNumber(new_price).minus(offering.price), 0);
+
       if (offering.is_simple_offering) {
         // update offering and deposit insufficient balance
         transaction.functionCall<UpdateOfferingArgs>({
@@ -338,6 +370,7 @@ export class MarketplaceContract extends Contract {
             attachedDeposit: insufficientBalance.toFixed(),
           });
         }
+
         // update offering
         transaction.functionCall({
           methodName: 'update_offering',
@@ -367,6 +400,7 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send<OfferingView>(transaction, { callbackUrl });
+
+    return this.selector.send(transaction, { callbackUrl });
   }
 }

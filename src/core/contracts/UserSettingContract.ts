@@ -52,6 +52,7 @@ export class UserSettingContract extends Contract {
       args,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -61,6 +62,7 @@ export class UserSettingContract extends Contract {
       args,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -70,6 +72,7 @@ export class UserSettingContract extends Contract {
       args,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -79,6 +82,7 @@ export class UserSettingContract extends Contract {
       args,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -88,6 +92,7 @@ export class UserSettingContract extends Contract {
       args,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 }

@@ -13,7 +13,6 @@ import {
   NftNameSkyTokensForOwnerOptions,
   NftNameSkyTokensOptions,
   NftRedeemOptions,
-  NftRegisterOptions,
   NftRegistrantIdsOfOptions,
   NftRevokeOptions,
   NftStateOptions,
@@ -131,13 +130,13 @@ export class CoreContract extends Contract {
   }
 
   async get_royalty({ blockQuery }: GetRoyaltyOptions): Promise<number> {
-    return this.selector
-      .view<RoyaltyView>({
-        contractId: this.contractId,
-        methodName: 'get_royalty',
-        blockQuery,
-      })
-      .then(({ royalty, divisor }) => royalty / divisor);
+    const { royalty, divisor } = await this.selector.view<RoyaltyView>({
+      contractId: this.contractId,
+      methodName: 'get_royalty',
+      blockQuery,
+    });
+
+    return royalty / divisor;
   }
 
   // -------------------------------------------------- Call -------------------------------------------------------
@@ -149,7 +148,8 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
+
+    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
@@ -159,7 +159,8 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
+
+    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
@@ -167,6 +168,7 @@ export class CoreContract extends Contract {
       args,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -176,6 +178,7 @@ export class CoreContract extends Contract {
       attachedDeposit: attachedDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 
@@ -184,6 +187,7 @@ export class CoreContract extends Contract {
       args,
       gas,
     });
+
     await this.selector.send(transaction, { callbackUrl });
   }
 }
