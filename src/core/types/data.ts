@@ -1,7 +1,7 @@
 import { Token } from 'multi-transaction';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
-export interface NameSkyNFTSafety {
+export interface NameSkyNftSafety {
   isCodeHashCorrect: boolean;
   isControllerOwnerIdCorrect: boolean;
   isStateCleaned: boolean;
