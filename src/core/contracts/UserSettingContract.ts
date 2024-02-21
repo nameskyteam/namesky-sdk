@@ -46,7 +46,7 @@ export class UserSettingContract extends Contract {
 
   // -------------------------------------------------- Call -------------------------------------------------------
 
-  async like({ args, gas, callbackUrl }: LikeOptions) {
+  async like({ args, gas, callbackUrl }: LikeOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'like',
       args,
@@ -55,7 +55,7 @@ export class UserSettingContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async unlike({ args, gas, callbackUrl }: UnlikeOptions) {
+  async unlike({ args, gas, callbackUrl }: UnlikeOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'unlike',
       args,
@@ -64,7 +64,7 @@ export class UserSettingContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async watch({ args, gas, callbackUrl }: WatchOptions) {
+  async watch({ args, gas, callbackUrl }: WatchOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'watch',
       args,
@@ -73,7 +73,7 @@ export class UserSettingContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async unwatch({ args, gas, callbackUrl }: UnwatchOptions) {
+  async unwatch({ args, gas, callbackUrl }: UnwatchOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'unwatch',
       args,
@@ -82,7 +82,7 @@ export class UserSettingContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async readNotificationAt({ args, gas, callbackUrl }: ReadNotificationAtOptions) {
+  async readNotificationAt({ args, gas, callbackUrl }: ReadNotificationAtOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'read_notification_at',
       args,

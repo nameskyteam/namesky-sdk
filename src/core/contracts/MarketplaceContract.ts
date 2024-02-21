@@ -158,10 +158,10 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: attachedDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       gas,
     });
-    return this.selector.send<StorageBalance>(transaction, { callbackUrl }).then((value) => value!);
+    return this.selector.send<StorageBalance>(transaction, { callbackUrl });
   }
 
-  async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
+  async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_deposit',
       args,
@@ -171,7 +171,7 @@ export class MarketplaceContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions) {
+  async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_withdraw',
       args,
@@ -188,10 +188,16 @@ export class MarketplaceContract extends Contract {
       attachedDeposit,
       gas,
     });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
+  async createListing({
+    args,
+    listingStorageDeposit,
+    approvalStorageDeposit,
+    gas,
+    callbackUrl,
+  }: CreateListingOptions): Promise<void> {
     const { nft_contract_id, nft_token_id, price, expire_time } = args;
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new listing
@@ -213,7 +219,7 @@ export class MarketplaceContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
+  async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions): Promise<void> {
     const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
     // call `nft_approve` to update listing
     const transaction = MultiTransaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
@@ -236,7 +242,7 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send<ListingView>(transaction, { callbackUrl }).then((value) => value!);
+    return this.selector.send<ListingView>(transaction, { callbackUrl });
   }
 
   async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
@@ -256,13 +262,13 @@ export class MarketplaceContract extends Contract {
         attachedDeposit: Amount.ONE_YOCTO,
         gas,
       });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   // We have two type of offerings, Simple Offering & Pro Offering
   // If Simple Offering, user needs to deposit with the same price
   // If Pro Offering, we recommend user to deposit insufficient balance
-  async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions) {
+  async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new offering
       .storageManagement.storageDeposit({
@@ -311,7 +317,7 @@ export class MarketplaceContract extends Contract {
 
   // if simple offering, user must make up the insufficient part
   // if pro offering, we recommend user to make up the insufficient part
-  async updateOffering({ args, gas, callbackUrl }: UpdateOfferingOptions) {
+  async updateOffering({ args, gas, callbackUrl }: UpdateOfferingOptions): Promise<void> {
     const { nft_contract_id, nft_token_id, new_price } = args;
 
     const transaction = MultiTransaction.batch(this.contractId);
@@ -367,6 +373,6 @@ export class MarketplaceContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send<OfferingView>(transaction, { callbackUrl }).then((value) => value!);
+    return this.selector.send<OfferingView>(transaction, { callbackUrl });
   }
 }

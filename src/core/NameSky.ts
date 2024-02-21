@@ -13,6 +13,7 @@ import {
   Amount,
   BlockQuery,
   BorshSchema,
+  endless,
   MultiSendAccount,
   MultiSendWalletSelector,
   MultiTransaction,
@@ -67,7 +68,7 @@ export class NameSky {
     return this.selector.near.connection.provider;
   }
 
-  async requestFullAccess(webWalletBaseUrl: string, successUrl?: string, failureUrl?: string) {
+  async requestFullAccess(webWalletBaseUrl: string, successUrl?: string, failureUrl?: string): Promise<never> {
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey;
@@ -79,6 +80,9 @@ export class NameSky {
     newUrl.searchParams.set('success_url', successUrl ?? window.location.href);
     newUrl.searchParams.set('failure_url', failureUrl ?? window.location.href);
     window.location.assign(newUrl.toString());
+
+    // waiting for direction
+    endless();
   }
 
   // auto callback
@@ -102,7 +106,7 @@ export class NameSky {
   }
 
   // signed by registrant
-  async register({ registrantId, minterId, gas }: NftRegisterOptions) {
+  async register({ registrantId, minterId, gas }: NftRegisterOptions): Promise<void> {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.get_mint_fee({}),
       this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
@@ -121,7 +125,7 @@ export class NameSky {
   }
 
   // signed by registrant
-  async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
+  async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions): Promise<void> {
     /*
       We don't need to check follow conditions at the same block,
       because these are only used to check whether to skip `setupController`
@@ -206,7 +210,7 @@ export class NameSky {
   // minted by operator
   async waitForMinting(tokenId: string, timeout?: number): Promise<NameSkyToken> {
     return wait(async () => {
-      for (;;) {
+      while (true) {
         const token = await this.coreContract.nft_namesky_token({
           args: {
             token_id: tokenId,

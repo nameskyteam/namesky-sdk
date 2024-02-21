@@ -11,6 +11,7 @@
   ],
   "rules": {
     "eol-last": 2,
+    "no-constant-condition": "off",
     "@typescript-eslint/no-empty-interface": [
       "off"
     ],

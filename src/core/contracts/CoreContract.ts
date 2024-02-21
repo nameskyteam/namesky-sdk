@@ -149,7 +149,7 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
@@ -159,10 +159,10 @@ export class CoreContract extends Contract {
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
-    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true }).then((value) => value!);
+    return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
+  async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nftTransfer({
       args,
       gas,
@@ -170,7 +170,7 @@ export class CoreContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async nftApprove({ args, attachedDeposit, gas, callbackUrl }: NftApproveOptions) {
+  async nftApprove({ args, attachedDeposit, gas, callbackUrl }: NftApproveOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nftApprove({
       args,
       attachedDeposit: attachedDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
@@ -179,7 +179,7 @@ export class CoreContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
+  async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions): Promise<void> {
     const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nftRevoke({
       args,
       gas,
