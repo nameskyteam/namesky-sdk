@@ -17,3 +17,7 @@ export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, public
   result.push(registrantPublicKey);
   return result;
 }
+
+export async function sleep(timestamp: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, timestamp));
+}

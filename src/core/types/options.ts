@@ -27,7 +27,6 @@ import {
   NftNameSkyTokensArgs,
   NftNameSkyTokensForOwnerArgs,
   NftRedeemArgs,
-  NftRegisterArgs,
   NftRegistrantIdsOfArgs,
   NftStateArgs,
   NftUnregisterArgs,
@@ -46,7 +45,13 @@ interface ChangeFunctionExtraOptions {
   callbackUrl?: string;
 }
 
-// ---------------------------------------------- Controller ---------------------------------------------------
+// ---------------------------------------------- Registrant ---------------------------------------------------
+export interface NftRegisterOptions {
+  registrantId: string;
+  minterId: string;
+  gas?: string;
+}
+
 export interface SetupControllerOptions {
   registrantId: string;
   code: Buffer;
@@ -55,12 +60,6 @@ export interface SetupControllerOptions {
 }
 
 // ---------------------------------------------- Core ---------------------------------------------------------
-export interface NftRegisterOptions {
-  registrantId: string;
-  args: NftRegisterArgs;
-  gas?: string;
-}
-
 export interface NftUnregisterOptions extends ChangeFunctionExtraOptions {
   args: NftUnregisterArgs;
   gas?: string;

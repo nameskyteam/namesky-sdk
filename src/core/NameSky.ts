@@ -1,4 +1,4 @@
-import { ACTION_MAX_NUM, moveRegistrantPublicKeyToEnd, REGISTRANT_KEYSTORE_PREFIX } from '../utils';
+import { ACTION_MAX_NUM, moveRegistrantPublicKeyToEnd, REGISTRANT_KEYSTORE_PREFIX, sleep } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
@@ -7,13 +7,14 @@ import { Network } from '@near-wallet-selector/core';
 import { NameSkyComponent, NameSkyConfig } from './types/config';
 import { Account } from 'near-api-js';
 import { CleanStateArgs, InitArgs } from './types/args';
-import { GetControllerOwnerIdOptions, SetupControllerOptions } from './types/options';
+import { GetControllerOwnerIdOptions, NftRegisterOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import { getBase58CodeHash } from '../utils';
 import {
   Amount,
   BlockQuery,
   BorshSchema,
+  MultiSendAccount,
   MultiSendWalletSelector,
   MultiTransaction,
   setupMultiSendWalletSelector,
@@ -21,7 +22,7 @@ import {
 } from 'multi-transaction';
 import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
-import { NameSkyNFTSafety } from './types/data';
+import { NameSkyNftSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
 
 export class NameSky {
@@ -59,8 +60,8 @@ export class NameSky {
     return this.userSettingContract.contractId;
   }
 
-  account(accountId: string): Promise<Account> {
-    return this.selector.near.account(accountId);
+  account(accountId: string): MultiSendAccount {
+    return MultiSendAccount.new(this.selector.near.connection, accountId);
   }
 
   rpc(): Provider {
@@ -102,15 +103,34 @@ export class NameSky {
   }
 
   // signed by registrant
+  async register({ registrantId, minterId, gas }: NftRegisterOptions) {
+    const [mintFee, oldMinterId] = await Promise.all([
+      this.coreContract.get_mint_fee({}),
+      this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
+    ]);
+
+    const transaction = MultiTransaction.batch(this.getCoreContractId()).functionCall({
+      methodName: 'nft_register',
+      args: {
+        minter_id: minterId,
+      },
+      attachedDeposit: oldMinterId ? Amount.ONE_YOCTO : mintFee,
+      gas,
+    });
+
+    await this.selector.sendWithLocalKey(registrantId, transaction);
+  }
+
+  // signed by registrant
   async setupController({ registrantId, code, gasForCleanState, gasForInit }: SetupControllerOptions) {
     /*
       We don't need to check follow conditions at the same block,
       because these are only used to check whether to skip `setupController`
     */
-    const account = await this.account(registrantId);
+    const account = this.account(registrantId);
 
     // code hash
-    const accountView = await account.state();
+    const accountView = await account.into().state();
     const accountCodeHash = accountView.code_hash;
     const codeHash = getBase58CodeHash(code);
 
@@ -118,10 +138,10 @@ export class NameSky {
     const controllerOwnerId = await this.getControllerOwnerId({ accountId: registrantId });
 
     // state
-    const state = await account.viewState('');
+    const state = await account.into().viewState('');
 
     // access keys
-    const accessKeys = await account.getAccessKeys();
+    const accessKeys = await account.into().getAccessKeys();
 
     const isCodeHashVerified = accountCodeHash === codeHash;
     const isControllerOwnerIdVerified = controllerOwnerId === this.coreContract.contractId;
@@ -182,15 +202,29 @@ export class NameSky {
     console.log(`Removed local full access key, registrant id: ${registrantId}`);
   }
 
-  async getNFTAccountSafety(accountId: string): Promise<NameSkyNFTSafety> {
-    /*
-      We need to check follow conditions at the same block for account security reason
-    */
-    const {
-      header: { height },
-    } = await this.rpc().block({ finality: 'optimistic' });
+  // minted by operator
+  async waitForMinting(tokenId: string): Promise<NameSkyToken> {
+    for (;;) {
+      const token = await this.coreContract.nft_namesky_token({
+        args: {
+          token_id: tokenId,
+        },
+      });
 
-    const blockQuery: BlockQuery = { blockId: height };
+      if (token) {
+        return token;
+      }
+
+      console.log(`NFT(${tokenId}) is on minting...`);
+
+      await sleep(1000);
+    }
+  }
+
+  async getNftAccountSafety(accountId: string): Promise<NameSkyNftSafety> {
+    const block = await this.rpc().block({ finality: 'optimistic' });
+
+    const blockQuery: BlockQuery = { blockId: block.header.height };
 
     const [codeHash, controllerCodeViews, controllerOwnerId, state, { keys: accessKeys }] = await Promise.all([
       this.rpc()
@@ -208,7 +242,7 @@ export class NameSky {
         blockQuery,
       }),
 
-      this.account(accountId).then((account) => account.viewState('', blockQuery)),
+      this.account(accountId).into().viewState('', blockQuery),
 
       this.rpc().query<AccessKeyList>({
         ...blockQuery,
@@ -225,7 +259,10 @@ export class NameSky {
     return { isCodeHashCorrect, isControllerOwnerIdCorrect, isStateCleaned, isAccessKeysDeleted };
   }
 
-  async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string | undefined> {
+  private async getControllerOwnerId({
+    accountId,
+    blockQuery,
+  }: GetControllerOwnerIdOptions): Promise<string | undefined> {
     try {
       return await this.selector.view({
         contractId: accountId,
@@ -233,8 +270,12 @@ export class NameSky {
         blockQuery,
       });
     } catch (e: any) {
-      console.warn(`Account(${accountId}) is not NameSky NFT yet`);
-      return undefined;
+      if (e.message.includes('MethodNotFound')) {
+        console.info(`Controller code not found on ${accountId}`);
+        return undefined;
+      }
+
+      throw e;
     }
   }
 }
