@@ -202,7 +202,7 @@ export class NameSky {
     console.log(`Removed local full access key, registrant id: ${registrantId}`);
   }
 
-  // mint is handled by server
+  // minted by operator
   async waitForMinting(tokenId: string): Promise<NameSkyToken> {
     for (;;) {
       const token = await this.coreContract.nft_namesky_token({
