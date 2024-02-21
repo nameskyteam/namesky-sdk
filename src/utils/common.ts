@@ -19,15 +19,15 @@ export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, public
   return result;
 }
 
-export async function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export async function sleep(ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function wait<T>(f: () => Promise<T>, timeout: number = MAX_TIMEOUT): Promise<T> {
   let timeoutId: NodeJS.Timeout;
 
-  const reject = async () =>
-    new Promise<never>((_, reject) => {
+  const reject = async (): Promise<never> =>
+    await new Promise((_, reject) => {
       timeoutId = setTimeout(() => reject(`Exceed max timeout: ${timeout}`), timeout);
     });
 

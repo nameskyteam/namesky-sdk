@@ -86,7 +86,7 @@ export class NameSky {
   }
 
   // auto callback
-  private async onRequestFullAccess(): Promise<void> {
+  private async onRequestFullAccess() {
     const currentUrl = new URL(window.location.href);
     const publicKey = currentUrl.searchParams.get('public_key');
     const accountId = currentUrl.searchParams.get('account_id');
@@ -106,7 +106,7 @@ export class NameSky {
   }
 
   // signed by registrant
-  async register({ registrantId, minterId, gas }: NftRegisterOptions): Promise<void> {
+  async register({ registrantId, minterId, gas }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.get_mint_fee({}),
       this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
@@ -125,7 +125,7 @@ export class NameSky {
   }
 
   // signed by registrant
-  async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions): Promise<void> {
+  async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
     /*
       We don't need to check follow conditions at the same block,
       because these are only used to check whether to skip `setupController`

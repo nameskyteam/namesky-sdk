@@ -161,7 +161,7 @@ export class MarketplaceContract extends Contract {
     return this.selector.send<StorageBalance>(transaction, { callbackUrl });
   }
 
-  async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions): Promise<void> {
+  async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_deposit',
       args,
@@ -171,7 +171,7 @@ export class MarketplaceContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions): Promise<void> {
+  async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions) {
     const transaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_withdraw',
       args,
@@ -191,13 +191,7 @@ export class MarketplaceContract extends Contract {
     return this.selector.send<boolean>(transaction, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async createListing({
-    args,
-    listingStorageDeposit,
-    approvalStorageDeposit,
-    gas,
-    callbackUrl,
-  }: CreateListingOptions): Promise<void> {
+  async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
     const { nft_contract_id, nft_token_id, price, expire_time } = args;
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new listing
@@ -219,7 +213,7 @@ export class MarketplaceContract extends Contract {
     await this.selector.send(transaction, { callbackUrl });
   }
 
-  async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions): Promise<void> {
+  async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
     const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
     // call `nft_approve` to update listing
     const transaction = MultiTransaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
@@ -268,7 +262,7 @@ export class MarketplaceContract extends Contract {
   // We have two type of offerings, Simple Offering & Pro Offering
   // If Simple Offering, user needs to deposit with the same price
   // If Pro Offering, we recommend user to deposit insufficient balance
-  async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions): Promise<void> {
+  async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions) {
     const transaction = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new offering
       .storageManagement.storageDeposit({
@@ -317,7 +311,7 @@ export class MarketplaceContract extends Contract {
 
   // if simple offering, user must make up the insufficient part
   // if pro offering, we recommend user to make up the insufficient part
-  async updateOffering({ args, gas, callbackUrl }: UpdateOfferingOptions): Promise<void> {
+  async updateOffering({ args, gas, callbackUrl }: UpdateOfferingOptions) {
     const { nft_contract_id, nft_token_id, new_price } = args;
 
     const transaction = MultiTransaction.batch(this.contractId);
