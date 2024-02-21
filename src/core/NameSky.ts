@@ -1,15 +1,14 @@
-import { ACTION_MAX_NUM, moveRegistrantPublicKeyToEnd, REGISTRANT_KEYSTORE_PREFIX, sleep } from '../utils';
+import { ACTION_MAX_NUM, moveRegistrantPublicKeyToEnd, REGISTRANT_KEYSTORE_PREFIX, sleep, wait } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
 import { Network } from '@near-wallet-selector/core';
 import { NameSkyComponent, NameSkyConfig } from './types/config';
-import { Account } from 'near-api-js';
 import { CleanStateArgs, InitArgs } from './types/args';
 import { GetControllerOwnerIdOptions, NftRegisterOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
-import { getBase58CodeHash } from '../utils';
+import { base58CodeHash } from '../utils';
 import {
   Amount,
   BlockQuery,
@@ -122,7 +121,7 @@ export class NameSky {
   }
 
   // signed by registrant
-  async setupController({ registrantId, code, gasForCleanState, gasForInit }: SetupControllerOptions) {
+  async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
     /*
       We don't need to check follow conditions at the same block,
       because these are only used to check whether to skip `setupController`
@@ -130,9 +129,11 @@ export class NameSky {
     const account = this.account(registrantId);
 
     // code hash
+    const codeBase64 = await this.coreContract.get_latest_controller_code({});
+    const code = Buffer.from(codeBase64, 'base64');
     const accountView = await account.into().state();
     const accountCodeHash = accountView.code_hash;
-    const codeHash = getBase58CodeHash(code);
+    const codeHash = base58CodeHash(code);
 
     // controller owner id
     const controllerOwnerId = await this.getControllerOwnerId({ accountId: registrantId });
@@ -203,22 +204,24 @@ export class NameSky {
   }
 
   // minted by operator
-  async waitForMinting(tokenId: string): Promise<NameSkyToken> {
-    for (;;) {
-      const token = await this.coreContract.nft_namesky_token({
-        args: {
-          token_id: tokenId,
-        },
-      });
+  async waitForMinting(tokenId: string, timeout?: number): Promise<NameSkyToken> {
+    return wait(async () => {
+      for (;;) {
+        const token = await this.coreContract.nft_namesky_token({
+          args: {
+            token_id: tokenId,
+          },
+        });
 
-      if (token) {
-        return token;
+        if (token) {
+          return token;
+        }
+
+        console.log(`NFT(${tokenId}) is on minting...`);
+
+        await sleep(1000);
       }
-
-      console.log(`NFT(${tokenId}) is on minting...`);
-
-      await sleep(1000);
-    }
+    }, timeout);
   }
 
   async getNftAccountSafety(accountId: string): Promise<NameSkyNftSafety> {

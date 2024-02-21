@@ -54,7 +54,6 @@ export interface NftRegisterOptions {
 
 export interface SetupControllerOptions {
   registrantId: string;
-  code: Buffer;
   gasForCleanState?: string;
   gasForInit?: string;
 }

@@ -6,6 +6,7 @@ export const DEFAULT_MARKET_STORAGE_DEPOSIT = Amount.parse(0.0125, 'NEAR');
 export const DEFAULT_APPROVAL_STORAGE_DEPOSIT = Amount.parse(0.005, 'NEAR');
 export const FEE_DIVISOR = 10000;
 export const ACTION_MAX_NUM = 100;
+export const MAX_TIMEOUT = 2147483647;
 
 export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {
   const result: string[] = [];
@@ -18,6 +19,17 @@ export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, public
   return result;
 }
 
-export async function sleep(timestamp: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, timestamp));
+export async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function wait<T>(f: () => Promise<T>, timeout: number = MAX_TIMEOUT): Promise<T> {
+  let timeoutId: NodeJS.Timeout;
+
+  const reject = async () =>
+    new Promise<never>((_, reject) => {
+      timeoutId = setTimeout(() => reject(`Exceed max timeout: ${timeout}`), timeout);
+    });
+
+  return Promise.race([reject(), f()]).finally(() => clearTimeout(timeoutId));
 }

@@ -1,7 +1,7 @@
 import base58 from 'bs58';
 import sha256 from 'sha256';
 
-export function getBase58CodeHash(code: Buffer): string {
+export function base58CodeHash(code: Buffer): string {
   const hash = Buffer.from(sha256(code), 'hex');
   return base58.encode(hash);
 }
