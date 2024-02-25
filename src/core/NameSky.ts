@@ -135,7 +135,7 @@ export class NameSky {
     // code hash
     const codeBase64 = await this.coreContract.get_latest_controller_code({});
     const code = Buffer.from(codeBase64, 'base64');
-    const accountView = await account.into().state();
+    const accountView = await account.state();
     const accountCodeHash = accountView.code_hash;
     const codeHash = base58CodeHash(code);
 
@@ -143,10 +143,10 @@ export class NameSky {
     const controllerOwnerId = await this.getControllerOwnerId({ accountId: registrantId });
 
     // state
-    const state = await account.into().viewState('');
+    const state = await account.viewState('');
 
     // access keys
-    const accessKeys = await account.into().getAccessKeys();
+    const accessKeys = await account.getAccessKeys();
 
     const isCodeHashVerified = accountCodeHash === codeHash;
     const isControllerOwnerIdVerified = controllerOwnerId === this.coreContract.contractId;
@@ -249,7 +249,7 @@ export class NameSky {
         blockQuery,
       }),
 
-      this.account(accountId).into().viewState('', blockQuery),
+      this.account(accountId).viewState('', blockQuery),
 
       this.rpc().query<AccessKeyList>({
         ...blockQuery,
