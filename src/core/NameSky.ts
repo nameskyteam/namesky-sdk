@@ -277,7 +277,7 @@ export class NameSky {
         blockQuery,
       });
     } catch (e: any) {
-      if (e.message.includes('MethodNotFound')) {
+      if (e.message.includes('CodeDoesNotExist') || e.message.includes('MethodNotFound')) {
         console.info(`Controller code not found on ${accountId}`);
         return undefined;
       }
