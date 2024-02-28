@@ -126,10 +126,7 @@ export class NameSky {
 
   // signed by registrant
   async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
-    /*
-      We don't need to check follow conditions at the same block,
-      because these are only used to check whether to skip `setupController`
-    */
+    //  we don't need to check conditions at the same block in this method
     const account = this.account(registrantId);
 
     // code hash
@@ -139,23 +136,24 @@ export class NameSky {
     const accountCodeHash = accountView.code_hash;
     const codeHash = base58CodeHash(code);
 
-    // controller owner id
-    const controllerOwnerId = await this.getControllerOwnerId({ accountId: registrantId });
-
     // state
     const state = await account.viewState('');
 
     // access keys
     const accessKeys = await account.getAccessKeys();
 
-    const isCodeHashVerified = accountCodeHash === codeHash;
-    const isControllerOwnerIdVerified = controllerOwnerId === this.coreContract.contractId;
-    const isStateVerified = state.length === 1;
-    const isAccessKeysVerified = accessKeys.length === 0;
+    const isCodeHashCorrect = accountCodeHash === codeHash;
+    const isStateCleaned = state.length === 1;
+    const isAccessKeysDeleted = accessKeys.length === 0;
 
-    if (isCodeHashVerified && isControllerOwnerIdVerified && isStateVerified && isAccessKeysVerified) {
-      // skip
-      return;
+    if (isCodeHashCorrect && isStateCleaned && isAccessKeysDeleted) {
+      // controller owner id
+      const controllerOwnerId = await this.getControllerOwnerId({ accountId: registrantId });
+      const isControllerOwnerIdCorrect = controllerOwnerId === this.coreContract.contractId;
+      if (isControllerOwnerIdCorrect) {
+        // skip
+        return;
+      }
     }
 
     const transaction = MultiTransaction.batch(registrantId);
@@ -233,7 +231,7 @@ export class NameSky {
 
     const blockQuery: BlockQuery = { blockId: block.header.height };
 
-    const [codeHash, controllerCodeViews, controllerOwnerId, state, { keys: accessKeys }] = await Promise.all([
+    const [codeHash, controllerCodeViews, state, { keys: accessKeys }] = await Promise.all([
       this.rpc()
         .query<AccountView>({
           ...blockQuery,
@@ -243,11 +241,6 @@ export class NameSky {
         .then((accountView) => accountView.code_hash),
 
       this.coreContract.get_controller_code_views({ blockQuery }),
-
-      this.getControllerOwnerId({
-        accountId,
-        blockQuery,
-      }),
 
       this.account(accountId).viewState('', blockQuery),
 
@@ -259,31 +252,27 @@ export class NameSky {
     ]);
 
     const isCodeHashCorrect = controllerCodeViews.some((view) => view.code_hash === codeHash);
-    const isControllerOwnerIdCorrect = controllerOwnerId === this.coreContract.contractId;
-    const isStateCleaned = state.length === 1; // Only one state key left which save the controller owner id
+    const isStateCleaned = state.length === 1;
     const isAccessKeysDeleted = accessKeys.length === 0;
+    let isControllerOwnerIdCorrect = false;
 
-    return { isCodeHashCorrect, isControllerOwnerIdCorrect, isStateCleaned, isAccessKeysDeleted };
-  }
-
-  private async getControllerOwnerId({
-    accountId,
-    blockQuery,
-  }: GetControllerOwnerIdOptions): Promise<string | undefined> {
-    try {
-      return await this.selector.view({
-        contractId: accountId,
-        methodName: 'get_owner_id',
+    if (isCodeHashCorrect) {
+      const controllerOwnerId = await this.getControllerOwnerId({
+        accountId,
         blockQuery,
       });
-    } catch (e: any) {
-      if (e.message.includes('CodeDoesNotExist') || e.message.includes('MethodNotFound')) {
-        console.info(`Controller code not found on ${accountId}`);
-        return undefined;
-      }
-
-      throw e;
+      isControllerOwnerIdCorrect = controllerOwnerId === this.coreContract.contractId;
     }
+
+    return { isCodeHashCorrect, isStateCleaned, isAccessKeysDeleted, isControllerOwnerIdCorrect };
+  }
+
+  private async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string> {
+    return this.selector.view({
+      contractId: accountId,
+      methodName: 'get_owner_id',
+      blockQuery,
+    });
   }
 }
 
