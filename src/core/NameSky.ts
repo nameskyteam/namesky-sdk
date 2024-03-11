@@ -24,6 +24,7 @@ import { Provider } from 'near-api-js/lib/providers';
 import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
 import { NameSkyNftSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
+import { SpaceshipContract } from './contracts/SpaceshipContract';
 
 export class NameSky {
   selector: MultiSendWalletSelector;
@@ -285,5 +286,6 @@ export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
   const coreContract = new CoreContract(contractsConfig.coreContractId, selector);
   const marketplaceContract = new MarketplaceContract(contractsConfig.marketplaceContractId, selector);
   const userSettingContract = new UserSettingContract(contractsConfig.userSettingContractId, selector);
-  return new NameSky({ selector, coreContract, marketplaceContract, userSettingContract });
+  const spaceshipContract = new SpaceshipContract(contractsConfig.spaceshipContractId, selector);
+  return new NameSky({ selector, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
 }

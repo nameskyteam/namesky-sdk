@@ -218,3 +218,7 @@ export interface GetRewardsForAccountArgs {
 export interface AddFuelArgs {
   quantity: string;
 }
+
+export interface GetSpaceshipArgs {
+  account_id: string;
+}

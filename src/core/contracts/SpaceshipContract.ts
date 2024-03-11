@@ -1,10 +1,11 @@
 import { Contract } from '../../utils/Contract';
-import { MultiTransaction } from 'multi-transaction';
+import { MultiTransaction, Token } from 'multi-transaction';
 import {
   AddFuelOptions,
   DistributeAndClaimRewardsOptions,
   GetRewardsForAccountOptions,
   GetSpaceshipEngineOptions,
+  GetSpaceshipOptions,
   GetTotalAddedFuelNumOptions,
   MintSpaceshipOptions,
 } from '../types/options';
@@ -13,6 +14,15 @@ import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
 
 export class SpaceshipContract extends Contract {
   // ------------------------------------------------- View -------------------------------------------------------
+
+  async get_spaceship({ args, blockQuery }: GetSpaceshipOptions): Promise<Token | undefined> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_spaceship',
+      args,
+      blockQuery,
+    });
+  }
 
   async get_spaceship_engine({ args, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
     return this.selector.view({

@@ -19,6 +19,7 @@ import {
   GetOfferingViewsArgs,
   GetOfferingViewsOfArgs,
   GetRewardsForAccountArgs,
+  GetSpaceshipArgs,
   GetSpaceshipEngineArgs,
   GetUserLastReadNotificationTimeArgs,
   GetUserLikesArgs,
@@ -320,3 +321,7 @@ export interface GetRewardsForAccountOptions extends ViewFunctionExtraOptions {
 }
 
 export interface GetTotalAddedFuelNumOptions extends ViewFunctionExtraOptions {}
+
+export interface GetSpaceshipOptions extends ViewFunctionExtraOptions {
+  args: GetSpaceshipArgs;
+}
