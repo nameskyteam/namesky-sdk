@@ -149,62 +149,62 @@ export class MarketplaceContract extends Contract {
   // create any offering or listing in marketplace, but want to have an account
   async createMarketAccount({
     args,
-    attachedDeposit,
+    marketStorageDeposit,
     gas,
     callbackUrl,
   }: CreateMarketAccountOption): Promise<StorageBalance> {
-    const transaction = MultiTransaction.batch(this.contractId).storageManagement.storageDeposit({
+    const mTx = MultiTransaction.batch(this.contractId).storageManagement.storageDeposit({
       args,
-      attachedDeposit: attachedDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
+      attachedDeposit: marketStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       gas,
     });
 
-    return this.selector.send(transaction, { callbackUrl });
+    return this.selector.send(mTx, { callbackUrl });
   }
 
   async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_deposit',
       args,
       attachedDeposit,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_withdraw',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async buyListing({ args, attachedDeposit, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'buy_listing',
       args,
       attachedDeposit,
       gas,
     });
 
-    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
+    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
     const { nft_contract_id, nft_token_id, price, expire_time } = args;
-    const transaction = MultiTransaction.batch(this.contractId)
+    const mTx = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new listing
       .storageManagement.storageDeposit({
         attachedDeposit: listingStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
     // call `nft_approve` to create listing
-    transaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
+    mTx.batch(nft_contract_id).nonFungibleToken.nftApprove({
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
@@ -214,13 +214,13 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
     const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
     // call `nft_approve` to update listing
-    const transaction = MultiTransaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
+    const mTx = MultiTransaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
       args: {
         account_id: this.contractId,
         token_id: nft_token_id,
@@ -230,22 +230,22 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async removeListing({ args, gas, callbackUrl }: RemoveListingOptions): Promise<ListingView> {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'remove_listing',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
 
-    return this.selector.send<ListingView>(transaction, { callbackUrl });
+    return this.selector.send<ListingView>(mTx, { callbackUrl });
   }
 
   async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
-    const transaction = MultiTransaction.batch(args.nft_contract_id)
+    const mTx = MultiTransaction.batch(args.nft_contract_id)
       .nonFungibleToken.nftApprove({
         args: {
           token_id: args.nft_token_id,
@@ -262,25 +262,25 @@ export class MarketplaceContract extends Contract {
         gas,
       });
 
-    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
+    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   // We have two type of offerings, Simple Offering & Pro Offering
   // If Simple Offering, user needs to deposit with the same price
   // If Pro Offering, we recommend user to deposit insufficient balance
   async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions) {
-    const transaction = MultiTransaction.batch(this.contractId)
+    const mTx = MultiTransaction.batch(this.contractId)
       // first user needs to deposit for storage of new offering
       .storageManagement.storageDeposit({
         attachedDeposit: offeringStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
     // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
-    transaction.batch(this.contractId);
+    mTx.batch(this.contractId);
 
     if (args.is_simple_offering) {
       // create new offer and deposit with the same price
-      transaction.functionCall({
+      mTx.functionCall({
         methodName: 'create_offering',
         args,
         attachedDeposit: args.price === '0' ? Amount.ONE_YOCTO : args.price,
@@ -303,14 +303,14 @@ export class MarketplaceContract extends Contract {
 
       if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
-        transaction.functionCall({
+        mTx.functionCall({
           methodName: 'near_deposit',
           attachedDeposit: insufficientBalance.toFixed(),
         });
       }
 
       // create new offer
-      transaction.functionCall({
+      mTx.functionCall({
         methodName: 'create_offering',
         args,
         attachedDeposit: Amount.ONE_YOCTO,
@@ -318,7 +318,7 @@ export class MarketplaceContract extends Contract {
       });
     }
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   // if simple offering, user must make up the insufficient part
@@ -330,7 +330,7 @@ export class MarketplaceContract extends Contract {
       throw Error('Must provide `new_price` or `new_expire_time`');
     }
 
-    const transaction = MultiTransaction.batch(this.contractId);
+    const mTx = MultiTransaction.batch(this.contractId);
 
     if (new_price) {
       // if price need to be updated
@@ -356,7 +356,7 @@ export class MarketplaceContract extends Contract {
 
       if (offering.is_simple_offering) {
         // update offering and deposit insufficient balance
-        transaction.functionCall<UpdateOfferingArgs>({
+        mTx.functionCall<UpdateOfferingArgs>({
           methodName: 'update_offering',
           args,
           attachedDeposit: insufficientBalance.gt(0) ? insufficientBalance.toFixed() : Amount.ONE_YOCTO,
@@ -365,14 +365,14 @@ export class MarketplaceContract extends Contract {
       } else {
         // deposit insufficient balance
         if (insufficientBalance.gt(0)) {
-          transaction.functionCall({
+          mTx.functionCall({
             methodName: 'near_deposit',
             attachedDeposit: insufficientBalance.toFixed(),
           });
         }
 
         // update offering
-        transaction.functionCall({
+        mTx.functionCall({
           methodName: 'update_offering',
           args,
           attachedDeposit: Amount.ONE_YOCTO,
@@ -382,7 +382,7 @@ export class MarketplaceContract extends Contract {
     } else {
       // if price doesn't need to be updated.
       // update offering
-      transaction.functionCall({
+      mTx.functionCall({
         methodName: 'update_offering',
         args,
         attachedDeposit: Amount.ONE_YOCTO,
@@ -390,17 +390,17 @@ export class MarketplaceContract extends Contract {
       });
     }
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async removeOffering({ args, gas, callbackUrl }: RemoveOfferingOptions): Promise<OfferingView> {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'remove_offering',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
 
-    return this.selector.send(transaction, { callbackUrl });
+    return this.selector.send(mTx, { callbackUrl });
   }
 }

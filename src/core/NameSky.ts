@@ -112,7 +112,7 @@ export class NameSky {
       this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
     ]);
 
-    const transaction = MultiTransaction.batch(this.getCoreContractId()).functionCall({
+    const mTx = MultiTransaction.batch(this.getCoreContractId()).functionCall({
       methodName: 'nft_register',
       args: {
         minter_id: minterId,
@@ -121,7 +121,7 @@ export class NameSky {
       gas,
     });
 
-    await this.selector.sendWithLocalKey(registrantId, transaction);
+    await this.selector.sendWithLocalKey(registrantId, mTx);
   }
 
   // signed by registrant
@@ -156,15 +156,15 @@ export class NameSky {
       }
     }
 
-    const transaction = MultiTransaction.batch(registrantId);
+    const mTx = MultiTransaction.batch(registrantId);
 
     // deploy controller contract
-    transaction.deployContract(code);
+    mTx.deployContract(code);
 
     // clean account state if needed
     if (state.length !== 0) {
       const stateKeys = state.map(({ key }) => key);
-      transaction.functionCall<CleanStateArgs>({
+      mTx.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
         args: stateKeys,
         stringifier: Stringifier.borsh(BorshSchema.Array(BorshSchema.Vec(BorshSchema.u8), stateKeys.length)),
@@ -174,7 +174,7 @@ export class NameSky {
     }
 
     // init controller contract
-    transaction.functionCall<InitArgs>({
+    mTx.functionCall<InitArgs>({
       methodName: 'init',
       args: Buffer.from(this.getCoreContractId()), // raw args
       attachedDeposit: Amount.ONE_YOCTO,
@@ -193,14 +193,14 @@ export class NameSky {
     publicKeys = moveRegistrantPublicKeyToEnd(registrantPublicKey, publicKeys);
 
     for (const publicKey of publicKeys) {
-      if (transaction.countActions() < ACTION_MAX_NUM) {
-        transaction.deleteKey(publicKey);
+      if (mTx.countActions() < ACTION_MAX_NUM) {
+        mTx.deleteKey(publicKey);
       } else {
-        transaction.batch(registrantId).deleteKey(publicKey);
+        mTx.batch(registrantId).deleteKey(publicKey);
       }
     }
 
-    await this.selector.sendWithLocalKey(registrantId, transaction);
+    await this.selector.sendWithLocalKey(registrantId, mTx);
     await this.selector.keyStore.removeKey(this.getNetworkId(), registrantId);
     console.log(`Removed local full access key, registrant id: ${registrantId}`);
   }

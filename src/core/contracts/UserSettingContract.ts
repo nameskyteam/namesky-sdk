@@ -47,52 +47,52 @@ export class UserSettingContract extends Contract {
   // -------------------------------------------------- Call -------------------------------------------------------
 
   async like({ args, gas, callbackUrl }: LikeOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'like',
       args,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async unlike({ args, gas, callbackUrl }: UnlikeOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'unlike',
       args,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async watch({ args, gas, callbackUrl }: WatchOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'watch',
       args,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async unwatch({ args, gas, callbackUrl }: UnwatchOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'unwatch',
       args,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async readNotificationAt({ args, gas, callbackUrl }: ReadNotificationAtOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'read_notification_at',
       args,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 }

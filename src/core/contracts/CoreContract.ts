@@ -142,52 +142,52 @@ export class CoreContract extends Contract {
   // -------------------------------------------------- Call -------------------------------------------------------
 
   async nftUnregister({ args, gas, callbackUrl }: NftUnregisterOptions): Promise<boolean> {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_unregister',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
 
-    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
+    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
-    const transaction = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'nft_redeem',
       args,
       attachedDeposit: Amount.ONE_YOCTO,
       gas,
     });
 
-    return this.selector.send(transaction, { callbackUrl, throwReceiptErrors: true });
+    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nftTransfer({
+    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nftTransfer({
       args,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
-  async nftApprove({ args, attachedDeposit, gas, callbackUrl }: NftApproveOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nftApprove({
+  async nftApprove({ args, approvalStorageDeposit, gas, callbackUrl }: NftApproveOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nftApprove({
       args,
-      attachedDeposit: attachedDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
+      attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 
   async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
-    const transaction = MultiTransaction.batch(this.contractId).nonFungibleToken.nftRevoke({
+    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nftRevoke({
       args,
       gas,
     });
 
-    await this.selector.send(transaction, { callbackUrl });
+    await this.selector.send(mTx, { callbackUrl });
   }
 }

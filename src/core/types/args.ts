@@ -201,3 +201,16 @@ export interface GetUserWatchListArgs {
 export interface GetUserLastReadNotificationTimeArgs {
   account_id: string;
 }
+
+// ---------------------------------------------- Spaceship -----------------------------------------------------
+export interface GetSpaceshipEngineArgs {
+  account_id: string;
+}
+
+export interface GetRewardsForAccountArgs {
+  account_id: string;
+}
+
+export interface AddFuelArgs {
+  quantity: string;
+}
