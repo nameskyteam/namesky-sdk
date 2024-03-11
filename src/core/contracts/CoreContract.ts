@@ -6,6 +6,7 @@ import {
   GetLatestControllerCodeHashOptions,
   GetLatestControllerCodeOptions,
   GetMintFeeOptions,
+  GetMintNumOptions,
   GetRoyaltyOptions,
   NftApproveOptions,
   NftGetMinterIdOptions,
@@ -137,6 +138,15 @@ export class CoreContract extends Contract {
     });
 
     return royalty / divisor;
+  }
+
+  async get_mint_num({ args, blockQuery }: GetMintNumOptions): Promise<string> {
+    return this.selector.view({
+      contractId: this.contractId,
+      methodName: 'get_mint_num',
+      args,
+      blockQuery,
+    });
   }
 
   // -------------------------------------------------- Call -------------------------------------------------------

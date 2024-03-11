@@ -45,6 +45,10 @@ export interface NftRedeemArgs {
   memo?: string;
 }
 
+export interface GetMintNumArgs {
+  account_id: string;
+}
+
 // ---------------------------------------------- Marketplace -----------------------------------------------------
 export interface CreateMarketAccountArgs {
   account_id?: string;

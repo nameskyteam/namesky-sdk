@@ -11,6 +11,7 @@ import {
   GetListingViewArgs,
   GetListingViewsArgs,
   GetListingViewsOfArgs,
+  GetMintNumArgs,
   GetNftApprovalArgs,
   GetNftOfferingViewsOfArgs,
   getOfferingUniqueIdArgs,
@@ -244,6 +245,10 @@ export interface GetControllerCodeViewsOptions extends ViewFunctionExtraOptions 
 export interface GetMintFeeOptions extends ViewFunctionExtraOptions {}
 
 export interface GetRoyaltyOptions extends ViewFunctionExtraOptions {}
+
+export interface GetMintNumOptions extends ViewFunctionExtraOptions {
+  args: GetMintNumArgs;
+}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface GetAccountViewOfOptions extends ViewFunctionExtraOptions {
