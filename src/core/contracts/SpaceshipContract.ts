@@ -77,15 +77,15 @@ export class SpaceshipContract extends Contract {
     gasForClaim,
     callbackUrl,
   }: DistributeAndClaimRewardsOptions): Promise<string> {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
-      methodName: 'distribute_rewards',
-      gas: gasForDistribute,
-    });
-
-    mTx.functionCall({
-      methodName: 'claim_rewards',
-      gas: gasForClaim,
-    });
+    const mTx = MultiTransaction.batch(this.contractId)
+      .functionCall({
+        methodName: 'distribute_rewards',
+        gas: gasForDistribute,
+      })
+      .functionCall({
+        methodName: 'claim_rewards',
+        gas: gasForClaim,
+      });
 
     return this.selector.send(mTx, { callbackUrl });
   }
