@@ -1,5 +1,5 @@
 import { Contract } from '../../utils/Contract';
-import { MultiTransaction, Token } from 'multi-transaction';
+import { MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
 import {
   AddFuelOptions,
   DistributeAndClaimRewardsOptions,
@@ -73,11 +73,39 @@ export class SpaceshipContract extends Contract {
   }
 
   async distributeAndClaimRewards({
+    skyTokenId,
     gasForDistribute,
     gasForClaim,
     callbackUrl,
   }: DistributeAndClaimRewardsOptions): Promise<string> {
-    const mTx = MultiTransaction.batch(this.contractId)
+    const mTx = MultiTransaction.new();
+
+    const accountId = this.selector.getActiveAccountId();
+    if (!accountId) {
+      throw Error(`Active account id not found`);
+    }
+
+    const storageBalance = await this.selector.view<StorageBalance | undefined>({
+      contractId: skyTokenId,
+      methodName: 'storage_balance_of',
+      args: {
+        account_id: accountId,
+      },
+    });
+
+    if (!storageBalance) {
+      const storageBalanceBounds = await this.selector.view<StorageBalanceBounds>({
+        contractId: skyTokenId,
+        methodName: 'storage_balance_bounds',
+      });
+
+      mTx.batch(skyTokenId).storageManagement.storageDeposit({
+        attachedDeposit: storageBalanceBounds.min,
+      });
+    }
+
+    mTx
+      .batch(this.contractId)
       .functionCall({
         methodName: 'distribute_rewards',
         gas: gasForDistribute,

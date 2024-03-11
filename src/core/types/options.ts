@@ -192,6 +192,7 @@ export interface AddFuelOptions extends ChangeFunctionExtraOptions {
 }
 
 export interface DistributeAndClaimRewardsOptions extends ChangeFunctionExtraOptions {
+  skyTokenId: string;
   gasForDistribute?: string;
   gasForClaim?: string;
 }
