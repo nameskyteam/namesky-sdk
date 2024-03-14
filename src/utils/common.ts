@@ -37,7 +37,7 @@ export async function wait<T>(f: () => Promise<T>, timeout: number = MAX_TIMEOUT
   return Promise.race([reject(), f()]).finally(() => clearTimeout(timeoutId));
 }
 
-export function settleEnergy(spaceshipEngine: SpaceshipEngine, settledAt: number): SpaceshipEngine {
+export function simulateSettleEnergy(spaceshipEngine: SpaceshipEngine, settledAt: number): SpaceshipEngine {
   if (settledAt < spaceshipEngine.settled_at) {
     throw Error('Invalid settled timestamp');
   }
