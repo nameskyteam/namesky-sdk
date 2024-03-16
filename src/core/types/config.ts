@@ -2,7 +2,6 @@ import { CoreContract } from '../contracts';
 import { MarketplaceContract } from '../contracts';
 import { UserSettingContract } from '../contracts/UserSettingContract';
 import { SpaceshipContract } from '../contracts/SpaceshipContract';
-import { NameSkyRunner } from '../NameSkyRunner';
 import { Account, keyStores } from 'near-api-js';
 import { WalletSelector } from '@near-wallet-selector/core';
 
