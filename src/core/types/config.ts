@@ -23,7 +23,7 @@ export interface Network {
 export type NetworkId = 'mainnet' | 'testnet';
 
 export interface NameSkyConfig {
-  network: Network;
+  network: Network | NetworkId;
   signer: Account | WalletSelector;
   contracts?: {
     coreContractId?: string;

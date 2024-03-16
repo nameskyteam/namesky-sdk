@@ -6,6 +6,7 @@ import {
   getUserSettingContractId,
   moveRegistrantPublicKeyToEnd,
   REGISTRANT_KEYSTORE_PREFIX,
+  resolveNetwork,
   sleep,
   wait,
 } from '../utils';
@@ -36,8 +37,8 @@ import { NameSkyRunner } from './NameSkyRunner';
 
 export class NameSky {
   network: Network;
-  near: Near;
-  keyStore: keyStores.KeyStore;
+  private near: Near;
+  private keyStore: keyStores.KeyStore;
 
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
@@ -117,19 +118,22 @@ export class NameSky {
   // auto callback
   private async onRequestFullAccess() {
     const currentUrl = new URL(window.location.href);
-    const publicKey = currentUrl.searchParams.get('public_key');
     const accountId = currentUrl.searchParams.get('account_id');
+    const publicKey = currentUrl.searchParams.get('public_key');
+
     if (!publicKey || !accountId) {
       return;
     }
+
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString();
     const keyPair = await this.keyStore.getKey(this.networkId, pendingAccountId);
+
     if (!keyPair) {
       return;
     }
+
     await this.keyStore.setKey(this.networkId, accountId, keyPair);
     await this.keyStore.removeKey(this.networkId, pendingAccountId);
-    console.log(`onRequestFullAccess Succeeded`);
   }
 
   async getRegistrantKey(registrantId: string): Promise<KeyPair> {
@@ -314,7 +318,8 @@ export class NameSky {
 }
 
 export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
-  const { network, signer, contracts } = config;
+  const network = resolveNetwork(config.network);
+  const { signer, contracts } = config;
 
   let runner: NameSkyRunner;
   let keyStore: keyStores.KeyStore;
