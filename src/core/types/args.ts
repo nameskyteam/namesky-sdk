@@ -45,6 +45,10 @@ export interface NftRedeemArgs {
   memo?: string;
 }
 
+export interface GetMintNumArgs {
+  account_id: string;
+}
+
 // ---------------------------------------------- Marketplace -----------------------------------------------------
 export interface CreateMarketAccountArgs {
   account_id?: string;
@@ -199,5 +203,22 @@ export interface GetUserWatchListArgs {
 }
 
 export interface GetUserLastReadNotificationTimeArgs {
+  account_id: string;
+}
+
+// ---------------------------------------------- Spaceship -----------------------------------------------------
+export interface GetSpaceshipEngineArgs {
+  account_id: string;
+}
+
+export interface GetRewardsForAccountArgs {
+  account_id: string;
+}
+
+export interface AddFuelArgs {
+  quantity: string;
+}
+
+export interface GetSpaceshipArgs {
   account_id: string;
 }

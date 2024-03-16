@@ -77,3 +77,12 @@ export interface TradingFeeRate {
   listing: number;
   offering: number;
 }
+
+// ---------------------------------------------- Spaceship ----------------------------------------------------
+export interface SpaceshipEngine {
+  added_fuel_num: string;
+  energy: string;
+  consumed_energy: string;
+  speed: string;
+  settled_at: number;
+}

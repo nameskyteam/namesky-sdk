@@ -1,6 +1,7 @@
 import { BlockQuery, NftApproveArgs, NftRevokeArgs, NftSupplyForOwnerArgs, NftTransferArgs } from 'multi-transaction';
 import {
   AcceptOfferingArgs,
+  AddFuelArgs,
   BuyListingArgs,
   CreateListingArgs,
   CreateMarketAccountArgs,
@@ -10,12 +11,16 @@ import {
   GetListingViewArgs,
   GetListingViewsArgs,
   GetListingViewsOfArgs,
+  GetMintNumArgs,
   GetNftApprovalArgs,
   GetNftOfferingViewsOfArgs,
   getOfferingUniqueIdArgs,
   GetOfferingViewArgs,
   GetOfferingViewsArgs,
   GetOfferingViewsOfArgs,
+  GetRewardsForAccountArgs,
+  GetSpaceshipArgs,
+  GetSpaceshipEngineArgs,
   GetUserLastReadNotificationTimeArgs,
   GetUserLikesArgs,
   GetUserWatchListArgs,
@@ -76,7 +81,7 @@ export interface NftTransferOptions extends ChangeFunctionExtraOptions {
 
 export interface NftApproveOptions extends ChangeFunctionExtraOptions {
   args: NftApproveArgs;
-  attachedDeposit?: string;
+  approvalStorageDeposit?: string;
   gas?: string;
 }
 
@@ -88,13 +93,13 @@ export interface NftRevokeOptions extends ChangeFunctionExtraOptions {
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface CreateMarketAccountOption extends ChangeFunctionExtraOptions {
   args?: CreateMarketAccountArgs;
-  attachedDeposit?: string;
+  marketStorageDeposit?: string;
   gas?: string;
 }
 
 export interface NearDepositOptions extends ChangeFunctionExtraOptions {
   args?: NearDepositArgs;
-  attachedDeposit?: string;
+  attachedDeposit: string;
   gas?: string;
 }
 
@@ -105,7 +110,7 @@ export interface NearWithdrawOptions extends ChangeFunctionExtraOptions {
 
 export interface BuyListingOptions extends ChangeFunctionExtraOptions {
   args: BuyListingArgs;
-  attachedDeposit?: string;
+  attachedDeposit: string;
   gas?: string;
 }
 
@@ -175,6 +180,23 @@ export interface ReadNotificationAtOptions extends ChangeFunctionExtraOptions {
   gas?: string;
 }
 
+// ---------------------------------------------- Spaceship -----------------------------------------------------
+export interface MintSpaceshipOptions extends ChangeFunctionExtraOptions {
+  spaceshipStorageDeposit?: string;
+  gas?: string;
+}
+
+export interface AddFuelOptions extends ChangeFunctionExtraOptions {
+  args: AddFuelArgs;
+  gas?: string;
+}
+
+export interface DistributeAndClaimRewardsOptions extends ChangeFunctionExtraOptions {
+  skyTokenId: string;
+  gasForDistribute?: string;
+  gasForClaim?: string;
+}
+
 // ================================================ View =======================================================
 interface ViewFunctionExtraOptions {
   blockQuery?: BlockQuery;
@@ -225,6 +247,10 @@ export interface GetControllerCodeViewsOptions extends ViewFunctionExtraOptions 
 export interface GetMintFeeOptions extends ViewFunctionExtraOptions {}
 
 export interface GetRoyaltyOptions extends ViewFunctionExtraOptions {}
+
+export interface GetMintNumOptions extends ViewFunctionExtraOptions {
+  args: GetMintNumArgs;
+}
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 export interface GetAccountViewOfOptions extends ViewFunctionExtraOptions {
@@ -284,4 +310,19 @@ export interface GetUserWatchListOptions extends ViewFunctionExtraOptions {
 
 export interface GetUserLastReadNotificationTimeOptions extends ViewFunctionExtraOptions {
   args: GetUserLastReadNotificationTimeArgs;
+}
+
+// ---------------------------------------------- Spaceship -----------------------------------------------------
+export interface GetSpaceshipEngineOptions extends ViewFunctionExtraOptions {
+  args: GetSpaceshipEngineArgs;
+}
+
+export interface GetRewardsForAccountOptions extends ViewFunctionExtraOptions {
+  args: GetRewardsForAccountArgs;
+}
+
+export interface GetTotalAddedFuelNumOptions extends ViewFunctionExtraOptions {}
+
+export interface GetSpaceshipOptions extends ViewFunctionExtraOptions {
+  args: GetSpaceshipArgs;
 }
