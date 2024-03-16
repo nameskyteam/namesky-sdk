@@ -1,4 +1,4 @@
-import { Contract } from '../../utils/Contract';
+import { NameSkyContract } from './NameSkyContract';
 import { MultiTransaction } from 'multi-transaction';
 import {
   GetUserLastReadNotificationTimeOptions,
@@ -11,11 +11,11 @@ import {
   WatchOptions,
 } from '../types/options';
 
-export class UserSettingContract extends Contract {
+export class UserSettingContract extends NameSkyContract {
   // ------------------------------------------------- View -------------------------------------------------------
 
   async get_user_likes({ args, blockQuery }: GetUserLikesOptions): Promise<string[]> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_user_likes',
       args,
@@ -24,7 +24,7 @@ export class UserSettingContract extends Contract {
   }
 
   async get_user_watchlist({ args, blockQuery }: GetUserWatchListOptions): Promise<string[]> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_user_watchlist',
       args,
@@ -36,7 +36,7 @@ export class UserSettingContract extends Contract {
     args,
     blockQuery,
   }: GetUserLastReadNotificationTimeOptions): Promise<string[]> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_user_last_read_notification_time',
       args,
@@ -53,7 +53,7 @@ export class UserSettingContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 
   async unlike({ args, gas, callbackUrl }: UnlikeOptions) {
@@ -63,7 +63,7 @@ export class UserSettingContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 
   async watch({ args, gas, callbackUrl }: WatchOptions) {
@@ -73,7 +73,7 @@ export class UserSettingContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 
   async unwatch({ args, gas, callbackUrl }: UnwatchOptions) {
@@ -83,7 +83,7 @@ export class UserSettingContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 
   async readNotificationAt({ args, gas, callbackUrl }: ReadNotificationAtOptions) {
@@ -93,6 +93,6 @@ export class UserSettingContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 }

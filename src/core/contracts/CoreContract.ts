@@ -1,4 +1,4 @@
-import { Contract } from '../../utils/Contract';
+import { NameSkyContract } from './NameSkyContract';
 import { DEFAULT_APPROVAL_STORAGE_DEPOSIT } from '../../utils';
 import { Amount, MultiTransaction } from 'multi-transaction';
 import {
@@ -24,11 +24,11 @@ import {
 } from '../types/options';
 import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../types/data';
 
-export class CoreContract extends Contract {
+export class CoreContract extends NameSkyContract {
   // ------------------------------------------------- View -------------------------------------------------------
 
   async nft_get_minter_id({ args, blockQuery }: NftGetMinterIdOptions): Promise<string | undefined> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_get_minter_id',
       args,
@@ -37,7 +37,7 @@ export class CoreContract extends Contract {
   }
 
   async nft_registrant_ids_of({ args, blockQuery }: NftRegistrantIdsOfOptions): Promise<string[]> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_registrant_ids_of',
       args,
@@ -46,7 +46,7 @@ export class CoreContract extends Contract {
   }
 
   async nft_state({ args, blockQuery }: NftStateOptions): Promise<TokenState | undefined> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_state',
       args,
@@ -55,7 +55,7 @@ export class CoreContract extends Contract {
   }
 
   async nft_namesky_token({ args, blockQuery }: NftNameSkyTokenOptions): Promise<NameSkyToken | undefined> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_namesky_token',
       args,
@@ -64,7 +64,7 @@ export class CoreContract extends Contract {
   }
 
   async nft_namesky_tokens({ args, blockQuery }: NftNameSkyTokensOptions): Promise<NameSkyToken[]> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_namesky_tokens',
       args,
@@ -73,7 +73,7 @@ export class CoreContract extends Contract {
   }
 
   async nft_namesky_tokens_for_owner({ args, blockQuery }: NftNameSkyTokensForOwnerOptions): Promise<NameSkyToken[]> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_namesky_tokens_for_owner',
       args,
@@ -82,7 +82,7 @@ export class CoreContract extends Contract {
   }
 
   async nft_supply_for_owner({ args, blockQuery }: NftSupplyForOwnerOptions): Promise<string> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_supply_for_owner',
       args,
@@ -91,7 +91,7 @@ export class CoreContract extends Contract {
   }
 
   async nft_total_supply({ blockQuery }: NftTotalSupplyOptions): Promise<string> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'nft_total_supply',
       blockQuery,
@@ -99,7 +99,7 @@ export class CoreContract extends Contract {
   }
 
   async get_latest_controller_code({ blockQuery }: GetLatestControllerCodeOptions): Promise<string> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_latest_controller_code',
       blockQuery,
@@ -107,7 +107,7 @@ export class CoreContract extends Contract {
   }
 
   async get_latest_controller_code_hash({ blockQuery }: GetLatestControllerCodeHashOptions): Promise<string> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_latest_controller_code_hash',
       blockQuery,
@@ -115,7 +115,7 @@ export class CoreContract extends Contract {
   }
 
   async get_controller_code_views({ blockQuery }: GetControllerCodeViewsOptions): Promise<ControllerCodeView[]> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_controller_code_views',
       blockQuery,
@@ -123,7 +123,7 @@ export class CoreContract extends Contract {
   }
 
   async get_mint_fee({ blockQuery }: GetMintFeeOptions): Promise<string> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_mint_fee',
       blockQuery,
@@ -131,7 +131,7 @@ export class CoreContract extends Contract {
   }
 
   async get_royalty({ blockQuery }: GetRoyaltyOptions): Promise<number> {
-    const { royalty, divisor } = await this.selector.view<RoyaltyView>({
+    const { royalty, divisor } = await this.runner.view<RoyaltyView>({
       contractId: this.contractId,
       methodName: 'get_royalty',
       blockQuery,
@@ -141,7 +141,7 @@ export class CoreContract extends Contract {
   }
 
   async get_mint_num({ args, blockQuery }: GetMintNumOptions): Promise<string> {
-    return this.selector.view({
+    return this.runner.view({
       contractId: this.contractId,
       methodName: 'get_mint_num',
       args,
@@ -159,7 +159,7 @@ export class CoreContract extends Contract {
       gas,
     });
 
-    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
+    return this.runner.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftRedeem({ args, gas, callbackUrl }: NftRedeemOptions): Promise<boolean> {
@@ -170,7 +170,7 @@ export class CoreContract extends Contract {
       gas,
     });
 
-    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
+    return this.runner.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
@@ -179,7 +179,7 @@ export class CoreContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 
   async nftApprove({ args, approvalStorageDeposit, gas, callbackUrl }: NftApproveOptions) {
@@ -189,7 +189,7 @@ export class CoreContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 
   async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
@@ -198,6 +198,6 @@ export class CoreContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.runner.send(mTx, { callbackUrl });
   }
 }

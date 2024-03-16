@@ -1,20 +1,30 @@
 import { CoreContract } from '../contracts';
 import { MarketplaceContract } from '../contracts';
 import { UserSettingContract } from '../contracts/UserSettingContract';
-import { MultiSendWalletSelector, MultiSendWalletSelectorConfig } from 'multi-transaction';
 import { SpaceshipContract } from '../contracts/SpaceshipContract';
+import { NameSkyRunner } from '../NameSkyRunner';
+import { Account, keyStores } from 'near-api-js';
+import { WalletSelector } from '@near-wallet-selector/core';
 
 export interface NameSkyComponent {
-  selector: MultiSendWalletSelector;
+  network: Network;
+  keyStore: keyStores.KeyStore;
+
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
   userSettingContract: UserSettingContract;
   spaceshipContract: SpaceshipContract;
 }
 
+export interface Network {
+  networkId: string;
+  nodeUrl: string;
+}
+
 export interface NameSkyConfig {
-  selectorConfig: MultiSendWalletSelectorConfig;
-  contractsConfig: {
+  network: Network;
+  signer: Account | WalletSelector;
+  contracts: {
     coreContractId: string;
     marketplaceContractId: string;
     userSettingContractId: string;

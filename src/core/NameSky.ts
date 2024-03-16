@@ -3,8 +3,7 @@ import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
-import { Network } from '@near-wallet-selector/core';
-import { NameSkyComponent, NameSkyConfig } from './types/config';
+import { NameSkyComponent, NameSkyConfig, Network } from './types/config';
 import { CleanStateArgs, InitArgs } from './types/args';
 import { GetControllerOwnerIdOptions, NftRegisterOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
@@ -15,67 +14,86 @@ import {
   BorshSchema,
   endless,
   MultiSendAccount,
-  MultiSendWalletSelector,
   MultiTransaction,
-  setupMultiSendWalletSelector,
   Stringifier,
 } from 'multi-transaction';
-import { Provider } from 'near-api-js/lib/providers';
-import { AccessKeyList, AccountView } from 'near-api-js/lib/providers/provider';
+import { AccessKeyList, AccountView, Provider } from 'near-api-js/lib/providers/provider';
 import { NameSkyNftSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
+import { Account, KeyPair, keyStores, Near } from 'near-api-js';
+import { NameSkyRunner } from './NameSkyRunner';
 
 export class NameSky {
-  selector: MultiSendWalletSelector;
+  network: Network;
+  near: Near;
+  keyStore: keyStores.KeyStore;
+
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
   userSettingContract: UserSettingContract;
+  spaceshipContract: SpaceshipContract;
 
-  constructor({ selector, coreContract, marketplaceContract, userSettingContract }: NameSkyComponent) {
-    this.selector = selector;
+  constructor({
+    network,
+    keyStore,
+    coreContract,
+    marketplaceContract,
+    userSettingContract,
+    spaceshipContract,
+  }: NameSkyComponent) {
+    this.network = network;
+    this.near = new Near({
+      ...network,
+      keyStore,
+    });
+    this.keyStore = keyStore;
+
     this.coreContract = coreContract;
     this.marketplaceContract = marketplaceContract;
     this.userSettingContract = userSettingContract;
+    this.spaceshipContract = spaceshipContract;
 
     this.onRequestFullAccess().catch((reason) => console.error('onRequestFullAccess Failed', reason));
   }
 
-  getNetwork(): Network {
-    return this.selector.options.network;
-  }
-
-  getNetworkId(): string {
-    return this.getNetwork().networkId;
-  }
-
-  getCoreContractId(): string {
+  private get coreContractId(): string {
     return this.coreContract.contractId;
   }
 
-  getMarketplaceContractId(): string {
+  private get marketplaceContractId(): string {
     return this.marketplaceContract.contractId;
   }
 
-  getUserSettingContractId(): string {
+  private get userSettingContractId(): string {
     return this.userSettingContract.contractId;
   }
 
-  account(accountId: string): MultiSendAccount {
-    return MultiSendAccount.new(this.selector.near.connection, accountId);
+  private get spaceshipContactId(): string {
+    return this.spaceshipContract.contractId;
   }
 
-  rpc(): Provider {
-    return this.selector.near.connection.provider;
+  private get networkId(): string {
+    return this.network.networkId;
+  }
+
+  private get nodeUrl(): string {
+    return this.network.nodeUrl;
+  }
+
+  private get provider(): Provider {
+    return this.near.connection.provider;
+  }
+
+  private account(accountId: string): MultiSendAccount {
+    return MultiSendAccount.new(this.near.connection, accountId);
   }
 
   async requestFullAccess(webWalletBaseUrl: string, successUrl?: string, failureUrl?: string): Promise<never> {
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey;
-    const keystore = this.selector.keyStore;
-    const networkId = this.getNetworkId();
-    await keystore.setKey(networkId, pendingAccountId, keyPair);
+    await this.keyStore.setKey(this.networkId, pendingAccountId, keyPair);
     const newUrl = new URL(webWalletBaseUrl + '/login/');
     newUrl.searchParams.set('public_key', publicKey);
     newUrl.searchParams.set('success_url', successUrl ?? window.location.href);
@@ -95,25 +113,34 @@ export class NameSky {
       return;
     }
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString();
-    const keystore = this.selector.keyStore;
-    const networkId = this.getNetworkId();
-    const keyPair = await keystore.getKey(networkId, pendingAccountId);
+    const keyPair = await this.keyStore.getKey(this.networkId, pendingAccountId);
     if (!keyPair) {
       return;
     }
-    await keystore.setKey(networkId, accountId, keyPair);
-    await keystore.removeKey(networkId, pendingAccountId);
+    await this.keyStore.setKey(this.networkId, accountId, keyPair);
+    await this.keyStore.removeKey(this.networkId, pendingAccountId);
     console.log(`onRequestFullAccess Succeeded`);
   }
 
-  // signed by registrant
+  async getRegistrantKey(registrantId: string): Promise<KeyPair> {
+    return this.keyStore.getKey(this.networkId, registrantId);
+  }
+
+  async setRegistrantKey(registrantId: string, keyPair: KeyPair) {
+    await this.keyStore.setKey(this.networkId, registrantId, keyPair);
+  }
+
+  async removeRegistrantKey(registrantId: string) {
+    await this.keyStore.removeKey(this.networkId, registrantId);
+  }
+
   async register({ registrantId, minterId, gas }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.get_mint_fee({}),
       this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
     ]);
 
-    const mTx = MultiTransaction.batch(this.getCoreContractId()).functionCall({
+    const mTx = MultiTransaction.batch(this.coreContractId).functionCall({
       methodName: 'nft_register',
       args: {
         minter_id: minterId,
@@ -122,10 +149,10 @@ export class NameSky {
       gas,
     });
 
-    await this.selector.sendWithLocalKey(registrantId, mTx);
+    const registrant = this.account(registrantId);
+    await registrant.send(mTx);
   }
 
-  // signed by registrant
   async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
     //  we don't need to check conditions at the same block in this method
     const account = this.account(registrantId);
@@ -177,13 +204,13 @@ export class NameSky {
     // init controller contract
     mTx.functionCall<InitArgs>({
       methodName: 'init',
-      args: Buffer.from(this.getCoreContractId()), // raw args
+      args: Buffer.from(this.coreContractId), // raw args
       attachedDeposit: Amount.ONE_YOCTO,
       gas: gasForInit,
     });
 
     // delete all access keys
-    const keyPair = await this.selector.keyStore.getKey(this.getNetworkId(), registrantId);
+    const keyPair = await this.keyStore.getKey(this.networkId, registrantId);
 
     if (!keyPair) {
       throw Error(`No access key found locally for Account(${registrantId}) to sign transaction.`);
@@ -201,12 +228,10 @@ export class NameSky {
       }
     }
 
-    await this.selector.sendWithLocalKey(registrantId, mTx);
-    await this.selector.keyStore.removeKey(this.getNetworkId(), registrantId);
-    console.log(`Removed local full access key, registrant id: ${registrantId}`);
+    const registrant = this.account(registrantId);
+    await registrant.send(mTx);
   }
 
-  // minted by operator
   async waitForMinting(tokenId: string, timeout?: number): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
@@ -228,12 +253,12 @@ export class NameSky {
   }
 
   async getNftAccountSafety(accountId: string): Promise<NameSkyNftSafety> {
-    const block = await this.rpc().block({ finality: 'optimistic' });
+    const block = await this.provider.block({ finality: 'optimistic' });
 
     const blockQuery: BlockQuery = { blockId: block.header.height };
 
     const [codeHash, controllerCodeViews, state, { keys: accessKeys }] = await Promise.all([
-      this.rpc()
+      this.provider
         .query<AccountView>({
           ...blockQuery,
           request_type: 'view_account',
@@ -245,7 +270,7 @@ export class NameSky {
 
       this.account(accountId).viewState('', blockQuery),
 
-      this.rpc().query<AccessKeyList>({
+      this.provider.query<AccessKeyList>({
         ...blockQuery,
         request_type: 'view_access_key_list',
         account_id: accountId,
@@ -269,7 +294,8 @@ export class NameSky {
   }
 
   private async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string> {
-    return this.selector.view({
+    const account = this.account(accountId);
+    return account.view({
       contractId: accountId,
       methodName: 'get_owner_id',
       blockQuery,
@@ -278,14 +304,21 @@ export class NameSky {
 }
 
 export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
-  const { selectorConfig, contractsConfig } = config;
-  const selector = await setupMultiSendWalletSelector({
-    ...selectorConfig,
-    keyStorePrefix: selectorConfig.keyStorePrefix ?? REGISTRANT_KEYSTORE_PREFIX,
-  });
-  const coreContract = new CoreContract(contractsConfig.coreContractId, selector);
-  const marketplaceContract = new MarketplaceContract(contractsConfig.marketplaceContractId, selector);
-  const userSettingContract = new UserSettingContract(contractsConfig.userSettingContractId, selector);
-  const spaceshipContract = new SpaceshipContract(contractsConfig.spaceshipContractId, selector);
-  return new NameSky({ selector, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
+  const { signer, network, contracts } = config;
+
+  let runner: NameSkyRunner;
+  let keyStore: keyStores.KeyStore;
+
+  if (signer instanceof Account) {
+    runner = await NameSkyRunner.fromAccount(signer);
+    keyStore = new keyStores.InMemoryKeyStore();
+  } else {
+    runner = await NameSkyRunner.fromWalletSelector(signer);
+    keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
+  }
+  const coreContract = new CoreContract(contracts.coreContractId, runner);
+  const marketplaceContract = new MarketplaceContract(contracts.marketplaceContractId, runner);
+  const userSettingContract = new UserSettingContract(contracts.userSettingContractId, runner);
+  const spaceshipContract = new SpaceshipContract(contracts.spaceshipContractId, runner);
+  return new NameSky({ network, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
 }
