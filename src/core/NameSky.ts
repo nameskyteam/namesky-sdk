@@ -4,6 +4,7 @@ import {
   getMarketplaceContractId,
   getSpaceshipContractId,
   getUserSettingContractId,
+  isBrowser,
   moveRegistrantPublicKeyToEnd,
   REGISTRANT_KEYSTORE_PREFIX,
   resolveNetwork,
@@ -32,7 +33,7 @@ import { AccessKeyList, AccountView, Provider } from 'near-api-js/lib/providers/
 import { NameSkyNftSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
-import { Account, KeyPair, keyStores, Near } from 'near-api-js';
+import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkyRunner } from './NameSkyRunner';
 
 export class NameSky {
@@ -65,7 +66,9 @@ export class NameSky {
     this.userSettingContract = userSettingContract;
     this.spaceshipContract = spaceshipContract;
 
-    this.onRequestFullAccess().catch((reason) => console.error('onRequestFullAccess Failed', reason));
+    if (isBrowser()) {
+      void this.onRequestFullAccess();
+    }
   }
 
   private get coreContractId(): string {
@@ -101,10 +104,15 @@ export class NameSky {
   }
 
   async requestFullAccess(webWalletBaseUrl: string, successUrl?: string, failureUrl?: string): Promise<never> {
+    if (!isBrowser()) {
+      throw Error('requestFullAccess only available in browser environment');
+    }
+
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey;
     await this.keyStore.setKey(this.networkId, pendingAccountId, keyPair);
+
     const newUrl = new URL(webWalletBaseUrl + '/login/');
     newUrl.searchParams.set('public_key', publicKey);
     newUrl.searchParams.set('success_url', successUrl ?? window.location.href);
@@ -246,21 +254,21 @@ export class NameSky {
     await registrant.send(mTx);
   }
 
-  async waitForMinting(tokenId: string, timeout?: number): Promise<NameSkyToken> {
+  async waitForMinting(registrantId: string, timeout?: number): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
         const token = await this.coreContract.nft_namesky_token({
           args: {
-            token_id: tokenId,
+            token_id: registrantId,
           },
         });
 
         if (token) {
+          console.log(`NameSkyNFT(${registrantId}) is minted`);
           return token;
         }
 
-        console.log(`NFT(${tokenId}) is on minting...`);
-
+        console.log(`NameSkyNFT(${registrantId}) is on minting...`);
         await sleep(1000);
       }
     }, timeout);
@@ -324,7 +332,7 @@ export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
   let runner: NameSkyRunner;
   let keyStore: keyStores.KeyStore;
 
-  if (signer instanceof Account) {
+  if ('accountId' in signer) {
     runner = await NameSkyRunner.fromAccount(signer);
     keyStore = new keyStores.InMemoryKeyStore();
   } else {

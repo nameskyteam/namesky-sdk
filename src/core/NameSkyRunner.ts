@@ -28,7 +28,7 @@ export class NameSkyRunner implements View, Call, MultiSend {
   }
 
   get accountId(): string {
-    if (this.signer instanceof MultiSendAccount) {
+    if ('accountId' in this.signer) {
       return this.signer.accountId;
     } else {
       const accountId = this.signer.getActiveAccountId();
