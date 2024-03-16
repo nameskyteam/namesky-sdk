@@ -1,9 +1,19 @@
-import { ACTION_MAX_NUM, moveRegistrantPublicKeyToEnd, REGISTRANT_KEYSTORE_PREFIX, sleep, wait } from '../utils';
+import {
+  ACTION_MAX_NUM,
+  getCoreContractId,
+  getMarketplaceContractId,
+  getSpaceshipContractId,
+  getUserSettingContractId,
+  moveRegistrantPublicKeyToEnd,
+  REGISTRANT_KEYSTORE_PREFIX,
+  sleep,
+  wait,
+} from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
-import { NameSkyComponent, NameSkyConfig, Network } from './types/config';
+import { NameSkyComponent, NameSkyConfig, Network, NetworkId } from './types/config';
 import { CleanStateArgs, InitArgs } from './types/args';
 import { GetControllerOwnerIdOptions, NftRegisterOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
@@ -73,7 +83,7 @@ export class NameSky {
     return this.spaceshipContract.contractId;
   }
 
-  private get networkId(): string {
+  private get networkId(): NetworkId {
     return this.network.networkId;
   }
 
@@ -304,7 +314,7 @@ export class NameSky {
 }
 
 export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
-  const { signer, network, contracts } = config;
+  const { network, signer, contracts } = config;
 
   let runner: NameSkyRunner;
   let keyStore: keyStores.KeyStore;
@@ -316,9 +326,20 @@ export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
     runner = await NameSkyRunner.fromWalletSelector(signer);
     keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
   }
-  const coreContract = new CoreContract(contracts.coreContractId, runner);
-  const marketplaceContract = new MarketplaceContract(contracts.marketplaceContractId, runner);
-  const userSettingContract = new UserSettingContract(contracts.userSettingContractId, runner);
-  const spaceshipContract = new SpaceshipContract(contracts.spaceshipContractId, runner);
+
+  const coreContract = new CoreContract(contracts?.coreContractId ?? getCoreContractId(network.networkId), runner);
+  const marketplaceContract = new MarketplaceContract(
+    contracts?.marketplaceContractId ?? getMarketplaceContractId(network.networkId),
+    runner
+  );
+  const userSettingContract = new UserSettingContract(
+    contracts?.userSettingContractId ?? getUserSettingContractId(network.networkId),
+    runner
+  );
+  const spaceshipContract = new SpaceshipContract(
+    contracts?.spaceshipContractId ?? getSpaceshipContractId(network.networkId),
+    runner
+  );
+
   return new NameSky({ network, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
 }

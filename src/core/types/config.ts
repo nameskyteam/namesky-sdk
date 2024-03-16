@@ -17,17 +17,19 @@ export interface NameSkyComponent {
 }
 
 export interface Network {
-  networkId: string;
+  networkId: NetworkId;
   nodeUrl: string;
 }
+
+export type NetworkId = 'mainnet' | 'testnet';
 
 export interface NameSkyConfig {
   network: Network;
   signer: Account | WalletSelector;
-  contracts: {
-    coreContractId: string;
-    marketplaceContractId: string;
-    userSettingContractId: string;
-    spaceshipContractId: string;
+  contracts?: {
+    coreContractId?: string;
+    marketplaceContractId?: string;
+    userSettingContractId?: string;
+    spaceshipContractId?: string;
   };
 }
