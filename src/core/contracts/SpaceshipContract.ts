@@ -109,6 +109,9 @@ export class SpaceshipContract extends Contract {
       .functionCall({
         methodName: 'distribute_rewards',
         gas: gasForDistribute,
+        args: {
+          account_id: accountId,
+        },
       })
       .functionCall({
         methodName: 'claim_rewards',
