@@ -23,7 +23,7 @@ import { EmptyArgs } from 'multi-transaction/src/types';
 export class NameSkyRunner implements View, Call, MultiSend {
   signer: MultiSendAccount | MultiSendWalletSelector;
 
-  constructor(signer: MultiSendAccount | MultiSendWalletSelector) {
+  private constructor(signer: MultiSendAccount | MultiSendWalletSelector) {
     this.signer = signer;
   }
 
