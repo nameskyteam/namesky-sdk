@@ -9,6 +9,10 @@ export type InitArgs = Uint8Array;
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 
+export interface NftRegisterArgs {
+  minter_id: string;
+}
+
 export interface NftUnregisterArgs {
   registrant_id: string;
   public_key: string;

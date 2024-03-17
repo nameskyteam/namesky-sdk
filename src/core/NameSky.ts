@@ -15,7 +15,7 @@ import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
-import { CleanStateArgs, InitArgs } from './types/args';
+import { CleanStateArgs, InitArgs, NftRegisterArgs } from './types/args';
 import { MintOptions, NftRegisterOptions, SetupControllerOptions, WaitForMintingOptions } from './types/change-options';
 import { GetControllerOwnerIdOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
@@ -188,7 +188,7 @@ export class NameSky {
       this.coreContract.nftGetMinterId({ args: { registrant_id: registrantId } }),
     ]);
 
-    const mTx = MultiTransaction.batch(this.coreContractId).functionCall({
+    const mTx = MultiTransaction.batch(this.coreContractId).functionCall<NftRegisterArgs>({
       methodName: 'nft_register',
       args: {
         minter_id: this.signer.accountId,
