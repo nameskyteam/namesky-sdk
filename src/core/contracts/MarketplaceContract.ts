@@ -199,7 +199,7 @@ export class MarketplaceContract extends BaseContract {
       methodName: 'buy_listing',
       args,
       attachedDeposit: listing.price,
-      gas: gas ?? Gas.parse(150, 'T'),
+      gas: gas ?? Gas.parse(100, 'T'),
     });
 
     return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
@@ -269,7 +269,7 @@ export class MarketplaceContract extends BaseContract {
         methodName: 'accept_offering',
         args,
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: gas ?? Gas.parse(150, 'T'),
+        gas: gas ?? Gas.parse(100, 'T'),
       });
 
     return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
@@ -288,8 +288,9 @@ export class MarketplaceContract extends BaseContract {
     // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
     mTx.batch(this.contractId);
 
-    const isSimpleOffering = args.is_simple_offering ?? true;
-    if (isSimpleOffering) {
+    args.is_simple_offering = args.is_simple_offering ?? true;
+
+    if (args.is_simple_offering) {
       // create new offer and deposit with the same price
       mTx.functionCall({
         methodName: 'create_offering',
