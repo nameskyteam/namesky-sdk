@@ -13,6 +13,9 @@ import {
 import { NameSkySigner } from '../NameSkySigner';
 
 export class UserSettingContract extends BaseContract {
+  /**
+   * Connect to new signer and return new instance
+   */
   connect(signer: NameSkySigner): UserSettingContract {
     return new UserSettingContract(this.contractId, signer);
   }

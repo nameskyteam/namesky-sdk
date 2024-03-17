@@ -1,8 +1,9 @@
 import { Amount, BigNumber } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
 import { NetworkId } from '../core';
+import { PublicKey } from 'near-api-js/lib/utils';
 
-export const REQUEST_ACCESS_PENDING_KEY_PREFIX = 'request_access_pending_key:';
+export const PENDING_REGISTRANT_ID_PREFIX = 'pending_registrant_id:';
 export const REGISTRANT_KEYSTORE_PREFIX = 'registrant:keystore:';
 export const DEFAULT_MARKET_STORAGE_DEPOSIT = Amount.parse(0.0125, 'NEAR');
 export const DEFAULT_APPROVAL_STORAGE_DEPOSIT = Amount.parse(0.005, 'NEAR');
@@ -40,6 +41,10 @@ export async function wait<T>(f: () => Promise<T>, timeout: number = MAX_TIMEOUT
     });
 
   return Promise.race([reject(), f()]).finally(() => clearTimeout(timeoutId));
+}
+
+export function getPendingRegistrantId(publicKey: string): string {
+  return PENDING_REGISTRANT_ID_PREFIX + PublicKey.fromString(publicKey).toString();
 }
 
 export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {

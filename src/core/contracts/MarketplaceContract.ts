@@ -31,6 +31,9 @@ import { Amount, BigNumber, Gas, MultiTransaction, StorageBalance } from 'multi-
 import { NameSkySigner } from '../NameSkySigner';
 
 export class MarketplaceContract extends BaseContract {
+  /**
+   * Connect to new signer and return new instance
+   */
   connect(signer: NameSkySigner): MarketplaceContract {
     return new MarketplaceContract(this.contractId, signer);
   }

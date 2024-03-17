@@ -1,5 +1,6 @@
 import {
   ACTION_MAX_NUM,
+  getPendingRegistrantId,
   getDefaultCoreContractId,
   getDefaultMarketplaceContractId,
   getDefaultSpaceshipContractId,
@@ -12,8 +13,7 @@ import {
 } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
-import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
-import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
+import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs } from './types/args';
 import {
@@ -78,6 +78,20 @@ export class NameSky {
     }
   }
 
+  /**
+   * Connect to new signer and return new instance
+   */
+  connect(signer: NameSkySigner): NameSky {
+    return new NameSky({
+      signer,
+      keyStore: this.keyStore,
+      coreContract: this.coreContract.connect(signer),
+      marketplaceContract: this.marketplaceContract.connect(signer),
+      userSettingContract: this.userSettingContract.connect(signer),
+      spaceshipContract: this.spaceshipContract.connect(signer),
+    });
+  }
+
   get coreContractId(): string {
     return this.coreContract.contractId;
   }
@@ -98,11 +112,11 @@ export class NameSky {
     return this.signer.network;
   }
 
-  get provider(): Provider {
+  private get provider(): Provider {
     return this.near.connection.provider;
   }
 
-  registrant(registrantId: string): MultiSendAccount {
+  private registrant(registrantId: string): MultiSendAccount {
     return MultiSendAccount.new(this.near.connection, registrantId);
   }
 
@@ -116,8 +130,8 @@ export class NameSky {
 
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
-    const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey;
-    await this.keyStore.setKey(this.network.networkId, pendingAccountId, keyPair);
+    const pendingRegistrantId = getPendingRegistrantId(publicKey);
+    await this.setRegistrantKey(pendingRegistrantId, keyPair);
 
     const newUrl = new URL(webWalletBaseUrl + '/login/');
     newUrl.searchParams.set('public_key', publicKey);
@@ -129,31 +143,30 @@ export class NameSky {
     endless();
   }
 
-  // auto callback
   private async onRequestFullAccess() {
     const currentUrl = new URL(window.location.href);
-    const accountId = currentUrl.searchParams.get('account_id');
+    const registrantId = currentUrl.searchParams.get('account_id');
     const publicKey = currentUrl.searchParams.get('public_key');
 
-    if (!publicKey || !accountId) {
+    if (!publicKey || !registrantId) {
       return;
     }
 
-    const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString();
-    const keyPair = await this.keyStore.getKey(this.network.networkId, pendingAccountId);
+    const pendingRegistrantId = getPendingRegistrantId(publicKey);
+    const keyPair = await this.getRegistrantKey(pendingRegistrantId);
 
     if (!keyPair) {
       return;
     }
 
-    await this.keyStore.setKey(this.network.networkId, accountId, keyPair);
-    await this.keyStore.removeKey(this.network.networkId, pendingAccountId);
+    await this.setRegistrantKey(registrantId, keyPair);
+    await this.removeRegistrantKey(pendingRegistrantId);
   }
 
   /**
    * Get registrant key
    */
-  async getRegistrantKey(registrantId: string): Promise<KeyPair> {
+  async getRegistrantKey(registrantId: string): Promise<KeyPair | undefined> {
     return this.keyStore.getKey(this.network.networkId, registrantId);
   }
 
@@ -252,10 +265,10 @@ export class NameSky {
     });
 
     // delete all access keys
-    const keyPair = await this.keyStore.getKey(this.network.networkId, registrantId);
+    const keyPair = await this.getRegistrantKey(registrantId);
 
     if (!keyPair) {
-      throw Error(`No access key found locally for Account(${registrantId}) to sign transaction.`);
+      throw Error(`No access key found for Account(${registrantId}) to setup controller`);
     }
 
     const registrantPublicKey = keyPair.getPublicKey().toString();

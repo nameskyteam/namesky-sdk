@@ -26,6 +26,9 @@ import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../ty
 import { NameSkySigner } from '../NameSkySigner';
 
 export class CoreContract extends BaseContract {
+  /**
+   * Connect to new signer and return new instance
+   */
   connect(signer: NameSkySigner): CoreContract {
     return new CoreContract(this.contractId, signer);
   }

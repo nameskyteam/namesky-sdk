@@ -14,6 +14,9 @@ import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
 import { NameSkySigner } from '../NameSkySigner';
 
 export class SpaceshipContract extends BaseContract {
+  /**
+   * Connect to new signer and return new instance
+   */
   connect(signer: NameSkySigner): SpaceshipContract {
     return new SpaceshipContract(this.contractId, signer);
   }
