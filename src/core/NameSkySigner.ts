@@ -19,17 +19,25 @@ import { FinalExecutionOutcome } from '@near-wallet-selector/core';
 import { EmptyArgs } from 'multi-transaction/src/types';
 
 export class NameSkySigner implements View, Call, MultiSend {
-  signer: MultiSendAccount | MultiSendWalletSelector;
+  multiSender: MultiSendAccount | MultiSendWalletSelector;
 
-  constructor(signer: MultiSendAccount | MultiSendWalletSelector) {
-    this.signer = signer;
+  private constructor(multiSender: MultiSendAccount | MultiSendWalletSelector) {
+    this.multiSender = multiSender;
+  }
+
+  static fromAccount(account: MultiSendAccount): NameSkySigner {
+    return new NameSkySigner(account);
+  }
+
+  static fromWalletSelector(selector: MultiSendWalletSelector): NameSkySigner {
+    return new NameSkySigner(selector);
   }
 
   get accountId(): string {
-    if ('accountId' in this.signer) {
-      return this.signer.accountId;
+    if ('accountId' in this.multiSender) {
+      return this.multiSender.accountId;
     } else {
-      const accountId = this.signer.getActiveAccountId();
+      const accountId = this.multiSender.getActiveAccountId();
       if (!accountId) {
         throw Error(`Active account id not found`);
       }
@@ -38,32 +46,32 @@ export class NameSkySigner implements View, Call, MultiSend {
   }
 
   view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value> {
-    return this.signer.view(options);
+    return this.multiSender.view(options);
   }
 
   call<Value, Args = EmptyArgs>(
     options: CallOptions<Value, Args> | MultiSendWalletSelectorCallOptions<Value, Args>
   ): Promise<Value> {
-    return this.signer.call(options);
+    return this.multiSender.call(options);
   }
 
   callRaw<Args = EmptyArgs>(
     options: CallRawOptions<Args> | MultiSendWalletSelectorCallRawOptions<Args>
   ): Promise<FinalExecutionOutcome> {
-    return this.signer.callRaw(options);
+    return this.multiSender.callRaw(options);
   }
 
   send<Value>(
     mTx: MultiTransaction,
     options?: SendOptions<Value> | MultiSendWalletSelectorSendOptions<Value>
   ): Promise<Value> {
-    return this.signer.send(mTx, options);
+    return this.multiSender.send(mTx, options);
   }
 
   sendRaw(
     mTx: MultiTransaction,
     options?: SendRawOptions | MultiSendWalletSelectorSendRawOptions
   ): Promise<FinalExecutionOutcome[]> {
-    return this.signer.sendRaw(mTx, options);
+    return this.multiSender.sendRaw(mTx, options);
   }
 }
