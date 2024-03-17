@@ -54,7 +54,7 @@ interface ChangeFunctionExtraOptions {
 export interface NftRegisterOptions {
   registrantId: string;
   minterId: string;
-  gas?: string;
+  gasForRegister?: string;
 }
 
 export interface SetupControllerOptions {

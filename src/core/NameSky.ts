@@ -70,36 +70,36 @@ export class NameSky {
     }
   }
 
-  private get coreContractId(): string {
+  get coreContractId(): string {
     return this.coreContract.contractId;
   }
 
-  private get marketplaceContractId(): string {
+  get marketplaceContractId(): string {
     return this.marketplaceContract.contractId;
   }
 
-  private get userSettingContractId(): string {
+  get userSettingContractId(): string {
     return this.userSettingContract.contractId;
   }
 
-  private get spaceshipContactId(): string {
+  get spaceshipContactId(): string {
     return this.spaceshipContract.contractId;
   }
 
-  private get networkId(): NetworkId {
+  get networkId(): NetworkId {
     return this.network.networkId;
   }
 
-  private get nodeUrl(): string {
+  get nodeUrl(): string {
     return this.network.nodeUrl;
   }
 
-  private get provider(): Provider {
+  get provider(): Provider {
     return this.near.connection.provider;
   }
 
-  private account(accountId: string): MultiSendAccount {
-    return MultiSendAccount.new(this.near.connection, accountId);
+  registrant(registrantId: string): MultiSendAccount {
+    return MultiSendAccount.new(this.near.connection, registrantId);
   }
 
   /**
@@ -168,9 +168,9 @@ export class NameSky {
   }
 
   /**
-   * Register NameSky NFT, this is the 1st step of mint
+   * Register NameSky NFT. (Step 1/3)
    */
-  async register({ registrantId, minterId, gas }: NftRegisterOptions) {
+  async register({ registrantId, minterId, gasForRegister }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.get_mint_fee({}),
       this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
@@ -182,19 +182,18 @@ export class NameSky {
         minter_id: minterId,
       },
       attachedDeposit: oldMinterId ? Amount.ONE_YOCTO : mintFee,
-      gas,
+      gas: gasForRegister,
     });
 
-    const registrant = this.account(registrantId);
-    await registrant.send(mTx);
+    await this.registrant(registrantId).send(mTx);
   }
 
   /**
-   * Setup NameSky NFT controller, this is the 2nd step of mint
+   * Setup NameSky NFT controller. (Step 2/3)
    */
   async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
     //  we don't need to check conditions at the same block in this method
-    const account = this.account(registrantId);
+    const account = this.registrant(registrantId);
 
     // code hash
     const codeBase64 = await this.coreContract.get_latest_controller_code({});
@@ -267,12 +266,11 @@ export class NameSky {
       }
     }
 
-    const registrant = this.account(registrantId);
-    await registrant.send(mTx);
+    await this.registrant(registrantId).send(mTx);
   }
 
   /**
-   * Wait for minting, this is the 3rd step of mint
+   * Wait for minting. (Step 3/3)
    */
   async waitForMinting(registrantId: string, timeout?: number): Promise<NameSkyToken> {
     return wait(async () => {
@@ -308,7 +306,7 @@ export class NameSky {
     await this.register({
       registrantId,
       minterId,
-      gas: gasForRegister,
+      gasForRegister,
     });
 
     await this.setupController({
@@ -336,7 +334,7 @@ export class NameSky {
 
       this.coreContract.get_controller_code_views({ blockQuery }),
 
-      this.account(accountId).viewState('', blockQuery),
+      this.registrant(accountId).viewState('', blockQuery),
 
       this.provider.query<AccessKeyList>({
         ...blockQuery,
@@ -362,7 +360,7 @@ export class NameSky {
   }
 
   private async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string> {
-    const account = this.account(accountId);
+    const account = this.registrant(accountId);
     return account.view({
       contractId: accountId,
       methodName: 'get_owner_id',

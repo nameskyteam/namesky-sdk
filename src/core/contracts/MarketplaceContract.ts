@@ -283,7 +283,8 @@ export class MarketplaceContract extends BaseContract {
     // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
     mTx.batch(this.contractId);
 
-    if (args.is_simple_offering) {
+    const isSimpleOffering = args.is_simple_offering ?? true;
+    if (isSimpleOffering) {
       // create new offer and deposit with the same price
       mTx.functionCall({
         methodName: 'create_offering',

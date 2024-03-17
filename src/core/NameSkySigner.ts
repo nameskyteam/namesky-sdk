@@ -3,12 +3,8 @@ import {
   View,
   MultiSendAccount,
   MultiTransaction,
-  SendOptions,
-  SendRawOptions,
   ViewOptions,
   Call,
-  CallOptions,
-  CallRawOptions,
   MultiSendWalletSelector,
   MultiSendWalletSelectorSendOptions,
   MultiSendWalletSelectorCallOptions,
@@ -17,6 +13,12 @@ import {
 } from 'multi-transaction';
 import { FinalExecutionOutcome } from '@near-wallet-selector/core';
 import { EmptyArgs } from 'multi-transaction/src/types';
+import {
+  MultiSendAccountCallOptions,
+  MultiSendAccountCallRawOptions,
+  MultiSendAccountSendOptions,
+  MultiSendAccountSendRawOptions,
+} from 'multi-transaction/dist/core/MultiSendAccount';
 
 export class NameSkySigner implements View, Call, MultiSend {
   multiSender: MultiSendAccount | MultiSendWalletSelector;
@@ -50,27 +52,27 @@ export class NameSkySigner implements View, Call, MultiSend {
   }
 
   call<Value, Args = EmptyArgs>(
-    options: CallOptions<Value, Args> | MultiSendWalletSelectorCallOptions<Value, Args>
+    options: MultiSendAccountCallOptions<Value, Args> | MultiSendWalletSelectorCallOptions<Value, Args>
   ): Promise<Value> {
     return this.multiSender.call(options);
   }
 
   callRaw<Args = EmptyArgs>(
-    options: CallRawOptions<Args> | MultiSendWalletSelectorCallRawOptions<Args>
+    options: MultiSendAccountCallRawOptions<Args> | MultiSendWalletSelectorCallRawOptions<Args>
   ): Promise<FinalExecutionOutcome> {
     return this.multiSender.callRaw(options);
   }
 
   send<Value>(
     mTx: MultiTransaction,
-    options?: SendOptions<Value> | MultiSendWalletSelectorSendOptions<Value>
+    options?: MultiSendAccountSendOptions<Value> | MultiSendWalletSelectorSendOptions<Value>
   ): Promise<Value> {
     return this.multiSender.send(mTx, options);
   }
 
   sendRaw(
     mTx: MultiTransaction,
-    options?: SendRawOptions | MultiSendWalletSelectorSendRawOptions
+    options?: MultiSendAccountSendRawOptions | MultiSendWalletSelectorSendRawOptions
   ): Promise<FinalExecutionOutcome[]> {
     return this.multiSender.sendRaw(mTx, options);
   }
