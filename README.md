@@ -61,7 +61,6 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
         nft_contract_id: namesky.coreContractId,
         nft_token_id: 'banana.near',
       },
-      attachedDeposit: Amount.parse(50, 'NEAR'),
     });
     ```
 
