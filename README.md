@@ -61,11 +61,11 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
 ```
 
 ## Mange Listing
-```ts
-import { Amount } from 'namesky-sdk';
-```
-
 * Create listing
+    ```ts
+    import { Amount } from 'namesky-sdk';
+    ```
+
     ```ts
     await namesky.marketplaceContract.createListing({
       args: {
@@ -77,6 +77,10 @@ import { Amount } from 'namesky-sdk';
     ```
 
 * Update listing
+    ```ts
+    import { Amount } from 'namesky-sdk';
+    ```
+
     ```ts
     await namesky.marketplaceContract.updateListing({
       args: {
@@ -108,11 +112,11 @@ import { Amount } from 'namesky-sdk';
     ```
 
 ## Mange Offering
-```ts
-import { Amount } from 'namesky-sdk';
-```
-
 * Create Offering
+    ```ts
+    import { Amount } from 'namesky-sdk';
+    ```
+
     ```ts
     await namesky.marketplaceContract.createOffering({
       args: {
@@ -124,6 +128,10 @@ import { Amount } from 'namesky-sdk';
     ```
 
 * Update Offering
+    ```ts
+    import { Amount } from 'namesky-sdk';
+    ```
+
     ```ts
     await namesky.marketplaceContract.updateOffering({
       args: {
