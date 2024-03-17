@@ -1,6 +1,7 @@
 import { Token } from 'multi-transaction';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
+
 export interface NameSkyNftSafety {
   isCodeHashCorrect: boolean;
   isControllerOwnerIdCorrect: boolean;
@@ -32,6 +33,7 @@ export interface ControllerCodeView {
 }
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
+
 export interface AccountView {
   account_id: string;
   near_balance: string;
@@ -79,6 +81,7 @@ export interface TradingFeeRate {
 }
 
 // ---------------------------------------------- Spaceship ----------------------------------------------------
+
 export interface SpaceshipEngine {
   added_fuel_num: string;
   energy: string;

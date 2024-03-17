@@ -7,11 +7,13 @@ export type UpdateWrapper<T> =
   | 'UpdateNone';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
+
 export type CleanStateArgs = Uint8Array[];
 
 export type InitArgs = Uint8Array;
 
 // ---------------------------------------------- Core ---------------------------------------------------------
+
 export interface NftUnregisterArgs {
   registrant_id: string;
   public_key: string;
@@ -50,6 +52,7 @@ export interface GetMintNumArgs {
 }
 
 // ---------------------------------------------- Marketplace -----------------------------------------------------
+
 export interface CreateMarketAccountArgs {
   account_id?: string;
   registration_only?: boolean;
@@ -174,6 +177,7 @@ export interface GetNftApprovalArgs {
 }
 
 // ---------------------------------------------- User Setting --------------------------------------------------
+
 export interface LikeArgs {
   token_id: string;
 }
@@ -207,6 +211,7 @@ export interface GetUserLastReadNotificationTimeArgs {
 }
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
+
 export interface GetSpaceshipEngineArgs {
   account_id: string;
 }
