@@ -2,8 +2,8 @@
 Interact with NameSky contracts
 
 ## Init
+For Node
 ```ts
-// Your mainly used account
 const account = MultiSendAccount.new(near.connection, 'alice.near');
 const namesky = await initNameSky({
   network: 'mainnet',
@@ -11,9 +11,24 @@ const namesky = await initNameSky({
 });
 ```
 
+For Browser
+```ts
+const selector = setupMultiSendWalletSelector({
+  network: 'mainnet',
+  modules: [
+    /* wallet modules */
+  ]
+});
+
+const namesky = await initNameSky({
+  network: 'mainnet',
+  signer: NameSkySigner.fromWalletSelector(selector),
+});
+```
+
 ## Mint
 ```ts
-// Account that you want to mint as NameSky NFT
+// registrant is the account that you want to mint as NameSky NFT
 const registrantId = 'apple.near';
 const registrantPrivateKey = 'ed25519:<private key>';
 
