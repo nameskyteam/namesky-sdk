@@ -63,6 +63,11 @@ export interface SetupControllerOptions {
   gasForInit?: string;
 }
 
+export interface WaitForMintingOptions {
+  registrantId: string;
+  timeout?: number;
+}
+
 export interface MintOptions {
   registrantId: string;
   minterId: string;

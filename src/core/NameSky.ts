@@ -17,7 +17,13 @@ import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
 import { NameSkyComponent, NameSkyOptions, Network, NetworkId } from './types/config';
 import { CleanStateArgs, InitArgs } from './types/args';
-import { GetControllerOwnerIdOptions, MintOptions, NftRegisterOptions, SetupControllerOptions } from './types/options';
+import {
+  GetControllerOwnerIdOptions,
+  MintOptions,
+  NftRegisterOptions,
+  SetupControllerOptions,
+  WaitForMintingOptions,
+} from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import { base58CodeHash } from '../utils';
 import {
@@ -272,7 +278,7 @@ export class NameSky {
   /**
    * Wait for minting. (Step 3/3)
    */
-  async waitForMinting(registrantId: string, timeout?: number): Promise<NameSkyToken> {
+  async waitForMinting({ registrantId, timeout }: WaitForMintingOptions): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
         const token = await this.coreContract.nft_namesky_token({
@@ -296,26 +302,16 @@ export class NameSky {
    * Mint NameSky NFT, this is one click wrap of `register`, `setupController`, `waitForMinting`
    * @param options
    */
-  async mint({
+  async oneClickMint({
     registrantId,
     minterId,
     gasForRegister,
     gasForCleanState,
     gasForInit,
   }: MintOptions): Promise<NameSkyToken> {
-    await this.register({
-      registrantId,
-      minterId,
-      gasForRegister,
-    });
-
-    await this.setupController({
-      registrantId,
-      gasForCleanState,
-      gasForInit,
-    });
-
-    return this.waitForMinting(registrantId);
+    await this.register({ registrantId, minterId, gasForRegister });
+    await this.setupController({ registrantId, gasForCleanState, gasForInit });
+    return this.waitForMinting({ registrantId });
   }
 
   async getNftAccountSafety(accountId: string): Promise<NameSkyNftSafety> {

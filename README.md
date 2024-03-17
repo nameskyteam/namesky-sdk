@@ -27,13 +27,23 @@ const namesky = await initNameSky({
 ```
 
 ## Mint
-```ts
-// registrant is the account that you want to mint as NameSky NFT
-const registrantId = 'apple.near';
-const registrantPrivateKey = 'ed25519:<private key>';
+Set registrant key
 
-await namesky.setRegistrantKey(registrantId, KeyPair.fromString(registrantPrivateKey));
-await namesky.mint({ registrantId, minterId: 'alice.near' });
+```ts
+// registrant is the account that you want to mint as NameSky NFT. (e.g. star.near)
+await namesky.setRegistrantKey('star.near', KeyPair.fromString('ed25519:<private key>'));
+```
+
+You can choose one click mint
+```ts
+await namesky.oneClickMint({ registrantId: 'star.near', minterId: 'alice.near' });
+```
+
+or step by step mint
+```ts
+await namesky.register({ registrantId: 'star.near', minterId: 'alice.near' });
+await namesky.setupController({ registrantId: 'star.near' });
+await namesky.waitForMinting({ registrantId: 'star.near' });
 ```
 
 ## Mange Listing
@@ -42,7 +52,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
     await namesky.marketplaceContract.createListing({
       args: {
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'apple.near',
+        nft_token_id: 'star.near',
         price: Amount.parse(100, 'NEAR'),
       }
     });
@@ -53,7 +63,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
     await namesky.marketplaceContract.updateListing({
       args: {
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'apple.near',
+        nft_token_id: 'star.near',
         new_price: Amount.parse(200, 'NEAR'),
       },
     });
@@ -64,7 +74,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
     await namesky.marketplaceContract.removeListing({
       args: {
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'apple.near',
+        nft_token_id: 'star.near',
       },
     });
     ```
@@ -74,7 +84,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
     await namesky.marketplaceContract.buyListing({
       args: {
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'banana.near',
+        nft_token_id: 'moon.near',
       },
     });
     ```
@@ -85,7 +95,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
     await namesky.marketplaceContract.createOffering({
       args: {
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'banana.near',
+        nft_token_id: 'moon.near',
         price: Amount.parse(30, 'NEAR'),
       },
     });
@@ -96,7 +106,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
     await namesky.marketplaceContract.updateOffering({
       args: {
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'banana.near',
+        nft_token_id: 'moon.near',
         new_price: Amount.parse(40, 'NEAR'),
       },
     });
@@ -107,7 +117,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
     await namesky.marketplaceContract.removeOffering({
       args: {
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'banana.near',
+        nft_token_id: 'moon.near',
       },
     });
     ```
@@ -118,7 +128,7 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
       args: {
         buyer_id: 'bob.near',
         nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'apple.near',
+        nft_token_id: 'star.near',
       },
     });
     ```
