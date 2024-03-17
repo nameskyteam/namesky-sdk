@@ -1,15 +1,17 @@
 import { BaseContract } from './BaseContract';
 import { MultiTransaction } from 'multi-transaction';
 import {
-  GetUserLastReadNotificationTimeOptions,
-  GetUserLikesOptions,
-  GetUserWatchListOptions,
   LikeOptions,
   ReadNotificationAtOptions,
   UnlikeOptions,
   UnwatchOptions,
   WatchOptions,
-} from '../types/options';
+} from '../types/call-options';
+import {
+  GetUserLastReadNotificationTimeOptions,
+  GetUserLikesOptions,
+  GetUserWatchListOptions,
+} from '../types/view-options';
 import { NameSkySigner } from '../NameSkySigner';
 
 export class UserSettingContract extends BaseContract {

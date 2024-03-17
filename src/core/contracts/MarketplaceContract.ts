@@ -7,11 +7,14 @@ import {
   CreateListingOptions,
   CreateMarketAccountOption,
   CreateOfferingOptions,
-  GetAccountViewOfOptions,
-  GetListingUniqueIdOptions,
-  GetListingViewOptions,
-  GetListingViewsOfOptions,
-  GetListingViewsOptions,
+  NearDepositOptions,
+  NearWithdrawOptions,
+  RemoveListingOptions,
+  RemoveOfferingOptions,
+  UpdateListingOptions,
+  UpdateOfferingOptions,
+} from '../types/call-options';
+import {
   GetNftApprovalOptions,
   GetNftOfferingViewsOfOptions,
   GetOfferingUniqueIdOptions,
@@ -19,13 +22,12 @@ import {
   GetOfferingViewsOfOptions,
   GetOfferingViewsOptions,
   GetTradingFeeRateOptions,
-  NearDepositOptions,
-  NearWithdrawOptions,
-  RemoveListingOptions,
-  RemoveOfferingOptions,
-  UpdateListingOptions,
-  UpdateOfferingOptions,
-} from '../types/options';
+  GetAccountViewOfOptions,
+  GetListingUniqueIdOptions,
+  GetListingViewOptions,
+  GetListingViewsOfOptions,
+  GetListingViewsOptions,
+} from '../types/view-options';
 import { UpdateOfferingArgs } from '../types/args';
 import { Amount, BigNumber, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';

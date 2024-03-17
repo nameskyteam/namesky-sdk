@@ -1,14 +1,12 @@
 import { BaseContract } from './BaseContract';
 import { MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
+import { AddFuelOptions, DistributeAndClaimRewardsOptions, MintSpaceshipOptions } from '../types/call-options';
 import {
-  AddFuelOptions,
-  DistributeAndClaimRewardsOptions,
   GetRewardsForAccountOptions,
   GetSpaceshipEngineOptions,
   GetSpaceshipOptions,
   GetTotalAddedFuelNumOptions,
-  MintSpaceshipOptions,
-} from '../types/options';
+} from '../types/view-options';
 import { SpaceshipEngine } from '../types/data';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
 import { NameSkySigner } from '../NameSkySigner';

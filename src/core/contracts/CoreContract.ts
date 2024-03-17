@@ -2,26 +2,28 @@ import { BaseContract } from './BaseContract';
 import { DEFAULT_APPROVAL_STORAGE_DEPOSIT } from '../../utils';
 import { Amount, MultiTransaction } from 'multi-transaction';
 import {
+  NftApproveOptions,
+  NftRedeemOptions,
+  NftRevokeOptions,
+  NftTransferOptions,
+  NftUnregisterOptions,
+} from '../types/call-options';
+import {
   GetControllerCodeViewsOptions,
   GetLatestControllerCodeHashOptions,
   GetLatestControllerCodeOptions,
   GetMintFeeOptions,
   GetMintNumOptions,
   GetRoyaltyOptions,
-  NftApproveOptions,
+  NftRegistrantIdsOfOptions,
   NftGetMinterIdOptions,
   NftNameSkyTokenOptions,
   NftNameSkyTokensForOwnerOptions,
   NftNameSkyTokensOptions,
-  NftRedeemOptions,
-  NftRegistrantIdsOfOptions,
-  NftRevokeOptions,
   NftStateOptions,
   NftSupplyForOwnerOptions,
   NftTotalSupplyOptions,
-  NftTransferOptions,
-  NftUnregisterOptions,
-} from '../types/options';
+} from '../types/view-options';
 import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../types/data';
 import { NameSkySigner } from '../NameSkySigner';
 
