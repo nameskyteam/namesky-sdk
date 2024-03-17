@@ -53,7 +53,6 @@ interface ChangeFunctionExtraOptions {
 // ---------------------------------------------- Registrant ---------------------------------------------------
 export interface NftRegisterOptions {
   registrantId: string;
-  minterId: string;
   gasForRegister?: string;
 }
 
@@ -70,7 +69,6 @@ export interface WaitForMintingOptions {
 
 export interface MintOptions {
   registrantId: string;
-  minterId: string;
   gasForRegister?: string;
   gasForCleanState?: string;
   gasForInit?: string;

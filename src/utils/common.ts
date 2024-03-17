@@ -1,6 +1,6 @@
 import { Amount, BigNumber } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
-import { Network, NetworkId } from '../core';
+import { NetworkId } from '../core';
 
 export const REQUEST_ACCESS_PENDING_KEY_PREFIX = 'request_access_pending_key:';
 export const REGISTRANT_KEYSTORE_PREFIX = 'registrant:keystore:';
@@ -16,22 +16,14 @@ export function isBrowser(): boolean {
   return typeof window !== 'undefined';
 }
 
-export function resolveNetwork(network: Network | NetworkId): Network {
-  if (typeof network === 'string') {
-    network = {
-      networkId: network,
-      nodeUrl: getDefaultNodeUrl(network),
-    };
-  }
-  return network;
-}
-
 export function getDefaultNodeUrl(networkId: NetworkId): string {
   switch (networkId) {
     case 'mainnet':
       return 'https://archival-rpc.mainnet.near.org';
     case 'testnet':
       return 'https://archival-rpc.testnet.near.org';
+    default:
+      throw Error(`Default node url not found for network: ${networkId}`);
   }
 }
 

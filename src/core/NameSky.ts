@@ -1,13 +1,12 @@
 import {
   ACTION_MAX_NUM,
-  getCoreContractId,
-  getMarketplaceContractId,
-  getSpaceshipContractId,
-  getUserSettingContractId,
+  getDefaultCoreContractId,
+  getDefaultMarketplaceContractId,
+  getDefaultSpaceshipContractId,
+  getDefaultUserSettingContractId,
   isBrowser,
   moveRegistrantPublicKeyToEnd,
   REGISTRANT_KEYSTORE_PREFIX,
-  resolveNetwork,
   sleep,
   wait,
 } from '../utils';
@@ -15,7 +14,7 @@ import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
-import { NameSkyComponent, NameSkyOptions, Network, NetworkId } from './types/config';
+import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs } from './types/args';
 import {
   GetControllerOwnerIdOptions,
@@ -40,11 +39,13 @@ import { NameSkyNftSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
+import { NameSkySigner } from './NameSkySigner';
 
 export class NameSky {
-  private network: Network;
   private near: Near;
-  private keyStore: keyStores.KeyStore;
+
+  signer: NameSkySigner;
+  keyStore: keyStores.KeyStore;
 
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
@@ -52,18 +53,19 @@ export class NameSky {
   spaceshipContract: SpaceshipContract;
 
   constructor({
-    network,
+    signer,
     keyStore,
     coreContract,
     marketplaceContract,
     userSettingContract,
     spaceshipContract,
   }: NameSkyComponent) {
-    this.network = network;
     this.near = new Near({
-      ...network,
+      ...signer.network,
       keyStore,
     });
+
+    this.signer = signer;
     this.keyStore = keyStore;
 
     this.coreContract = coreContract;
@@ -92,12 +94,8 @@ export class NameSky {
     return this.spaceshipContract.contractId;
   }
 
-  get networkId(): NetworkId {
-    return this.network.networkId;
-  }
-
-  get nodeUrl(): string {
-    return this.network.nodeUrl;
+  get network(): Network {
+    return this.signer.network;
   }
 
   get provider(): Provider {
@@ -119,7 +117,7 @@ export class NameSky {
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + publicKey;
-    await this.keyStore.setKey(this.networkId, pendingAccountId, keyPair);
+    await this.keyStore.setKey(this.network.networkId, pendingAccountId, keyPair);
 
     const newUrl = new URL(webWalletBaseUrl + '/login/');
     newUrl.searchParams.set('public_key', publicKey);
@@ -142,41 +140,41 @@ export class NameSky {
     }
 
     const pendingAccountId = REQUEST_ACCESS_PENDING_KEY_PREFIX + PublicKey.fromString(publicKey).toString();
-    const keyPair = await this.keyStore.getKey(this.networkId, pendingAccountId);
+    const keyPair = await this.keyStore.getKey(this.network.networkId, pendingAccountId);
 
     if (!keyPair) {
       return;
     }
 
-    await this.keyStore.setKey(this.networkId, accountId, keyPair);
-    await this.keyStore.removeKey(this.networkId, pendingAccountId);
+    await this.keyStore.setKey(this.network.networkId, accountId, keyPair);
+    await this.keyStore.removeKey(this.network.networkId, pendingAccountId);
   }
 
   /**
    * Get registrant key
    */
   async getRegistrantKey(registrantId: string): Promise<KeyPair> {
-    return this.keyStore.getKey(this.networkId, registrantId);
+    return this.keyStore.getKey(this.network.networkId, registrantId);
   }
 
   /**
    * Set registrant key
    */
   async setRegistrantKey(registrantId: string, keyPair: KeyPair) {
-    await this.keyStore.setKey(this.networkId, registrantId, keyPair);
+    await this.keyStore.setKey(this.network.networkId, registrantId, keyPair);
   }
 
   /**
    * Remove registrant key
    */
   async removeRegistrantKey(registrantId: string) {
-    await this.keyStore.removeKey(this.networkId, registrantId);
+    await this.keyStore.removeKey(this.network.networkId, registrantId);
   }
 
   /**
    * Register NameSky NFT. (Step 1/3)
    */
-  async register({ registrantId, minterId, gasForRegister }: NftRegisterOptions) {
+  async register({ registrantId, gasForRegister }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.get_mint_fee({}),
       this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
@@ -185,7 +183,7 @@ export class NameSky {
     const mTx = MultiTransaction.batch(this.coreContractId).functionCall({
       methodName: 'nft_register',
       args: {
-        minter_id: minterId,
+        minter_id: this.signer.accountId,
       },
       attachedDeposit: oldMinterId ? Amount.ONE_YOCTO : mintFee,
       gas: gasForRegister,
@@ -254,7 +252,7 @@ export class NameSky {
     });
 
     // delete all access keys
-    const keyPair = await this.keyStore.getKey(this.networkId, registrantId);
+    const keyPair = await this.keyStore.getKey(this.network.networkId, registrantId);
 
     if (!keyPair) {
       throw Error(`No access key found locally for Account(${registrantId}) to sign transaction.`);
@@ -304,12 +302,11 @@ export class NameSky {
    */
   async oneClickMint({
     registrantId,
-    minterId,
     gasForRegister,
     gasForCleanState,
     gasForInit,
   }: MintOptions): Promise<NameSkyToken> {
-    await this.register({ registrantId, minterId, gasForRegister });
+    await this.register({ registrantId, gasForRegister });
     await this.setupController({ registrantId, gasForCleanState, gasForInit });
     return this.waitForMinting({ registrantId });
   }
@@ -366,7 +363,6 @@ export class NameSky {
 }
 
 export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
-  const network = resolveNetwork(options.network);
   const { signer, contracts } = options;
 
   let keyStore: keyStores.KeyStore;
@@ -377,22 +373,24 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
     keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
   }
 
-  const coreContract = new CoreContract(contracts?.coreContractId ?? getCoreContractId(network.networkId), signer);
+  const networkId = signer.network.networkId;
+
+  const coreContract = new CoreContract(contracts?.coreContractId ?? getDefaultCoreContractId(networkId), signer);
 
   const marketplaceContract = new MarketplaceContract(
-    contracts?.marketplaceContractId ?? getMarketplaceContractId(network.networkId),
+    contracts?.marketplaceContractId ?? getDefaultMarketplaceContractId(networkId),
     signer
   );
 
   const userSettingContract = new UserSettingContract(
-    contracts?.userSettingContractId ?? getUserSettingContractId(network.networkId),
+    contracts?.userSettingContractId ?? getDefaultUserSettingContractId(networkId),
     signer
   );
 
   const spaceshipContract = new SpaceshipContract(
-    contracts?.spaceshipContractId ?? getSpaceshipContractId(network.networkId),
+    contracts?.spaceshipContractId ?? getDefaultSpaceshipContractId(networkId),
     signer
   );
 
-  return new NameSky({ network, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
+  return new NameSky({ signer, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
 }

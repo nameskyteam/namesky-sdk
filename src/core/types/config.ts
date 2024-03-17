@@ -6,7 +6,7 @@ import { keyStores } from 'near-api-js';
 import { NameSkySigner } from '../NameSkySigner';
 
 export interface NameSkyComponent {
-  network: Network;
+  signer: NameSkySigner;
   keyStore: keyStores.KeyStore;
 
   coreContract: CoreContract;
@@ -20,10 +20,9 @@ export interface Network {
   nodeUrl: string;
 }
 
-export type NetworkId = 'mainnet' | 'testnet';
+export type NetworkId = 'mainnet' | 'testnet' | string;
 
 export interface NameSkyOptions {
-  network: Network | NetworkId;
   signer: NameSkySigner;
   contracts?: {
     coreContractId?: string;

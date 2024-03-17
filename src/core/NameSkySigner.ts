@@ -10,15 +10,17 @@ import {
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendRawOptions,
+  EmptyArgs,
 } from 'multi-transaction';
 import { FinalExecutionOutcome } from '@near-wallet-selector/core';
-import { EmptyArgs } from 'multi-transaction/src/types';
 import {
   MultiSendAccountCallOptions,
   MultiSendAccountCallRawOptions,
   MultiSendAccountSendOptions,
   MultiSendAccountSendRawOptions,
 } from 'multi-transaction/dist/core/MultiSendAccount';
+import { Network } from './types/config';
+import { JsonRpcProvider } from 'near-api-js/lib/providers/json-rpc-provider';
 
 export class NameSkySigner implements View, Call, MultiSend {
   multiSender: MultiSendAccount | MultiSendWalletSelector;
@@ -33,6 +35,20 @@ export class NameSkySigner implements View, Call, MultiSend {
 
   static fromWalletSelector(selector: MultiSendWalletSelector): NameSkySigner {
     return new NameSkySigner(selector);
+  }
+
+  get network(): Network {
+    if ('accountId' in this.multiSender) {
+      return {
+        networkId: this.multiSender.connection.networkId,
+        nodeUrl: (this.multiSender.connection.provider as JsonRpcProvider).connection.url,
+      };
+    } else {
+      return {
+        networkId: this.multiSender.options.network.networkId,
+        nodeUrl: this.multiSender.options.network.nodeUrl,
+      };
+    }
   }
 
   get accountId(): string {

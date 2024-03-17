@@ -15,10 +15,7 @@ import { initNameSky, MultiSendAccount, NameSkySigner } from 'namesky-sdk';
 ```ts
 const account = MultiSendAccount.new(near.connection, 'alice.near');
 
-const namesky = await initNameSky({
-  network: 'mainnet',
-  signer: NameSkySigner.fromAccount(account),
-});
+const namesky = await initNameSky({ signer: NameSkySigner.fromAccount(account) });
 ```
 
 For Browser
@@ -34,10 +31,7 @@ const selector = setupMultiSendWalletSelector({
   ],
 });
 
-const namesky = await initNameSky({
-  network: 'mainnet',
-  signer: NameSkySigner.fromWalletSelector(selector),
-});
+const namesky = await initNameSky({ signer: NameSkySigner.fromWalletSelector(selector) });
 ```
 
 ## Mint
@@ -50,12 +44,12 @@ await namesky.setRegistrantKey('star.near', KeyPair.fromString('ed25519:<private
 
 You can choose one click mint
 ```ts
-await namesky.oneClickMint({ registrantId: 'star.near', minterId: 'alice.near' });
+await namesky.oneClickMint({ registrantId: 'star.near' });
 ```
 
 or step by step mint
 ```ts
-await namesky.register({ registrantId: 'star.near', minterId: 'alice.near' });
+await namesky.register({ registrantId: 'star.near' });
 await namesky.setupController({ registrantId: 'star.near' });
 await namesky.waitForMinting({ registrantId: 'star.near' });
 ```
