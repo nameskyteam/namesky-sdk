@@ -36,25 +36,31 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
 * Update listing
     ```ts
     await namesky.marketplaceContract.updateListing({
-      nft_contract_id: namesky.coreContractId,
-      nft_token_id: 'apple.near',
-      new_price: Amount.parse(200, 'NEAR'),
+      args: {
+        nft_contract_id: namesky.coreContractId,
+        nft_token_id: 'apple.near',
+        new_price: Amount.parse(200, 'NEAR'),
+      },
     });
     ```
 
 * Remove listing
     ```ts
     await namesky.marketplaceContract.removeListing({
-      nft_contract_id: namesky.coreContractId,
-      nft_token_id: 'apple.near',
+      args: {
+        nft_contract_id: namesky.coreContractId,
+        nft_token_id: 'apple.near',
+      },
     });
     ```
 
 * Buy listing
     ```ts
     await namesky.marketplaceContract.buyListing({
-      nft_contract_id: namesky.coreContractId,
-      nft_token_id: 'banana.near',
+      args: {
+        nft_contract_id: namesky.coreContractId,
+        nft_token_id: 'apple.near',
+      },
     });
     ```
 
@@ -62,34 +68,42 @@ await namesky.mint({ registrantId, minterId: 'alice.near' });
 * Create Offering
     ```ts
     await namesky.marketplaceContract.createOffering({
-      nft_contract_id: namesky.coreContractId,
-      nft_token_id: 'banana.near',
-      price: Amount.parse(100, 'NEAR'),
+      args: {
+        nft_contract_id: namesky.coreContractId,
+        nft_token_id: 'banana.near',
+        price: Amount.parse(100, 'NEAR'),
+      },
     });
     ```
 
 * Update Offering
     ```ts
     await namesky.marketplaceContract.updateOffering({
-      nft_contract_id: namesky.coreContractId,
-      nft_token_id: 'banana.near',
-      new_price: Amount.parse(200, 'NEAR'),
+      args: {
+        nft_contract_id: namesky.coreContractId,
+        nft_token_id: 'banana.near',
+        new_price: Amount.parse(200, 'NEAR'),
+      },
     });
     ```
 
 * Remove Offering
     ```ts
     await namesky.marketplaceContract.removeOffering({
-      nft_contract_id: namesky.coreContractId,
-      nft_token_id: 'banana.near',
+      args: {
+        nft_contract_id: namesky.coreContractId,
+        nft_token_id: 'banana.near',
+      },
     });
     ```
 
 * Accept Offering
     ```ts
     await namesky.marketplaceContract.acceptOffering({
-      buyer_id: 'bob.near',
-      nft_contract_id: namesky.coreContractId,
-      nft_token_id: 'apple.near',
+      args: {
+        buyer_id: 'bob.near',
+        nft_contract_id: namesky.coreContractId,
+        nft_token_id: 'apple.near',
+      },
     });
     ```
