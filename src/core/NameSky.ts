@@ -19,7 +19,6 @@ import { CleanStateArgs, InitArgs } from './types/args';
 import { MintOptions, NftRegisterOptions, SetupControllerOptions, WaitForMintingOptions } from './types/call-options';
 import { GetControllerOwnerIdOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
-import { base58CodeHash } from '../utils';
 import {
   Amount,
   BlockQuery,
@@ -35,6 +34,7 @@ import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkySigner } from './NameSkySigner';
+import { State, StateList } from './types/common';
 
 export class NameSky {
   private near: Near;
@@ -204,44 +204,30 @@ export class NameSky {
    * Setup NameSky NFT controller. (Step 2/3)
    */
   async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
-    //  we don't need to check conditions at the same block in this method
-    const account = this.registrant(registrantId);
+    const {
+      blockQuery,
+      isCodeHashCorrect,
+      isStateCleaned,
+      isAccessKeysDeleted,
+      isControllerOwnerIdCorrect,
+      state,
+      accessKeys,
+    } = await this.getNftAccountSafety(registrantId);
 
-    // code hash
-    const codeBase64 = await this.coreContract.getLatestControllerCode({});
-    const code = Buffer.from(codeBase64, 'base64');
-    const accountView = await account.state();
-    const accountCodeHash = accountView.code_hash;
-    const codeHash = base58CodeHash(code);
-
-    // state
-    const state = await account.viewState('');
-
-    // access keys
-    const accessKeys = await account.getAccessKeys();
-
-    const isCodeHashCorrect = accountCodeHash === codeHash;
-    const isStateCleaned = state.length === 1;
-    const isAccessKeysDeleted = accessKeys.length === 0;
-
-    if (isCodeHashCorrect && isStateCleaned && isAccessKeysDeleted) {
-      // controller owner id
-      const controllerOwnerId = await this.getControllerOwnerId({ accountId: registrantId });
-      const isControllerOwnerIdCorrect = controllerOwnerId === this.coreContract.contractId;
-      if (isControllerOwnerIdCorrect) {
-        // skip
-        return;
-      }
+    if (isCodeHashCorrect && isStateCleaned && isAccessKeysDeleted && isControllerOwnerIdCorrect) {
+      return;
     }
+
+    const code = await this.coreContract.getLatestControllerCode({ blockQuery });
 
     const mTx = MultiTransaction.batch(registrantId);
 
     // deploy controller contract
-    mTx.deployContract(code);
+    mTx.deployContract(Buffer.from(code, 'base64'));
 
     // clean account state if needed
     if (state.length !== 0) {
-      const stateKeys = state.map(({ key }) => key);
+      const stateKeys = state.map(({ key }) => Buffer.from(key, 'base64'));
       mTx.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
         args: stateKeys,
@@ -324,7 +310,7 @@ export class NameSky {
 
     const blockQuery: BlockQuery = { blockId: block.header.height };
 
-    const [codeHash, controllerCodeViews, state, { keys: accessKeys }] = await Promise.all([
+    const [codeHash, controllerCodeViews, { values: state }, { keys: accessKeys }] = await Promise.all([
       this.provider
         .query<AccountView>({
           ...blockQuery,
@@ -335,7 +321,12 @@ export class NameSky {
 
       this.coreContract.getControllerCodeViews({ blockQuery }),
 
-      this.registrant(accountId).viewState('', blockQuery),
+      this.provider.query<StateList>({
+        ...blockQuery,
+        request_type: 'view_state',
+        account_id: accountId,
+        prefix_base64: '',
+      }),
 
       this.provider.query<AccessKeyList>({
         ...blockQuery,
@@ -349,15 +340,27 @@ export class NameSky {
     const isAccessKeysDeleted = accessKeys.length === 0;
     let isControllerOwnerIdCorrect = false;
 
+    let controllerOwnerId: string | undefined;
+
     if (isCodeHashCorrect) {
-      const controllerOwnerId = await this.getControllerOwnerId({
+      controllerOwnerId = await this.getControllerOwnerId({
         accountId,
         blockQuery,
       });
-      isControllerOwnerIdCorrect = controllerOwnerId === this.coreContract.contractId;
+      isControllerOwnerIdCorrect = controllerOwnerId === this.coreContractId;
     }
 
-    return { isCodeHashCorrect, isStateCleaned, isAccessKeysDeleted, isControllerOwnerIdCorrect };
+    return {
+      blockQuery,
+      isCodeHashCorrect,
+      isStateCleaned,
+      isAccessKeysDeleted,
+      isControllerOwnerIdCorrect,
+      codeHash,
+      state,
+      accessKeys,
+      controllerOwnerId,
+    };
   }
 
   private async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string> {

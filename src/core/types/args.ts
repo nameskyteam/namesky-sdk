@@ -1,10 +1,5 @@
 import { NftTokenArgs, NftTokensArgs, NftTokensForOwnerArgs } from 'multi-transaction';
-
-export type UpdateWrapper<T> =
-  | {
-      UpdateSome: T;
-    }
-  | 'UpdateNone';
+import { UpdateWrapper } from './common';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 

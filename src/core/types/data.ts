@@ -1,12 +1,19 @@
-import { Token } from 'multi-transaction';
+import { BlockQuery, Token } from 'multi-transaction';
+import { State } from './common';
+import { AccessKeyInfoView } from '@near-js/types';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 
 export interface NameSkyNftSafety {
+  blockQuery: BlockQuery;
   isCodeHashCorrect: boolean;
-  isControllerOwnerIdCorrect: boolean;
   isStateCleaned: boolean;
   isAccessKeysDeleted: boolean;
+  isControllerOwnerIdCorrect: boolean;
+  codeHash: string;
+  state: State[];
+  accessKeys: AccessKeyInfoView[];
+  controllerOwnerId?: string;
 }
 
 // ---------------------------------------------- Core ---------------------------------------------------------
