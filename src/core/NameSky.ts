@@ -289,7 +289,7 @@ export class NameSky {
         }
 
         console.log(`NameSkyNFT(${registrantId}) is on minting...`);
-        await sleep(1000);
+        await sleep(5000);
       }
     }, timeout);
   }
