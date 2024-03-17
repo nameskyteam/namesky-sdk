@@ -21,7 +21,7 @@ export class SpaceshipContract extends BaseContract {
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async get_spaceship({ args, blockQuery }: GetSpaceshipOptions): Promise<Token | undefined> {
+  async getSpaceship({ args, blockQuery }: GetSpaceshipOptions): Promise<Token | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_spaceship',
@@ -30,7 +30,7 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  async get_spaceship_engine({ args, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
+  async getSpaceshipEngine({ args, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_spaceship_engine',
@@ -39,7 +39,7 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  async get_rewards_for_account({ args, blockQuery }: GetRewardsForAccountOptions): Promise<string> {
+  async getRewardsForAccount({ args, blockQuery }: GetRewardsForAccountOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_rewards_for_account',
@@ -48,7 +48,7 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  async get_total_added_fuel_num({ blockQuery }: GetTotalAddedFuelNumOptions): Promise<string> {
+  async getTotalAddedFuelNum({ blockQuery }: GetTotalAddedFuelNumOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_total_added_fuel_num',

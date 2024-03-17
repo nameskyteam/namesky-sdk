@@ -37,7 +37,7 @@ export class CoreContract extends BaseContract {
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async nft_get_minter_id({ args, blockQuery }: NftGetMinterIdOptions): Promise<string | undefined> {
+  async nftGetMinterId({ args, blockQuery }: NftGetMinterIdOptions): Promise<string | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_get_minter_id',
@@ -46,7 +46,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async nft_registrant_ids_of({ args, blockQuery }: NftRegistrantIdsOfOptions): Promise<string[]> {
+  async nftRegistrantIdsOf({ args, blockQuery }: NftRegistrantIdsOfOptions): Promise<string[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_registrant_ids_of',
@@ -55,7 +55,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async nft_state({ args, blockQuery }: NftStateOptions): Promise<TokenState | undefined> {
+  async nftState({ args, blockQuery }: NftStateOptions): Promise<TokenState | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_state',
@@ -64,7 +64,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async nft_namesky_token({ args, blockQuery }: NftNameSkyTokenOptions): Promise<NameSkyToken | undefined> {
+  async nftNameSkyToken({ args, blockQuery }: NftNameSkyTokenOptions): Promise<NameSkyToken | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_namesky_token',
@@ -73,7 +73,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async nft_namesky_tokens({ args, blockQuery }: NftNameSkyTokensOptions): Promise<NameSkyToken[]> {
+  async nftNameSkyTokens({ args, blockQuery }: NftNameSkyTokensOptions): Promise<NameSkyToken[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_namesky_tokens',
@@ -82,7 +82,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async nft_namesky_tokens_for_owner({ args, blockQuery }: NftNameSkyTokensForOwnerOptions): Promise<NameSkyToken[]> {
+  async nftNameSkyTokensForOwner({ args, blockQuery }: NftNameSkyTokensForOwnerOptions): Promise<NameSkyToken[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_namesky_tokens_for_owner',
@@ -91,7 +91,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async nft_supply_for_owner({ args, blockQuery }: NftSupplyForOwnerOptions): Promise<string> {
+  async nftSupplyForOwner({ args, blockQuery }: NftSupplyForOwnerOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_supply_for_owner',
@@ -100,7 +100,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async nft_total_supply({ blockQuery }: NftTotalSupplyOptions): Promise<string> {
+  async nftTotalSupply({ blockQuery }: NftTotalSupplyOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'nft_total_supply',
@@ -108,7 +108,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async get_latest_controller_code({ blockQuery }: GetLatestControllerCodeOptions): Promise<string> {
+  async getLatestControllerCode({ blockQuery }: GetLatestControllerCodeOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_latest_controller_code',
@@ -116,7 +116,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async get_latest_controller_code_hash({ blockQuery }: GetLatestControllerCodeHashOptions): Promise<string> {
+  async getLatestControllerCodeHash({ blockQuery }: GetLatestControllerCodeHashOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_latest_controller_code_hash',
@@ -124,7 +124,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async get_controller_code_views({ blockQuery }: GetControllerCodeViewsOptions): Promise<ControllerCodeView[]> {
+  async getControllerCodeViews({ blockQuery }: GetControllerCodeViewsOptions): Promise<ControllerCodeView[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_controller_code_views',
@@ -132,7 +132,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async get_mint_fee({ blockQuery }: GetMintFeeOptions): Promise<string> {
+  async getMintFee({ blockQuery }: GetMintFeeOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_mint_fee',
@@ -140,7 +140,7 @@ export class CoreContract extends BaseContract {
     });
   }
 
-  async get_royalty({ blockQuery }: GetRoyaltyOptions): Promise<number> {
+  async getRoyalty({ blockQuery }: GetRoyaltyOptions): Promise<number> {
     const { royalty, divisor } = await this.signer.view<RoyaltyView>({
       contractId: this.contractId,
       methodName: 'get_royalty',
@@ -150,7 +150,7 @@ export class CoreContract extends BaseContract {
     return royalty / divisor;
   }
 
-  async get_mint_num({ args, blockQuery }: GetMintNumOptions): Promise<string> {
+  async getMintNum({ args, blockQuery }: GetMintNumOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_mint_num',

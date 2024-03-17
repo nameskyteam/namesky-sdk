@@ -184,8 +184,8 @@ export class NameSky {
    */
   async register({ registrantId, gasForRegister }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
-      this.coreContract.get_mint_fee({}),
-      this.coreContract.nft_get_minter_id({ args: { registrant_id: registrantId } }),
+      this.coreContract.getMintFee({}),
+      this.coreContract.nftGetMinterId({ args: { registrant_id: registrantId } }),
     ]);
 
     const mTx = MultiTransaction.batch(this.coreContractId).functionCall({
@@ -208,7 +208,7 @@ export class NameSky {
     const account = this.registrant(registrantId);
 
     // code hash
-    const codeBase64 = await this.coreContract.get_latest_controller_code({});
+    const codeBase64 = await this.coreContract.getLatestControllerCode({});
     const code = Buffer.from(codeBase64, 'base64');
     const accountView = await account.state();
     const accountCodeHash = accountView.code_hash;
@@ -287,7 +287,7 @@ export class NameSky {
   async waitForMinting({ registrantId, timeout }: WaitForMintingOptions): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
-        const token = await this.coreContract.nft_namesky_token({
+        const token = await this.coreContract.nftNameSkyToken({
           args: {
             token_id: registrantId,
           },
@@ -333,7 +333,7 @@ export class NameSky {
         })
         .then((accountView) => accountView.code_hash),
 
-      this.coreContract.get_controller_code_views({ blockQuery }),
+      this.coreContract.getControllerCodeViews({ blockQuery }),
 
       this.registrant(accountId).viewState('', blockQuery),
 

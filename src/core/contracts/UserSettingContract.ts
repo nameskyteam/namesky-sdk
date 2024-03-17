@@ -24,7 +24,7 @@ export class UserSettingContract extends BaseContract {
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async get_user_likes({ args, blockQuery }: GetUserLikesOptions): Promise<string[]> {
+  async getUserLikes({ args, blockQuery }: GetUserLikesOptions): Promise<string[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_user_likes',
@@ -33,7 +33,7 @@ export class UserSettingContract extends BaseContract {
     });
   }
 
-  async get_user_watchlist({ args, blockQuery }: GetUserWatchListOptions): Promise<string[]> {
+  async getUserWatchlist({ args, blockQuery }: GetUserWatchListOptions): Promise<string[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_user_watchlist',
@@ -42,7 +42,7 @@ export class UserSettingContract extends BaseContract {
     });
   }
 
-  async get_user_last_read_notification_time({
+  async getUserLastReadNotificationTime({
     args,
     blockQuery,
   }: GetUserLastReadNotificationTimeOptions): Promise<string[]> {

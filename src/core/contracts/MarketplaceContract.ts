@@ -42,7 +42,7 @@ export class MarketplaceContract extends BaseContract {
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async get_account_view_of({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView | undefined> {
+  async getAccountViewOf({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_account_view_of',
@@ -51,7 +51,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_offering_view({ args, blockQuery }: GetOfferingViewOptions): Promise<OfferingView | undefined> {
+  async getOfferingView({ args, blockQuery }: GetOfferingViewOptions): Promise<OfferingView | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_view',
@@ -60,7 +60,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_offering_views({ args, blockQuery }: GetOfferingViewsOptions): Promise<OfferingView[]> {
+  async getOfferingViews({ args, blockQuery }: GetOfferingViewsOptions): Promise<OfferingView[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_views',
@@ -69,7 +69,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_offering_views_of({ args, blockQuery }: GetOfferingViewsOfOptions): Promise<OfferingView[]> {
+  async getOfferingViewsOf({ args, blockQuery }: GetOfferingViewsOfOptions): Promise<OfferingView[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_views_of',
@@ -78,7 +78,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_nft_offering_views_of({ args, blockQuery }: GetNftOfferingViewsOfOptions): Promise<OfferingView[]> {
+  async getNftOfferingViewsOf({ args, blockQuery }: GetNftOfferingViewsOfOptions): Promise<OfferingView[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_nft_offering_views_of',
@@ -87,7 +87,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_offering_unique_id({ args, blockQuery }: GetOfferingUniqueIdOptions): Promise<string> {
+  async getOfferingUniqueId({ args, blockQuery }: GetOfferingUniqueIdOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_unique_id',
@@ -96,7 +96,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_listing_view({ args, blockQuery }: GetListingViewOptions): Promise<ListingView | undefined> {
+  async getListingView({ args, blockQuery }: GetListingViewOptions): Promise<ListingView | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_view',
@@ -105,7 +105,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_listing_views({ args, blockQuery }: GetListingViewsOptions): Promise<ListingView[]> {
+  async getListingViews({ args, blockQuery }: GetListingViewsOptions): Promise<ListingView[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_views',
@@ -114,7 +114,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_listing_views_of({ args, blockQuery }: GetListingViewsOfOptions): Promise<ListingView[]> {
+  async getListingViewsOf({ args, blockQuery }: GetListingViewsOfOptions): Promise<ListingView[]> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_views_of',
@@ -123,7 +123,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_listing_unique_id({ args, blockQuery }: GetListingUniqueIdOptions): Promise<string> {
+  async getListingUniqueId({ args, blockQuery }: GetListingUniqueIdOptions): Promise<string> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_unique_id',
@@ -132,7 +132,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_nft_approval({ args, blockQuery }: GetNftApprovalOptions): Promise<Approval | undefined> {
+  async getNftApproval({ args, blockQuery }: GetNftApprovalOptions): Promise<Approval | undefined> {
     return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_nft_approval',
@@ -141,7 +141,7 @@ export class MarketplaceContract extends BaseContract {
     });
   }
 
-  async get_trading_fee_rate({ blockQuery }: GetTradingFeeRateOptions): Promise<TradingFeeRate> {
+  async getTradingFeeRate({ blockQuery }: GetTradingFeeRateOptions): Promise<TradingFeeRate> {
     const { listing_trading_fee, offering_trading_fee } = await this.signer.view<MarketplaceConfig>({
       contractId: this.contractId,
       methodName: 'get_config',
@@ -195,7 +195,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async buyListing({ args, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
-    const listing = await this.get_listing_view({ args });
+    const listing = await this.getListingView({ args });
     if (!listing) {
       throw Error('Listing not found');
     }
@@ -304,7 +304,7 @@ export class MarketplaceContract extends BaseContract {
         gas,
       });
     } else {
-      const accountView = await this.get_account_view_of({
+      const accountView = await this.getAccountViewOf({
         args: {
           account_id: this.signer.accountId,
         },
@@ -346,7 +346,7 @@ export class MarketplaceContract extends BaseContract {
     if (new_price) {
       // if price need to be updated
 
-      const offering = await this.get_offering_view({
+      const offering = await this.getOfferingView({
         args: {
           buyer_id: this.signer.accountId,
           nft_contract_id,
