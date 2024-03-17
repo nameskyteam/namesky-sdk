@@ -43,7 +43,7 @@ export interface WaitForMintingOptions {
   timeout?: number;
 }
 
-export interface MintOptions {
+export interface OneClickMintOptions {
   registrantId: string;
   gasForRegister?: string;
   gasForCleanState?: string;

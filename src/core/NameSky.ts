@@ -16,7 +16,12 @@ import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs, NftRegisterArgs } from './types/args';
-import { MintOptions, NftRegisterOptions, SetupControllerOptions, WaitForMintingOptions } from './types/change-options';
+import {
+  OneClickMintOptions,
+  NftRegisterOptions,
+  SetupControllerOptions,
+  WaitForMintingOptions,
+} from './types/change-options';
 import { GetControllerOwnerIdOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import {
@@ -299,7 +304,7 @@ export class NameSky {
     gasForRegister,
     gasForCleanState,
     gasForInit,
-  }: MintOptions): Promise<NameSkyToken> {
+  }: OneClickMintOptions): Promise<NameSkyToken> {
     await this.register({ registrantId, gasForRegister });
     await this.setupController({ registrantId, gasForCleanState, gasForInit });
     return this.waitForMinting({ registrantId });
