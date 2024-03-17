@@ -4,7 +4,12 @@ Interact with NameSky contracts
 ## Init
 For Node
 ```ts
+import { initNameSky, MultiSendAccount, NameSkySigner } from 'namesky-sdk';
+```
+
+```ts
 const account = MultiSendAccount.new(near.connection, 'alice.near');
+
 const namesky = await initNameSky({
   network: 'mainnet',
   signer: NameSkySigner.fromAccount(account),
@@ -13,11 +18,15 @@ const namesky = await initNameSky({
 
 For Browser
 ```ts
+import { initNameSky, setupMultiSendWalletSelector, NameSkySigner } from 'namesky-sdk';
+```
+
+```ts
 const selector = setupMultiSendWalletSelector({
   network: 'mainnet',
   modules: [
     /* wallet modules */
-  ]
+  ],
 });
 
 const namesky = await initNameSky({
@@ -47,6 +56,10 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
 ```
 
 ## Mange Listing
+```ts
+import { Amount } from 'namesky-sdk';
+```
+
 * Create listing
     ```ts
     await namesky.marketplaceContract.createListing({
@@ -54,7 +67,7 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
         nft_contract_id: namesky.coreContractId,
         nft_token_id: 'star.near',
         price: Amount.parse(100, 'NEAR'),
-      }
+      },
     });
     ```
 
@@ -90,6 +103,10 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
     ```
 
 ## Mange Offering
+```ts
+import { Amount } from 'namesky-sdk';
+```
+
 * Create Offering
     ```ts
     await namesky.marketplaceContract.createOffering({
