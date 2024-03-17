@@ -1,6 +1,11 @@
 # NameSky SDK
 Interact with NameSky contracts
 
+## Install
+```shell
+yarn add namesky-sdk
+```
+
 ## Init
 For Node
 ```ts
