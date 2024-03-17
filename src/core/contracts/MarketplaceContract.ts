@@ -13,7 +13,7 @@ import {
   RemoveOfferingOptions,
   UpdateListingOptions,
   UpdateOfferingOptions,
-} from '../types/call-options';
+} from '../types/change-options';
 import {
   GetNftApprovalOptions,
   GetNftOfferingViewsOfOptions,

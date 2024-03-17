@@ -1,6 +1,6 @@
 import { BaseContract } from './BaseContract';
 import { MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
-import { AddFuelOptions, DistributeAndClaimRewardsOptions, MintSpaceshipOptions } from '../types/call-options';
+import { AddFuelOptions, DistributeAndClaimRewardsOptions, MintSpaceshipOptions } from '../types/change-options';
 import {
   GetRewardsForAccountOptions,
   GetSpaceshipEngineOptions,

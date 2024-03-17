@@ -6,7 +6,7 @@ import {
   UnlikeOptions,
   UnwatchOptions,
   WatchOptions,
-} from '../types/call-options';
+} from '../types/change-options';
 import {
   GetUserLastReadNotificationTimeOptions,
   GetUserLikesOptions,

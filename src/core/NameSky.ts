@@ -16,7 +16,7 @@ import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs } from './types/args';
-import { MintOptions, NftRegisterOptions, SetupControllerOptions, WaitForMintingOptions } from './types/call-options';
+import { MintOptions, NftRegisterOptions, SetupControllerOptions, WaitForMintingOptions } from './types/change-options';
 import { GetControllerOwnerIdOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import {

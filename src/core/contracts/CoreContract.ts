@@ -7,7 +7,7 @@ import {
   NftRevokeOptions,
   NftTransferOptions,
   NftUnregisterOptions,
-} from '../types/call-options';
+} from '../types/change-options';
 import {
   GetControllerCodeViewsOptions,
   GetLatestControllerCodeHashOptions,
