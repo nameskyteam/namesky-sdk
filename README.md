@@ -55,7 +55,7 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
 ```
 
 ## Mange Listing
-* Create listing
+* Create Listing
     ```ts
     import { Amount } from 'namesky-sdk';
     ```
@@ -70,7 +70,7 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
     });
     ```
 
-* Update listing
+* Update Listing
     ```ts
     import { Amount } from 'namesky-sdk';
     ```
@@ -85,7 +85,7 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
     });
     ```
 
-* Remove listing
+* Remove Listing
     ```ts
     await namesky.marketplaceContract.removeListing({
       args: {
@@ -95,7 +95,7 @@ await namesky.waitForMinting({ registrantId: 'star.near' });
     });
     ```
 
-* Buy listing
+* Buy Listing
     ```ts
     await namesky.marketplaceContract.buyListing({
       args: {
