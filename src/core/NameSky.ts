@@ -15,9 +15,9 @@ import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519, PublicKey } from 'near-api-js/lib/utils';
 import { REQUEST_ACCESS_PENDING_KEY_PREFIX } from '../utils';
-import { NameSkyComponent, NameSkyConfig, Network, NetworkId } from './types/config';
+import { NameSkyComponent, NameSkyOptions, Network, NetworkId } from './types/config';
 import { CleanStateArgs, InitArgs } from './types/args';
-import { GetControllerOwnerIdOptions, NftRegisterOptions, SetupControllerOptions } from './types/options';
+import { GetControllerOwnerIdOptions, MintOptions, NftRegisterOptions, SetupControllerOptions } from './types/options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import { base58CodeHash } from '../utils';
 import {
@@ -34,10 +34,9 @@ import { NameSkyNftSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
-import { NameSkyRunner } from './NameSkyRunner';
 
 export class NameSky {
-  network: Network;
+  private network: Network;
   private near: Near;
   private keyStore: keyStores.KeyStore;
 
@@ -103,6 +102,9 @@ export class NameSky {
     return MultiSendAccount.new(this.near.connection, accountId);
   }
 
+  /**
+   * Request Full Access Key via web wallet (e.g. MyNearWallet)
+   */
   async requestFullAccess(webWalletBaseUrl: string, successUrl?: string, failureUrl?: string): Promise<never> {
     if (!isBrowser()) {
       throw Error('requestFullAccess only available in browser environment');
@@ -144,18 +146,30 @@ export class NameSky {
     await this.keyStore.removeKey(this.networkId, pendingAccountId);
   }
 
+  /**
+   * Get registrant key
+   */
   async getRegistrantKey(registrantId: string): Promise<KeyPair> {
     return this.keyStore.getKey(this.networkId, registrantId);
   }
 
+  /**
+   * Set registrant key
+   */
   async setRegistrantKey(registrantId: string, keyPair: KeyPair) {
     await this.keyStore.setKey(this.networkId, registrantId, keyPair);
   }
 
+  /**
+   * Remove registrant key
+   */
   async removeRegistrantKey(registrantId: string) {
     await this.keyStore.removeKey(this.networkId, registrantId);
   }
 
+  /**
+   * Register NameSky NFT, this is the 1st step of mint
+   */
   async register({ registrantId, minterId, gas }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.get_mint_fee({}),
@@ -175,6 +189,9 @@ export class NameSky {
     await registrant.send(mTx);
   }
 
+  /**
+   * Setup NameSky NFT controller, this is the 2nd step of mint
+   */
   async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
     //  we don't need to check conditions at the same block in this method
     const account = this.account(registrantId);
@@ -254,6 +271,9 @@ export class NameSky {
     await registrant.send(mTx);
   }
 
+  /**
+   * Wait for minting, this is the 3rd step of mint
+   */
   async waitForMinting(registrantId: string, timeout?: number): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
@@ -272,6 +292,32 @@ export class NameSky {
         await sleep(1000);
       }
     }, timeout);
+  }
+
+  /**
+   * Mint NameSky NFT, this is one click wrap of `register`, `setupController`, `waitForMinting`
+   * @param options
+   */
+  async mint({
+    registrantId,
+    minterId,
+    gasForRegister,
+    gasForCleanState,
+    gasForInit,
+  }: MintOptions): Promise<NameSkyToken> {
+    await this.register({
+      registrantId,
+      minterId,
+      gas: gasForRegister,
+    });
+
+    await this.setupController({
+      registrantId,
+      gasForCleanState,
+      gasForInit,
+    });
+
+    return this.waitForMinting(registrantId);
   }
 
   async getNftAccountSafety(accountId: string): Promise<NameSkyNftSafety> {
@@ -325,33 +371,33 @@ export class NameSky {
   }
 }
 
-export async function initNameSky(config: NameSkyConfig): Promise<NameSky> {
-  const network = resolveNetwork(config.network);
-  const { signer, contracts } = config;
+export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
+  const network = resolveNetwork(options.network);
+  const { signer, contracts } = options;
 
-  let runner: NameSkyRunner;
   let keyStore: keyStores.KeyStore;
 
   if ('accountId' in signer) {
-    runner = await NameSkyRunner.fromAccount(signer);
     keyStore = new keyStores.InMemoryKeyStore();
   } else {
-    runner = await NameSkyRunner.fromWalletSelector(signer);
     keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
   }
 
-  const coreContract = new CoreContract(contracts?.coreContractId ?? getCoreContractId(network.networkId), runner);
+  const coreContract = new CoreContract(contracts?.coreContractId ?? getCoreContractId(network.networkId), signer);
+
   const marketplaceContract = new MarketplaceContract(
     contracts?.marketplaceContractId ?? getMarketplaceContractId(network.networkId),
-    runner
+    signer
   );
+
   const userSettingContract = new UserSettingContract(
     contracts?.userSettingContractId ?? getUserSettingContractId(network.networkId),
-    runner
+    signer
   );
+
   const spaceshipContract = new SpaceshipContract(
     contracts?.spaceshipContractId ?? getSpaceshipContractId(network.networkId),
-    runner
+    signer
   );
 
   return new NameSky({ network, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });

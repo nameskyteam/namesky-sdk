@@ -2,8 +2,8 @@ import { CoreContract } from '../contracts';
 import { MarketplaceContract } from '../contracts';
 import { UserSettingContract } from '../contracts/UserSettingContract';
 import { SpaceshipContract } from '../contracts/SpaceshipContract';
-import { Account, keyStores } from 'near-api-js';
-import { WalletSelector } from '@near-wallet-selector/core';
+import { keyStores } from 'near-api-js';
+import { NameSkySigner } from '../NameSkySigner';
 
 export interface NameSkyComponent {
   network: Network;
@@ -22,9 +22,9 @@ export interface Network {
 
 export type NetworkId = 'mainnet' | 'testnet';
 
-export interface NameSkyConfig {
+export interface NameSkyOptions {
   network: Network | NetworkId;
-  signer: Account | WalletSelector;
+  signer: NameSkySigner;
   contracts?: {
     coreContractId?: string;
     marketplaceContractId?: string;

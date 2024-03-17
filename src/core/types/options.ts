@@ -63,6 +63,14 @@ export interface SetupControllerOptions {
   gasForInit?: string;
 }
 
+export interface MintOptions {
+  registrantId: string;
+  minterId: string;
+  gasForRegister?: string;
+  gasForCleanState?: string;
+  gasForInit?: string;
+}
+
 // ---------------------------------------------- Core ---------------------------------------------------------
 export interface NftUnregisterOptions extends ChangeFunctionExtraOptions {
   args: NftUnregisterArgs;

@@ -2,7 +2,6 @@ import {
   MultiSend,
   View,
   MultiSendAccount,
-  setupMultiSendWalletSelector,
   MultiTransaction,
   SendOptions,
   SendRawOptions,
@@ -16,14 +15,13 @@ import {
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendRawOptions,
 } from 'multi-transaction';
-import { Account } from 'near-api-js';
-import { FinalExecutionOutcome, WalletSelector } from '@near-wallet-selector/core';
+import { FinalExecutionOutcome } from '@near-wallet-selector/core';
 import { EmptyArgs } from 'multi-transaction/src/types';
 
-export class NameSkyRunner implements View, Call, MultiSend {
+export class NameSkySigner implements View, Call, MultiSend {
   signer: MultiSendAccount | MultiSendWalletSelector;
 
-  private constructor(signer: MultiSendAccount | MultiSendWalletSelector) {
+  constructor(signer: MultiSendAccount | MultiSendWalletSelector) {
     this.signer = signer;
   }
 
@@ -67,13 +65,5 @@ export class NameSkyRunner implements View, Call, MultiSend {
     options?: SendRawOptions | MultiSendWalletSelectorSendRawOptions
   ): Promise<FinalExecutionOutcome[]> {
     return this.signer.sendRaw(mTx, options);
-  }
-
-  static async fromAccount(account: Account): Promise<NameSkyRunner> {
-    return new NameSkyRunner(MultiSendAccount.fromAccount(account));
-  }
-
-  static async fromWalletSelector(selector: WalletSelector): Promise<NameSkyRunner> {
-    return new NameSkyRunner(await setupMultiSendWalletSelector({ selector }));
   }
 }

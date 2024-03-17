@@ -1,4 +1,4 @@
 export * from './NameSky';
-export * from './NameSkyRunner';
+export * from './NameSkySigner';
 export * from './types/config';
 export * from './contracts';
