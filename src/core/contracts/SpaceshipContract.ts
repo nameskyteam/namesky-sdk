@@ -1,4 +1,4 @@
-import { Contract } from '../../utils/Contract';
+import { BaseContract } from './BaseContract';
 import { MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
 import {
   AddFuelOptions,
@@ -11,12 +11,17 @@ import {
 } from '../types/options';
 import { SpaceshipEngine } from '../types/data';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
+import { NameSkySigner } from '../NameSkySigner';
 
-export class SpaceshipContract extends Contract {
+export class SpaceshipContract extends BaseContract {
+  connect(signer: NameSkySigner): SpaceshipContract {
+    return new SpaceshipContract(this.contractId, signer);
+  }
+
   // ------------------------------------------------- View -------------------------------------------------------
 
   async get_spaceship({ args, blockQuery }: GetSpaceshipOptions): Promise<Token | undefined> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_spaceship',
       args,
@@ -25,7 +30,7 @@ export class SpaceshipContract extends Contract {
   }
 
   async get_spaceship_engine({ args, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_spaceship_engine',
       args,
@@ -34,7 +39,7 @@ export class SpaceshipContract extends Contract {
   }
 
   async get_rewards_for_account({ args, blockQuery }: GetRewardsForAccountOptions): Promise<string> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_rewards_for_account',
       args,
@@ -43,7 +48,7 @@ export class SpaceshipContract extends Contract {
   }
 
   async get_total_added_fuel_num({ blockQuery }: GetTotalAddedFuelNumOptions): Promise<string> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_total_added_fuel_num',
       blockQuery,
@@ -59,7 +64,7 @@ export class SpaceshipContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
   async addFuel({ args, gas, callbackUrl }: AddFuelOptions) {
@@ -69,7 +74,7 @@ export class SpaceshipContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
   async distributeAndClaimRewards({
@@ -80,21 +85,16 @@ export class SpaceshipContract extends Contract {
   }: DistributeAndClaimRewardsOptions): Promise<string> {
     const mTx = MultiTransaction.new();
 
-    const accountId = this.selector.getActiveAccountId();
-    if (!accountId) {
-      throw Error(`Active account id not found`);
-    }
-
-    const storageBalance = await this.selector.view<StorageBalance | undefined>({
+    const storageBalance = await this.signer.view<StorageBalance | undefined>({
       contractId: skyTokenId,
       methodName: 'storage_balance_of',
       args: {
-        account_id: accountId,
+        account_id: this.signer.accountId,
       },
     });
 
     if (!storageBalance) {
-      const storageBalanceBounds = await this.selector.view<StorageBalanceBounds>({
+      const storageBalanceBounds = await this.signer.view<StorageBalanceBounds>({
         contractId: skyTokenId,
         methodName: 'storage_balance_bounds',
       });
@@ -110,7 +110,7 @@ export class SpaceshipContract extends Contract {
         methodName: 'distribute_rewards',
         gas: gasForDistribute,
         args: {
-          account_id: accountId,
+          account_id: this.signer.accountId,
         },
       })
       .functionCall({
@@ -118,6 +118,6 @@ export class SpaceshipContract extends Contract {
         gas: gasForClaim,
       });
 
-    return this.selector.send(mTx, { callbackUrl });
+    return this.signer.send(mTx, { callbackUrl });
   }
 }

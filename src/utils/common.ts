@@ -1,5 +1,6 @@
 import { Amount, BigNumber } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
+import { Network, NetworkId } from '../core';
 
 export const REQUEST_ACCESS_PENDING_KEY_PREFIX = 'request_access_pending_key:';
 export const REGISTRANT_KEYSTORE_PREFIX = 'registrant:keystore:';
@@ -11,15 +12,27 @@ export const ACTION_MAX_NUM = 100;
 export const MAX_TIMEOUT = 2147483647;
 export const DAY_MS = 86400 * 1000;
 
-export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {
-  const result: string[] = [];
-  for (const publicKey of publicKeys) {
-    if (publicKey !== registrantPublicKey) {
-      result.push(publicKey);
-    }
+export function isBrowser(): boolean {
+  return typeof window !== 'undefined';
+}
+
+export function resolveNetwork(network: Network | NetworkId): Network {
+  if (typeof network === 'string') {
+    network = {
+      networkId: network,
+      nodeUrl: getDefaultNodeUrl(network),
+    };
   }
-  result.push(registrantPublicKey);
-  return result;
+  return network;
+}
+
+export function getDefaultNodeUrl(networkId: NetworkId): string {
+  switch (networkId) {
+    case 'mainnet':
+      return 'https://archival-rpc.mainnet.near.org';
+    case 'testnet':
+      return 'https://archival-rpc.testnet.near.org';
+  }
 }
 
 export async function sleep(ms: number) {
@@ -35,6 +48,17 @@ export async function wait<T>(f: () => Promise<T>, timeout: number = MAX_TIMEOUT
     });
 
   return Promise.race([reject(), f()]).finally(() => clearTimeout(timeoutId));
+}
+
+export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {
+  const result: string[] = [];
+  for (const publicKey of publicKeys) {
+    if (publicKey !== registrantPublicKey) {
+      result.push(publicKey);
+    }
+  }
+  result.push(registrantPublicKey);
+  return result;
 }
 
 export function simulateSettleEnergy(spaceshipEngine: SpaceshipEngine, settledAt: number): SpaceshipEngine {

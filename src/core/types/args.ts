@@ -97,7 +97,7 @@ export interface CreateOfferingArgs {
   nft_contract_id: string;
   nft_token_id: string;
   price: string;
-  is_simple_offering: boolean;
+  is_simple_offering?: boolean;
   expire_time?: number;
 }
 

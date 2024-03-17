@@ -54,11 +54,24 @@ interface ChangeFunctionExtraOptions {
 export interface NftRegisterOptions {
   registrantId: string;
   minterId: string;
-  gas?: string;
+  gasForRegister?: string;
 }
 
 export interface SetupControllerOptions {
   registrantId: string;
+  gasForCleanState?: string;
+  gasForInit?: string;
+}
+
+export interface WaitForMintingOptions {
+  registrantId: string;
+  timeout?: number;
+}
+
+export interface MintOptions {
+  registrantId: string;
+  minterId: string;
+  gasForRegister?: string;
   gasForCleanState?: string;
   gasForInit?: string;
 }
@@ -110,7 +123,6 @@ export interface NearWithdrawOptions extends ChangeFunctionExtraOptions {
 
 export interface BuyListingOptions extends ChangeFunctionExtraOptions {
   args: BuyListingArgs;
-  attachedDeposit: string;
   gas?: string;
 }
 

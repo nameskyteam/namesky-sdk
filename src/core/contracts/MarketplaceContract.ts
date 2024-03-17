@@ -1,4 +1,4 @@
-import { Contract } from '../../utils/Contract';
+import { BaseContract } from './BaseContract';
 import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils';
 import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
@@ -27,13 +27,18 @@ import {
   UpdateOfferingOptions,
 } from '../types/options';
 import { UpdateOfferingArgs } from '../types/args';
-import { Amount, BigNumber, MultiTransaction, StorageBalance } from 'multi-transaction';
+import { Amount, BigNumber, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
+import { NameSkySigner } from '../NameSkySigner';
 
-export class MarketplaceContract extends Contract {
+export class MarketplaceContract extends BaseContract {
+  connect(signer: NameSkySigner): MarketplaceContract {
+    return new MarketplaceContract(this.contractId, signer);
+  }
+
   // ------------------------------------------------- View -------------------------------------------------------
 
   async get_account_view_of({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView | undefined> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_account_view_of',
       args,
@@ -42,7 +47,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_offering_view({ args, blockQuery }: GetOfferingViewOptions): Promise<OfferingView | undefined> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_view',
       args,
@@ -51,7 +56,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_offering_views({ args, blockQuery }: GetOfferingViewsOptions): Promise<OfferingView[]> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_views',
       args,
@@ -60,7 +65,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_offering_views_of({ args, blockQuery }: GetOfferingViewsOfOptions): Promise<OfferingView[]> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_views_of',
       args,
@@ -69,7 +74,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_nft_offering_views_of({ args, blockQuery }: GetNftOfferingViewsOfOptions): Promise<OfferingView[]> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_nft_offering_views_of',
       args,
@@ -78,7 +83,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_offering_unique_id({ args, blockQuery }: GetOfferingUniqueIdOptions): Promise<string> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_offering_unique_id',
       args,
@@ -87,7 +92,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_listing_view({ args, blockQuery }: GetListingViewOptions): Promise<ListingView | undefined> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_view',
       args,
@@ -96,7 +101,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_listing_views({ args, blockQuery }: GetListingViewsOptions): Promise<ListingView[]> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_views',
       args,
@@ -105,7 +110,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_listing_views_of({ args, blockQuery }: GetListingViewsOfOptions): Promise<ListingView[]> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_views_of',
       args,
@@ -114,7 +119,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_listing_unique_id({ args, blockQuery }: GetListingUniqueIdOptions): Promise<string> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_listing_unique_id',
       args,
@@ -123,7 +128,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_nft_approval({ args, blockQuery }: GetNftApprovalOptions): Promise<Approval | undefined> {
-    return this.selector.view({
+    return this.signer.view({
       contractId: this.contractId,
       methodName: 'get_nft_approval',
       args,
@@ -132,7 +137,7 @@ export class MarketplaceContract extends Contract {
   }
 
   async get_trading_fee_rate({ blockQuery }: GetTradingFeeRateOptions): Promise<TradingFeeRate> {
-    const { listing_trading_fee, offering_trading_fee } = await this.selector.view<MarketplaceConfig>({
+    const { listing_trading_fee, offering_trading_fee } = await this.signer.view<MarketplaceConfig>({
       contractId: this.contractId,
       methodName: 'get_config',
       blockQuery,
@@ -159,7 +164,7 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    return this.selector.send(mTx, { callbackUrl });
+    return this.signer.send(mTx, { callbackUrl });
   }
 
   async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
@@ -170,7 +175,7 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
   async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions) {
@@ -181,18 +186,23 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
-  async buyListing({ args, attachedDeposit, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
+  async buyListing({ args, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
+    const listing = await this.get_listing_view({ args });
+    if (!listing) {
+      throw Error('Listing not found');
+    }
+
     const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'buy_listing',
       args,
-      attachedDeposit,
-      gas,
+      attachedDeposit: listing.price,
+      gas: gas ?? Gas.parse(100, 'T'),
     });
 
-    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
+    return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
@@ -214,7 +224,7 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
   async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
@@ -230,7 +240,7 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
   async removeListing({ args, gas, callbackUrl }: RemoveListingOptions): Promise<ListingView> {
@@ -241,7 +251,7 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    return this.selector.send<ListingView>(mTx, { callbackUrl });
+    return this.signer.send<ListingView>(mTx, { callbackUrl });
   }
 
   async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
@@ -259,10 +269,10 @@ export class MarketplaceContract extends Contract {
         methodName: 'accept_offering',
         args,
         attachedDeposit: Amount.ONE_YOCTO,
-        gas,
+        gas: gas ?? Gas.parse(100, 'T'),
       });
 
-    return this.selector.send(mTx, { callbackUrl, throwReceiptErrors: true });
+    return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   // We have two type of offerings, Simple Offering & Pro Offering
@@ -278,6 +288,8 @@ export class MarketplaceContract extends Contract {
     // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
     mTx.batch(this.contractId);
 
+    args.is_simple_offering = args.is_simple_offering ?? true;
+
     if (args.is_simple_offering) {
       // create new offer and deposit with the same price
       mTx.functionCall({
@@ -287,15 +299,9 @@ export class MarketplaceContract extends Contract {
         gas,
       });
     } else {
-      const accountId = this.selector.getActiveAccountId();
-
-      if (!accountId) {
-        throw Error(`Active account id not found`);
-      }
-
       const accountView = await this.get_account_view_of({
         args: {
-          account_id: accountId,
+          account_id: this.signer.accountId,
         },
       });
 
@@ -318,7 +324,7 @@ export class MarketplaceContract extends Contract {
       });
     }
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
   // if simple offering, user must make up the insufficient part
@@ -334,15 +340,10 @@ export class MarketplaceContract extends Contract {
 
     if (new_price) {
       // if price need to be updated
-      const accountId = this.selector.getActiveAccountId();
-
-      if (!accountId) {
-        throw Error(`Active account id not found`);
-      }
 
       const offering = await this.get_offering_view({
         args: {
-          buyer_id: accountId,
+          buyer_id: this.signer.accountId,
           nft_contract_id,
           nft_token_id,
         },
@@ -390,7 +391,7 @@ export class MarketplaceContract extends Contract {
       });
     }
 
-    await this.selector.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl });
   }
 
   async removeOffering({ args, gas, callbackUrl }: RemoveOfferingOptions): Promise<OfferingView> {
@@ -401,6 +402,6 @@ export class MarketplaceContract extends Contract {
       gas,
     });
 
-    return this.selector.send(mTx, { callbackUrl });
+    return this.signer.send(mTx, { callbackUrl });
   }
 }
