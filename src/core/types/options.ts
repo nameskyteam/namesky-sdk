@@ -118,7 +118,6 @@ export interface NearWithdrawOptions extends ChangeFunctionExtraOptions {
 
 export interface BuyListingOptions extends ChangeFunctionExtraOptions {
   args: BuyListingArgs;
-  attachedDeposit: string;
   gas?: string;
 }
 

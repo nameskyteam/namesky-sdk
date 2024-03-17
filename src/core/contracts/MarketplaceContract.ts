@@ -27,7 +27,7 @@ import {
   UpdateOfferingOptions,
 } from '../types/options';
 import { UpdateOfferingArgs } from '../types/args';
-import { Amount, BigNumber, MultiTransaction, StorageBalance } from 'multi-transaction';
+import { Amount, BigNumber, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
 
 export class MarketplaceContract extends BaseContract {
@@ -189,12 +189,17 @@ export class MarketplaceContract extends BaseContract {
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async buyListing({ args, attachedDeposit, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
+  async buyListing({ args, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
+    const listing = await this.get_listing_view({ args });
+    if (!listing) {
+      throw Error('Listing not found');
+    }
+
     const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'buy_listing',
       args,
-      attachedDeposit,
-      gas,
+      attachedDeposit: listing.price,
+      gas: gas ?? Gas.parse(150, 'T'),
     });
 
     return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
@@ -264,7 +269,7 @@ export class MarketplaceContract extends BaseContract {
         methodName: 'accept_offering',
         args,
         attachedDeposit: Amount.ONE_YOCTO,
-        gas,
+        gas: gas ?? Gas.parse(150, 'T'),
       });
 
     return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
