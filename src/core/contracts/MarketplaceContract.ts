@@ -1,4 +1,4 @@
-import { BaseContract } from './BaseContract';
+import { BaseContract, BaseContractOptions } from './BaseContract';
 import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils';
 import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
@@ -32,12 +32,27 @@ import { UpdateOfferingArgs } from '../types/args';
 import { Amount, BigNumber, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
 
+export type MarketplaceContractOptions = BaseContractOptions & {
+  coreContractId: string;
+};
+
 export class MarketplaceContract extends BaseContract {
+  coreContractId: string;
+
+  constructor({ coreContractId, ...options }: MarketplaceContractOptions) {
+    super(options);
+    this.coreContractId = coreContractId;
+  }
+
   /**
    * Connect to new signer and return new instance
    */
   connect(signer: NameSkySigner): MarketplaceContract {
-    return new MarketplaceContract(this.contractId, signer);
+    return new MarketplaceContract({
+      coreContractId: this.coreContractId,
+      contractId: this.contractId,
+      signer,
+    });
   }
 
   // ------------------------------------------------- View -------------------------------------------------------

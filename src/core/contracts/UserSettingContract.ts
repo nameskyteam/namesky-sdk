@@ -1,4 +1,4 @@
-import { BaseContract } from './BaseContract';
+import { BaseContract, BaseContractOptions } from './BaseContract';
 import { MultiTransaction } from 'multi-transaction';
 import {
   LikeOptions,
@@ -14,12 +14,21 @@ import {
 } from '../types/view-options';
 import { NameSkySigner } from '../NameSkySigner';
 
+export type UserSettingContractOptions = BaseContractOptions & {};
+
 export class UserSettingContract extends BaseContract {
+  constructor(options: UserSettingContractOptions) {
+    super(options);
+  }
+
   /**
    * Connect to new signer and return new instance
    */
   connect(signer: NameSkySigner): UserSettingContract {
-    return new UserSettingContract(this.contractId, signer);
+    return new UserSettingContract({
+      contractId: this.contractId,
+      signer,
+    });
   }
 
   // ------------------------------------------------- View -------------------------------------------------------

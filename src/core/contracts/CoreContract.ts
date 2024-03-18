@@ -1,4 +1,4 @@
-import { BaseContract } from './BaseContract';
+import { BaseContract, BaseContractOptions } from './BaseContract';
 import { DEFAULT_APPROVAL_STORAGE_DEPOSIT } from '../../utils';
 import { Amount, MultiTransaction } from 'multi-transaction';
 import {
@@ -27,12 +27,21 @@ import {
 import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../types/data';
 import { NameSkySigner } from '../NameSkySigner';
 
+export type CoreContractOptions = BaseContractOptions & {};
+
 export class CoreContract extends BaseContract {
+  constructor(options: CoreContractOptions) {
+    super(options);
+  }
+
   /**
    * Connect to new signer and return new instance
    */
   connect(signer: NameSkySigner): CoreContract {
-    return new CoreContract(this.contractId, signer);
+    return new CoreContract({
+      contractId: this.contractId,
+      signer,
+    });
   }
 
   // ------------------------------------------------- View -------------------------------------------------------

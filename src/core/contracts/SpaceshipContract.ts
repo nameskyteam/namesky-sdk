@@ -1,4 +1,4 @@
-import { BaseContract } from './BaseContract';
+import { BaseContract, BaseContractOptions } from './BaseContract';
 import { MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
 import { AddFuelOptions, DistributeAndClaimRewardsOptions, MintSpaceshipOptions } from '../types/change-options';
 import {
@@ -11,12 +11,21 @@ import { SpaceshipEngine } from '../types/data';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
 import { NameSkySigner } from '../NameSkySigner';
 
+export type SpaceshipContractOptions = BaseContractOptions & {};
+
 export class SpaceshipContract extends BaseContract {
+  constructor(options: SpaceshipContractOptions) {
+    super(options);
+  }
+
   /**
    * Connect to new signer and return new instance
    */
   connect(signer: NameSkySigner): SpaceshipContract {
-    return new SpaceshipContract(this.contractId, signer);
+    return new SpaceshipContract({
+      contractId: this.contractId,
+      signer,
+    });
   }
 
   // ------------------------------------------------- View -------------------------------------------------------

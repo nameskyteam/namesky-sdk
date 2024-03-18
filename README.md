@@ -35,22 +35,10 @@ const namesky = await initNameSky({ signer: NameSkySigner.fromWalletSelector(sel
 ```
 
 ## Mint
-Set registrant key
-
 ```ts
-// registrant is the account that you want to mint as NameSky NFT. (e.g. star.near)
+// Registrant is the account that you want to mint as NameSky NFT. (e.g. star.near)
 await namesky.setRegistrantKey('star.near', KeyPair.fromString('ed25519:<private key>'));
-```
-
-You can choose one click mint
-```ts
-await namesky.oneClickMint({ registrantId: 'star.near' });
-```
-
-or step by step mint
-```ts
-await namesky.register({ registrantId: 'star.near' });
-await namesky.setupController({ registrantId: 'star.near' });
+await namesky.postMint({ registrantId: 'star.near' });
 await namesky.waitForMinting({ registrantId: 'star.near' });
 ```
 

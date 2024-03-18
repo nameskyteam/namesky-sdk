@@ -16,12 +16,7 @@ import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs, NftRegisterArgs } from './types/args';
-import {
-  OneClickMintOptions,
-  NftRegisterOptions,
-  SetupControllerOptions,
-  WaitForMintingOptions,
-} from './types/change-options';
+import { NftRegisterOptions, SetupControllerOptions } from './types/change-options';
 import { GetControllerOwnerIdOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import {
@@ -29,6 +24,7 @@ import {
   BlockQuery,
   BorshSchema,
   endless,
+  Gas,
   MultiSendAccount,
   MultiTransaction,
   Stringifier,
@@ -185,30 +181,36 @@ export class NameSky {
   }
 
   /**
-   * Register NameSky NFT. (Step 1/3)
+   * Register NameSky NFT
    */
-  async register({ registrantId, gasForRegister }: NftRegisterOptions) {
+  async register({ registrantId }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.getMintFee({}),
       this.coreContract.nftGetMinterId({ args: { registrant_id: registrantId } }),
     ]);
 
+    const minterId = this.signer.accountId;
+
+    if (oldMinterId && oldMinterId === minterId) {
+      console.log(`Registrant ${registrantId} is already registered with for minter ${minterId}`);
+      return;
+    }
+
     const mTx = MultiTransaction.batch(this.coreContractId).functionCall<NftRegisterArgs>({
       methodName: 'nft_register',
       args: {
-        minter_id: this.signer.accountId,
+        minter_id: minterId,
       },
       attachedDeposit: oldMinterId ? Amount.ONE_YOCTO : mintFee,
-      gas: gasForRegister,
     });
 
     await this.registrant(registrantId).send(mTx);
   }
 
   /**
-   * Setup NameSky NFT controller. (Step 2/3)
+   * Setup NameSky NFT controller
    */
-  async setupController({ registrantId, gasForCleanState, gasForInit }: SetupControllerOptions) {
+  async setupController({ registrantId, gasForCleanState }: SetupControllerOptions) {
     const {
       blockQuery,
       isCodeHashCorrect,
@@ -245,9 +247,9 @@ export class NameSky {
     // init controller contract
     mTx.functionCall<InitArgs>({
       methodName: 'init',
-      args: Buffer.from(this.coreContractId), // raw args
+      args: Buffer.from(this.coreContractId),
       attachedDeposit: Amount.ONE_YOCTO,
-      gas: gasForInit,
+      gas: Gas.parse(10, 'T'),
     });
 
     // delete all access keys
@@ -273,7 +275,16 @@ export class NameSky {
   }
 
   /**
-   * Wait for minting. (Step 3/3)
+   * Mint NameSky NFT, this is wrap of `register` and `setupController`
+   * @param options
+   */
+  async postMint({ registrantId, gasForCleanState }: PostMintOptions) {
+    await this.register({ registrantId });
+    await this.setupController({ registrantId, gasForCleanState });
+  }
+
+  /**
+   * Wait for minting
    */
   async waitForMinting({ registrantId, timeout }: WaitForMintingOptions): Promise<NameSkyToken> {
     return wait(async () => {
@@ -293,21 +304,6 @@ export class NameSky {
         await sleep(5000);
       }
     }, timeout);
-  }
-
-  /**
-   * Mint NameSky NFT, this is one click wrap of `register`, `setupController`, `waitForMinting`
-   * @param options
-   */
-  async oneClickMint({
-    registrantId,
-    gasForRegister,
-    gasForCleanState,
-    gasForInit,
-  }: OneClickMintOptions): Promise<NameSkyToken> {
-    await this.register({ registrantId, gasForRegister });
-    await this.setupController({ registrantId, gasForCleanState, gasForInit });
-    return this.waitForMinting({ registrantId });
   }
 
   async getNftAccountSafety(accountId: string, strict = false): Promise<NameSkyNftSafety> {
@@ -394,22 +390,36 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
 
   const networkId = signer.network.networkId;
 
-  const coreContract = new CoreContract(contracts?.coreContractId ?? getDefaultCoreContractId(networkId), signer);
+  const coreContract = new CoreContract({
+    contractId: contracts?.coreContractId ?? getDefaultCoreContractId(networkId),
+    signer,
+  });
 
-  const marketplaceContract = new MarketplaceContract(
-    contracts?.marketplaceContractId ?? getDefaultMarketplaceContractId(networkId),
-    signer
-  );
+  const marketplaceContract = new MarketplaceContract({
+    coreContractId: coreContract.contractId,
+    contractId: contracts?.marketplaceContractId ?? getDefaultMarketplaceContractId(networkId),
+    signer,
+  });
 
-  const userSettingContract = new UserSettingContract(
-    contracts?.userSettingContractId ?? getDefaultUserSettingContractId(networkId),
-    signer
-  );
+  const userSettingContract = new UserSettingContract({
+    contractId: contracts?.userSettingContractId ?? getDefaultUserSettingContractId(networkId),
+    signer,
+  });
 
-  const spaceshipContract = new SpaceshipContract(
-    contracts?.spaceshipContractId ?? getDefaultSpaceshipContractId(networkId),
-    signer
-  );
+  const spaceshipContract = new SpaceshipContract({
+    contractId: contracts?.spaceshipContractId ?? getDefaultSpaceshipContractId(networkId),
+    signer,
+  });
 
   return new NameSky({ signer, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
 }
+
+export type WaitForMintingOptions = {
+  registrantId: string;
+  timeout?: number;
+};
+
+export type PostMintOptions = {
+  registrantId: string;
+  gasForCleanState?: string;
+};

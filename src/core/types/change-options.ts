@@ -29,25 +29,11 @@ type ChangeFunctionExtraOptions = {
 
 export type NftRegisterOptions = {
   registrantId: string;
-  gasForRegister?: string;
 };
 
 export type SetupControllerOptions = {
   registrantId: string;
   gasForCleanState?: string;
-  gasForInit?: string;
-};
-
-export type WaitForMintingOptions = {
-  registrantId: string;
-  timeout?: number;
-};
-
-export type OneClickMintOptions = {
-  registrantId: string;
-  gasForRegister?: string;
-  gasForCleanState?: string;
-  gasForInit?: string;
 };
 
 // ---------------------------------------------- Core ---------------------------------------------------------
