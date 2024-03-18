@@ -186,7 +186,7 @@ export class NameSky {
   async register({ registrantId }: NftRegisterOptions) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.getMintFee({}),
-      this.coreContract.nftGetMinterId({ args: { registrant_id: registrantId } }),
+      this.coreContract.nftGetMinterId({ registrantId }),
     ]);
 
     const minterId = this.signer.accountId;
@@ -289,11 +289,7 @@ export class NameSky {
   async waitForMinting({ registrantId, timeout }: WaitForMintingOptions): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
-        const token = await this.coreContract.nftNameSkyToken({
-          args: {
-            token_id: registrantId,
-          },
-        });
+        const token = await this.coreContract.nftNameSkyToken({ tokenId: registrantId });
 
         if (token) {
           console.log(`NameSkyNFT(${registrantId}) is minted`);

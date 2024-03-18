@@ -1,31 +1,26 @@
 import { Amount, BigNumber } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
-import { NetworkId } from '../core';
 import { PublicKey } from 'near-api-js/lib/utils';
 
 export const PENDING_REGISTRANT_ID_PREFIX = 'pending_registrant_id:';
 export const REGISTRANT_KEYSTORE_PREFIX = 'registrant:keystore:';
 export const DEFAULT_MARKET_STORAGE_DEPOSIT = Amount.parse(0.0125, 'NEAR');
-export const DEFAULT_APPROVAL_STORAGE_DEPOSIT = Amount.parse(0.005, 'NEAR');
 export const DEFAULT_SPACESHIP_STORAGE_DEPOSIT = Amount.parse(0.02, 'NEAR');
 export const FEE_DIVISOR = 10000;
 export const ACTION_MAX_NUM = 100;
 export const MAX_TIMEOUT = 2147483647;
 export const DAY_MS = 86400 * 1000;
 
-export function isBrowser(): boolean {
-  return typeof window !== 'undefined';
+export function jsonSerialize<T>(data: T): string {
+  return JSON.stringify(data);
 }
 
-export function getDefaultNodeUrl(networkId: NetworkId): string {
-  switch (networkId) {
-    case 'mainnet':
-      return 'https://archival-rpc.mainnet.near.org';
-    case 'testnet':
-      return 'https://archival-rpc.testnet.near.org';
-    default:
-      throw Error(`Default node url not found for network: ${networkId}`);
-  }
+export function jsonDeserialize<T>(data: string): T {
+  return JSON.parse(data);
+}
+
+export function isBrowser(): boolean {
+  return typeof window !== 'undefined';
 }
 
 export async function sleep(ms: number) {

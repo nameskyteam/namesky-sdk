@@ -1,4 +1,3 @@
-import { NftTokenArgs, NftTokensArgs, NftTokensForOwnerArgs } from 'multi-transaction';
 import { UpdateWrapper } from './common';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
@@ -33,11 +32,20 @@ export type NftStateArgs = {
   token_id: string;
 };
 
-export type NftNameSkyTokenArgs = NftTokenArgs;
+export type NftNameSkyTokenArgs = {
+  token_id: string;
+};
 
-export type NftNameSkyTokensArgs = NftTokensArgs;
+export type NftNameSkyTokensArgs = {
+  from_index?: string;
+  limit?: number;
+};
 
-export type NftNameSkyTokensForOwnerArgs = NftTokensForOwnerArgs;
+export type NftNameSkyTokensForOwnerArgs = {
+  account_id: string;
+  from_index?: string;
+  limit?: number;
+};
 
 export type NftRedeemArgs = {
   token_id: string;
@@ -52,15 +60,6 @@ export type GetMintNumArgs = {
 
 // ---------------------------------------------- Marketplace -----------------------------------------------------
 
-export type CreateMarketAccountArgs = {
-  account_id?: string;
-  registration_only?: boolean;
-};
-
-export type NearDepositArgs = {
-  account_id?: string;
-};
-
 export type NearWithdrawArgs = {
   amount?: string;
 };
@@ -71,17 +70,17 @@ export type BuyListingArgs = {
 };
 
 export type CreateListingArgs = {
-  nft_contract_id: string;
-  nft_token_id: string;
-  price: string;
-  expire_time?: number;
+  CreateListing: {
+    price: string;
+    expire_time?: number;
+  };
 };
 
 export type UpdateListingArgs = {
-  nft_contract_id: string;
-  nft_token_id: string;
-  new_price?: string;
-  new_expire_time?: UpdateWrapper<number>;
+  UpdateListing: {
+    new_price?: string;
+    new_expire_time?: UpdateWrapper<number>;
+  };
 };
 
 export type RemoveListingArgs = {
@@ -143,7 +142,7 @@ export type GetNftOfferingViewsOfArgs = {
   limit?: number;
 };
 
-export type getOfferingUniqueIdArgs = {
+export type GetOfferingUniqueIdArgs = {
   buyer_id: string;
   nft_contract_id: string;
   nft_token_id: string;

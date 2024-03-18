@@ -65,7 +65,7 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  // -------------------------------------------------- Call -------------------------------------------------------
+  // -------------------------------------------------- Change -----------------------------------------------------
 
   async mintSpaceship({ spaceshipStorageDeposit, gas, callbackUrl }: MintSpaceshipOptions) {
     const mTx = MultiTransaction.batch(this.contractId).functionCall({

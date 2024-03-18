@@ -7,7 +7,7 @@ import {
   GetMintNumArgs,
   GetNftApprovalArgs,
   GetNftOfferingViewsOfArgs,
-  getOfferingUniqueIdArgs,
+  GetOfferingUniqueIdArgs,
   GetOfferingViewArgs,
   GetOfferingViewsArgs,
   GetOfferingViewsOfArgs,
@@ -39,34 +39,39 @@ export type GetControllerOwnerIdOptions = ViewFunctionExtraOptions & {
 // ---------------------------------------------- Core ---------------------------------------------------------
 
 export type NftGetMinterIdOptions = ViewFunctionExtraOptions & {
-  args: NftGetMinterIdArgs;
+  registrantId: string;
 };
 
 export type NftRegistrantIdsOfOptions = ViewFunctionExtraOptions & {
-  args: NftRegistrantIdsOfArgs;
+  minterId: string;
+  fromIndex?: string;
+  limit?: number;
 };
 
 export type NftStateOptions = ViewFunctionExtraOptions & {
-  args: NftStateArgs;
+  tokenId: string;
 };
 
 export type NftNameSkyTokenOptions = ViewFunctionExtraOptions & {
-  args: NftNameSkyTokenArgs;
+  tokenId: string;
 };
 
 export type NftNameSkyTokensOptions = ViewFunctionExtraOptions & {
-  args?: NftNameSkyTokensArgs;
+  fromIndex?: string;
+  limit?: number;
 };
 
 export type NftNameSkyTokensForOwnerOptions = ViewFunctionExtraOptions & {
-  args: NftNameSkyTokensForOwnerArgs;
+  accountId: string;
+  fromIndex?: string;
+  limit?: number;
+};
+
+export type NftSupplyForOwnerOptions = ViewFunctionExtraOptions & {
+  accountId: string;
 };
 
 export type NftTotalSupplyOptions = ViewFunctionExtraOptions & {};
-
-export type NftSupplyForOwnerOptions = ViewFunctionExtraOptions & {
-  args: NftSupplyForOwnerArgs;
-};
 
 export type GetLatestControllerCodeOptions = ViewFunctionExtraOptions & {};
 
@@ -79,53 +84,63 @@ export type GetMintFeeOptions = ViewFunctionExtraOptions & {};
 export type GetRoyaltyOptions = ViewFunctionExtraOptions & {};
 
 export type GetMintNumOptions = ViewFunctionExtraOptions & {
-  args: GetMintNumArgs;
+  accountId: string;
 };
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 
 export type GetAccountViewOfOptions = ViewFunctionExtraOptions & {
-  args: GetAccountViewOfArgs;
+  accountId: string;
 };
 
 export type GetOfferingViewOptions = ViewFunctionExtraOptions & {
-  args: GetOfferingViewArgs;
+  tokenId: string;
+  buyerId: string;
 };
 
 export type GetOfferingViewsOptions = ViewFunctionExtraOptions & {
-  args?: GetOfferingViewsArgs;
+  offset?: number;
+  limit?: number;
 };
 
 export type GetOfferingViewsOfOptions = ViewFunctionExtraOptions & {
-  args: GetOfferingViewsOfArgs;
+  accountId: string;
+  offset?: number;
+  limit?: number;
 };
 
 export type GetNftOfferingViewsOfOptions = ViewFunctionExtraOptions & {
-  args: GetNftOfferingViewsOfArgs;
+  tokenId: string;
+  offset?: number;
+  limit?: number;
 };
 
 export type GetOfferingUniqueIdOptions = ViewFunctionExtraOptions & {
-  args: getOfferingUniqueIdArgs;
+  tokenId: string;
+  buyerId: string;
 };
 
 export type GetListingViewOptions = ViewFunctionExtraOptions & {
-  args: GetListingViewArgs;
+  tokenId: string;
 };
 
 export type GetListingViewsOptions = ViewFunctionExtraOptions & {
-  args?: GetListingViewsArgs;
+  offset?: number;
+  limit?: number;
 };
 
 export type GetListingViewsOfOptions = ViewFunctionExtraOptions & {
-  args: GetListingViewsOfArgs;
+  accountId: string;
+  offset?: number;
+  limit?: number;
 };
 
 export type GetListingUniqueIdOptions = ViewFunctionExtraOptions & {
-  args: GetListingUniqueIdArgs;
+  tokenId: string;
 };
 
 export type GetNftApprovalOptions = ViewFunctionExtraOptions & {
-  args: GetNftApprovalArgs;
+  tokenId: string;
 };
 
 export type GetTradingFeeRateOptions = ViewFunctionExtraOptions & {};

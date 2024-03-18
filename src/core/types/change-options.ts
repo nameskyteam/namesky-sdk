@@ -1,16 +1,8 @@
-import { NftApproveArgs, NftRevokeArgs, NftTransferArgs } from 'multi-transaction';
 import {
   AcceptOfferingArgs,
   AddFuelArgs,
-  BuyListingArgs,
-  CreateListingArgs,
-  CreateMarketAccountArgs,
   CreateOfferingArgs,
   LikeArgs,
-  NearDepositArgs,
-  NearWithdrawArgs,
-  NftRedeemArgs,
-  NftUnregisterArgs,
   ReadNotificationAtArgs,
   RemoveListingArgs,
   RemoveOfferingArgs,
@@ -20,6 +12,7 @@ import {
   UpdateOfferingArgs,
   WatchArgs,
 } from './args';
+import { UpdateWrapper } from './common';
 
 type ChangeFunctionExtraOptions = {
   callbackUrl?: string;
@@ -39,71 +32,66 @@ export type SetupControllerOptions = {
 // ---------------------------------------------- Core ---------------------------------------------------------
 
 export type NftUnregisterOptions = ChangeFunctionExtraOptions & {
-  args: NftUnregisterArgs;
-  gas?: string;
+  registrantId: string;
+  publicKey: string;
+  force?: boolean;
 };
 
 export type NftRedeemOptions = ChangeFunctionExtraOptions & {
-  args: NftRedeemArgs;
-  gas?: string;
+  tokenId: string;
+  publicKey: string;
+  force?: boolean;
+  memo?: string;
 };
 
 export type NftTransferOptions = ChangeFunctionExtraOptions & {
-  args: NftTransferArgs;
-  gas?: string;
+  receiverId: string;
+  tokenId: string;
+  approvalId?: number;
+  memo?: string;
 };
 
 export type NftApproveOptions = ChangeFunctionExtraOptions & {
-  args: NftApproveArgs;
-  approvalStorageDeposit?: string;
-  gas?: string;
+  tokenId: string;
+  accountId: string;
+  msg?: string;
 };
 
 export type NftRevokeOptions = ChangeFunctionExtraOptions & {
-  args: NftRevokeArgs;
-  gas?: string;
+  tokenId: string;
+  accountId: string;
 };
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 
-export type CreateMarketAccountOption = ChangeFunctionExtraOptions & {
-  args?: CreateMarketAccountArgs;
-  marketStorageDeposit?: string;
-  gas?: string;
-};
+export type CreateMarketAccountOption = ChangeFunctionExtraOptions & {};
 
 export type NearDepositOptions = ChangeFunctionExtraOptions & {
-  args?: NearDepositArgs;
-  attachedDeposit: string;
-  gas?: string;
+  amount: string;
 };
 
 export type NearWithdrawOptions = ChangeFunctionExtraOptions & {
-  args?: NearWithdrawArgs;
-  gas?: string;
+  amount?: string;
 };
 
 export type BuyListingOptions = ChangeFunctionExtraOptions & {
-  args: BuyListingArgs;
-  gas?: string;
+  tokenId: string;
 };
 
 export type CreateListingOptions = ChangeFunctionExtraOptions & {
-  args: CreateListingArgs;
-  listingStorageDeposit?: string;
-  approvalStorageDeposit?: string;
-  gas?: string;
+  tokenId: string;
+  price: string;
+  expireTime?: number;
 };
 
 export type UpdateListingOptions = ChangeFunctionExtraOptions & {
-  args: UpdateListingArgs;
-  approvalStorageDeposit?: string;
-  gas?: string;
+  tokenId: string;
+  newPrice?: string;
+  newExpireTime?: UpdateWrapper<number>;
 };
 
 export type RemoveListingOptions = ChangeFunctionExtraOptions & {
-  args: RemoveListingArgs;
-  gas?: string;
+  tokenId: string;
 };
 
 export type AcceptOfferingOptions = ChangeFunctionExtraOptions & {
@@ -119,8 +107,9 @@ export type CreateOfferingOptions = ChangeFunctionExtraOptions & {
 };
 
 export type UpdateOfferingOptions = ChangeFunctionExtraOptions & {
-  args: UpdateOfferingArgs;
-  gas?: string;
+  tokenId: string;
+  newPrice?: string;
+  newExpireTime?: UpdateWrapper<number>;
 };
 
 export type RemoveOfferingOptions = ChangeFunctionExtraOptions & {

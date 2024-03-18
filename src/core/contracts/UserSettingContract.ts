@@ -63,7 +63,7 @@ export class UserSettingContract extends BaseContract {
     });
   }
 
-  // -------------------------------------------------- Call -------------------------------------------------------
+  // -------------------------------------------------- Change -----------------------------------------------------
 
   async like({ args, gas, callbackUrl }: LikeOptions) {
     const mTx = MultiTransaction.batch(this.contractId).functionCall({
