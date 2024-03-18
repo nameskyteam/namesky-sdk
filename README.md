@@ -9,7 +9,7 @@ yarn add namesky-sdk
 ## Init
 For Node
 ```ts
-import { initNameSky, MultiSendAccount, NameSkySigner } from 'namesky-sdk';
+import { initNameSky, NameSkySigner, MultiSendAccount } from 'namesky-sdk';
 ```
 
 ```ts
@@ -20,7 +20,7 @@ const namesky = await initNameSky({ signer: NameSkySigner.fromAccount(account) }
 
 For Browser
 ```ts
-import { initNameSky, setupMultiSendWalletSelector, NameSkySigner } from 'namesky-sdk';
+import { initNameSky, NameSkySigner, setupMultiSendWalletSelector } from 'namesky-sdk';
 ```
 
 ```ts
