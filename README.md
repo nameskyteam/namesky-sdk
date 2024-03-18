@@ -7,7 +7,7 @@ yarn add namesky-sdk
 ```
 
 ## Init
-For Node
+Node
 ```ts
 import { initNameSky, NameSkySigner, MultiSendAccount } from 'namesky-sdk';
 ```
@@ -18,7 +18,7 @@ const account = MultiSendAccount.new(near.connection, 'alice.near');
 const namesky = await initNameSky({ signer: NameSkySigner.fromAccount(account) });
 ```
 
-For Browser
+Browser
 ```ts
 import { initNameSky, NameSkySigner, setupMultiSendWalletSelector } from 'namesky-sdk';
 ```
