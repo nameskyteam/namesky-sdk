@@ -24,7 +24,7 @@ import { initNameSky, NameSkySigner, setupMultiSendWalletSelector } from 'namesk
 ```
 
 ```ts
-const selector = setupMultiSendWalletSelector({
+const selector = await setupMultiSendWalletSelector({
   network: 'mainnet',
   modules: [
     /* wallet modules */
