@@ -1,4 +1,4 @@
-import { Amount, BigNumber, BigNumberLike } from 'multi-transaction';
+import { Amount, BigNumber, BigNumberLike, BlockQuery } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
 import { PublicKey } from 'near-api-js/lib/utils';
 import sha256 from 'sha256';
@@ -24,6 +24,10 @@ export function jsonSerialize<T>(data: T): string {
 
 export function jsonDeserialize<T>(data: string): T {
   return JSON.parse(data);
+}
+
+export function optimistic(): BlockQuery {
+  return { finality: 'optimistic' };
 }
 
 export function calcInsufficientBalance(current: BigNumberLike, required: BigNumberLike): BigNumber {

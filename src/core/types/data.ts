@@ -1,11 +1,10 @@
-import { BlockQuery, Token } from 'multi-transaction';
+import { Token } from 'multi-transaction';
 import { State } from './common';
 import { AccessKeyInfoView } from '@near-js/types';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 
-export type NameSkyNftSafety = {
-  blockQuery: BlockQuery;
+export type NftAccountSafety = {
   isCodeHashCorrect: boolean;
   isStateCleaned: boolean;
   isAccessKeysDeleted: boolean;

@@ -10,6 +10,11 @@ export type GetControllerOwnerIdOptions = ViewFunctionExtraOptions & {
   accountId: string;
 };
 
+export type GetNftAccountSafetyOptions = ViewFunctionExtraOptions & {
+  accountId: string;
+  strict?: boolean;
+};
+
 // ---------------------------------------------- Core ---------------------------------------------------------
 
 export type NftGetMinterIdOptions = ViewFunctionExtraOptions & {

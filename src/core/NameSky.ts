@@ -10,26 +10,18 @@ import {
   REGISTRANT_KEYSTORE_PREFIX,
   sleep,
   wait,
+  optimistic,
 } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs, NftRegisterArgs } from './types/args';
-import { GetControllerOwnerIdOptions } from './types/view-options';
+import { GetControllerOwnerIdOptions, GetNftAccountSafetyOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
-import {
-  Amount,
-  BlockQuery,
-  BorshSchema,
-  endless,
-  Gas,
-  MultiSendAccount,
-  MultiTransaction,
-  Stringifier,
-} from 'multi-transaction';
+import { Amount, BorshSchema, endless, Gas, MultiSendAccount, MultiTransaction, Stringifier } from 'multi-transaction';
 import { AccessKeyList, AccountView, Provider } from 'near-api-js/lib/providers/provider';
-import { NameSkyNftSafety, NameSkyToken } from './types/data';
+import { NftAccountSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
@@ -111,8 +103,8 @@ export class NameSky {
     return this.near.connection.provider;
   }
 
-  private registrant(registrantId: string): MultiSendAccount {
-    return MultiSendAccount.new(this.near.connection, registrantId);
+  private account(accountId?: string): MultiSendAccount {
+    return MultiSendAccount.new(this.near.connection, accountId);
   }
 
   /**
@@ -203,28 +195,21 @@ export class NameSky {
       attachedDeposit: oldMinterId ? Amount.ONE_YOCTO : mintFee,
     });
 
-    await this.registrant(registrantId).send(mTx);
+    await this.account(registrantId).send(mTx);
   }
 
   /**
    * Setup NameSky NFT controller
    */
   async setupController(registrantId: string, gasForCleanState?: string) {
-    const {
-      blockQuery,
-      isCodeHashCorrect,
-      isStateCleaned,
-      isAccessKeysDeleted,
-      isControllerOwnerIdCorrect,
-      state,
-      accessKeys,
-    } = await this.getNftAccountSafety(registrantId, true);
+    const { isCodeHashCorrect, isStateCleaned, isAccessKeysDeleted, isControllerOwnerIdCorrect, state, accessKeys } =
+      await this.getNftAccountSafety({ accountId: registrantId, strict: true });
 
     if (isCodeHashCorrect && isStateCleaned && isAccessKeysDeleted && isControllerOwnerIdCorrect) {
       return;
     }
 
-    const code = await this.coreContract.getLatestControllerCode({ blockQuery });
+    const code = await this.coreContract.getLatestControllerCode({});
 
     const mTx = MultiTransaction.batch(registrantId);
 
@@ -270,7 +255,7 @@ export class NameSky {
       }
     }
 
-    await this.registrant(registrantId).send(mTx);
+    await this.account(registrantId).send(mTx);
   }
 
   /**
@@ -300,10 +285,14 @@ export class NameSky {
     }, timeout);
   }
 
-  async getNftAccountSafety(accountId: string, strict = false): Promise<NameSkyNftSafety> {
-    const block = await this.provider.block({ finality: 'optimistic' });
-
-    const blockQuery: BlockQuery = { blockId: block.header.height };
+  async getNftAccountSafety({
+    accountId,
+    strict = false,
+    blockQuery = optimistic(),
+  }: GetNftAccountSafetyOptions): Promise<NftAccountSafety> {
+    const block = await this.provider.block(blockQuery);
+    const blockHeight = block.header.height;
+    blockQuery = { blockId: blockHeight };
 
     const [controllerCodeViews, accountView, { values: state }, { keys: accessKeys }] = await Promise.all([
       this.coreContract.getControllerCodeViews({ blockQuery }),
@@ -349,7 +338,6 @@ export class NameSky {
     }
 
     return {
-      blockQuery,
       isCodeHashCorrect,
       isStateCleaned,
       isAccessKeysDeleted,
@@ -362,7 +350,7 @@ export class NameSky {
   }
 
   private async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string> {
-    const account = this.registrant(accountId);
+    const account = this.account();
     return account.view({
       contractId: accountId,
       methodName: 'get_owner_id',
