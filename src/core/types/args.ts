@@ -1,4 +1,8 @@
-import { UpdateWrapper } from './common';
+export type UpdateWrapper<T> =
+  | {
+      UpdateSome: T;
+    }
+  | 'UpdateNone';
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 
@@ -210,6 +214,10 @@ export type GetUserLastReadNotificationTimeArgs = {
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
 
+export type GetSpaceshipArgs = {
+  account_id: string;
+};
+
 export type GetSpaceshipEngineArgs = {
   account_id: string;
 };
@@ -220,10 +228,6 @@ export type GetRewardsForAccountArgs = {
 
 export type AddFuelArgs = {
   quantity: string;
-};
-
-export type GetSpaceshipArgs = {
-  account_id: string;
 };
 
 export type DistributeRewardsArgs = {

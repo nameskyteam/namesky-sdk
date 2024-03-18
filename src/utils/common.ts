@@ -1,8 +1,10 @@
 import { Amount, BigNumber, BigNumberLike } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
 import { PublicKey } from 'near-api-js/lib/utils';
+import sha256 from 'sha256';
+import base58 from 'bs58';
 
-export const PENDING_REGISTRANT_ID_PREFIX = 'pending_registrant_id:';
+export const PENDING_REGISTRANT_ID_PREFIX = 'pending-registrant-id:';
 export const REGISTRANT_KEYSTORE_PREFIX = 'registrant:keystore:';
 export const DEFAULT_MARKET_STORAGE_DEPOSIT = Amount.parse(0.0125, 'NEAR');
 export const DEFAULT_SPACESHIP_STORAGE_DEPOSIT = Amount.parse(0.02, 'NEAR');
@@ -10,6 +12,11 @@ export const FEE_DIVISOR = 10000;
 export const ACTION_MAX_NUM = 100;
 export const MAX_TIMEOUT = 2147483647;
 export const DAY_MS = 86400 * 1000;
+
+export function base58CodeHash(code: Buffer): string {
+  const hash = Buffer.from(sha256(code), 'hex');
+  return base58.encode(hash);
+}
 
 export function jsonSerialize<T>(data: T): string {
   return JSON.stringify(data);

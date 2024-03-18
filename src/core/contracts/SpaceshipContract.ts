@@ -10,7 +10,7 @@ import {
 import { SpaceshipEngine } from '../types/data';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
 import { NameSkySigner } from '../NameSkySigner';
-import { AddFuelArgs, DistributeRewardsArgs } from '../types/args';
+import { AddFuelArgs, DistributeRewardsArgs, GetRewardsForAccountArgs, GetSpaceshipArgs } from '../types/args';
 
 export type SpaceshipContractOptions = BaseContractOptions & {};
 
@@ -31,35 +31,41 @@ export class SpaceshipContract extends BaseContract {
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async getSpaceship({ args, blockQuery }: GetSpaceshipOptions): Promise<Token | undefined> {
-    return this.signer.view({
+  async getSpaceship({ accountId, blockQuery }: GetSpaceshipOptions): Promise<Token | undefined> {
+    return this.signer.view<Token | undefined, GetSpaceshipArgs>({
       contractId: this.contractId,
       methodName: 'get_spaceship',
-      args,
+      args: {
+        account_id: accountId,
+      },
       blockQuery,
     });
   }
 
-  async getSpaceshipEngine({ args, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
-    return this.signer.view({
+  async getSpaceshipEngine({ accountId, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
+    return this.signer.view<SpaceshipEngine | undefined, GetSpaceshipArgs>({
       contractId: this.contractId,
       methodName: 'get_spaceship_engine',
-      args,
+      args: {
+        account_id: accountId,
+      },
       blockQuery,
     });
   }
 
-  async getRewardsForAccount({ args, blockQuery }: GetRewardsForAccountOptions): Promise<string> {
-    return this.signer.view({
+  async getRewardsForAccount({ accountId, blockQuery }: GetRewardsForAccountOptions): Promise<string> {
+    return this.signer.view<string, GetRewardsForAccountArgs>({
       contractId: this.contractId,
       methodName: 'get_rewards_for_account',
-      args,
+      args: {
+        account_id: accountId,
+      },
       blockQuery,
     });
   }
 
   async getTotalAddedFuelNum({ blockQuery }: GetTotalAddedFuelNumOptions): Promise<string> {
-    return this.signer.view({
+    return this.signer.view<string>({
       contractId: this.contractId,
       methodName: 'get_total_added_fuel_num',
       blockQuery,

@@ -1,32 +1,7 @@
-import {
-  AcceptOfferingArgs,
-  AddFuelArgs,
-  CreateOfferingArgs,
-  LikeArgs,
-  ReadNotificationAtArgs,
-  RemoveListingArgs,
-  RemoveOfferingArgs,
-  UnlikeArgs,
-  UnwatchArgs,
-  UpdateListingArgs,
-  UpdateOfferingArgs,
-  WatchArgs,
-} from './args';
-import { UpdateWrapper } from './common';
+import { UpdateWrapper } from './args';
 
 type ChangeFunctionExtraOptions = {
   callbackUrl?: string;
-};
-
-// ---------------------------------------------- Registrant ---------------------------------------------------
-
-export type NftRegisterOptions = {
-  registrantId: string;
-};
-
-export type SetupControllerOptions = {
-  registrantId: string;
-  gasForCleanState?: string;
 };
 
 // ---------------------------------------------- Core ---------------------------------------------------------

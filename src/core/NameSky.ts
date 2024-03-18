@@ -16,7 +16,6 @@ import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs, NftRegisterArgs } from './types/args';
-import { NftRegisterOptions, SetupControllerOptions } from './types/change-options';
 import { GetControllerOwnerIdOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import {
@@ -183,7 +182,7 @@ export class NameSky {
   /**
    * Register NameSky NFT
    */
-  async register({ registrantId }: NftRegisterOptions) {
+  async register(registrantId: string) {
     const [mintFee, oldMinterId] = await Promise.all([
       this.coreContract.getMintFee({}),
       this.coreContract.nftGetMinterId({ registrantId }),
@@ -210,7 +209,7 @@ export class NameSky {
   /**
    * Setup NameSky NFT controller
    */
-  async setupController({ registrantId, gasForCleanState }: SetupControllerOptions) {
+  async setupController(registrantId: string, gasForCleanState?: string) {
     const {
       blockQuery,
       isCodeHashCorrect,
@@ -276,17 +275,16 @@ export class NameSky {
 
   /**
    * Mint NameSky NFT, this is wrap of `register` and `setupController`
-   * @param options
    */
-  async postMint({ registrantId, gasForCleanState }: PostMintOptions) {
-    await this.register({ registrantId });
-    await this.setupController({ registrantId, gasForCleanState });
+  async postMint(registrantId: string, gasForCleanState?: string) {
+    await this.register(registrantId);
+    await this.setupController(registrantId, gasForCleanState);
   }
 
   /**
    * Wait for minting
    */
-  async waitForMinting({ registrantId, timeout }: WaitForMintingOptions): Promise<NameSkyToken> {
+  async waitForMinting(registrantId: string, timeout?: number): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
         const token = await this.coreContract.nftNameSkyToken({ tokenId: registrantId });
@@ -409,13 +407,3 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
 
   return new NameSky({ signer, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
 }
-
-export type WaitForMintingOptions = {
-  registrantId: string;
-  timeout?: number;
-};
-
-export type PostMintOptions = {
-  registrantId: string;
-  gasForCleanState?: string;
-};

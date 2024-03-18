@@ -1,30 +1,4 @@
-import {
-  GetAccountViewOfArgs,
-  GetListingUniqueIdArgs,
-  GetListingViewArgs,
-  GetListingViewsArgs,
-  GetListingViewsOfArgs,
-  GetMintNumArgs,
-  GetNftApprovalArgs,
-  GetNftOfferingViewsOfArgs,
-  GetOfferingUniqueIdArgs,
-  GetOfferingViewArgs,
-  GetOfferingViewsArgs,
-  GetOfferingViewsOfArgs,
-  GetRewardsForAccountArgs,
-  GetSpaceshipArgs,
-  GetSpaceshipEngineArgs,
-  GetUserLastReadNotificationTimeArgs,
-  GetUserLikesArgs,
-  GetUserWatchListArgs,
-  NftGetMinterIdArgs,
-  NftNameSkyTokenArgs,
-  NftNameSkyTokensArgs,
-  NftNameSkyTokensForOwnerArgs,
-  NftRegistrantIdsOfArgs,
-  NftStateArgs,
-} from './args';
-import { BlockQuery, NftSupplyForOwnerArgs } from 'multi-transaction';
+import { BlockQuery } from 'multi-transaction';
 
 type ViewFunctionExtraOptions = {
   blockQuery?: BlockQuery;
@@ -161,16 +135,16 @@ export type GetUserLastReadNotificationTimeOptions = ViewFunctionExtraOptions & 
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
 
+export type GetSpaceshipOptions = ViewFunctionExtraOptions & {
+  accountId: string;
+};
+
 export type GetSpaceshipEngineOptions = ViewFunctionExtraOptions & {
-  args: GetSpaceshipEngineArgs;
+  accountId: string;
 };
 
 export type GetRewardsForAccountOptions = ViewFunctionExtraOptions & {
-  args: GetRewardsForAccountArgs;
+  accountId: string;
 };
 
 export type GetTotalAddedFuelNumOptions = ViewFunctionExtraOptions & {};
-
-export type GetSpaceshipOptions = ViewFunctionExtraOptions & {
-  args: GetSpaceshipArgs;
-};
