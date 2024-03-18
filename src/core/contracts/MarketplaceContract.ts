@@ -29,8 +29,10 @@ import {
   GetListingViewsOptions,
 } from '../types/view-options';
 import {
+  AcceptOfferingArgs,
   BuyListingArgs,
   CreateListingArgs,
+  CreateOfferingArgs,
   GetAccountViewOfArgs,
   GetListingUniqueIdArgs,
   GetListingViewArgs,
@@ -44,10 +46,11 @@ import {
   GetOfferingViewsOfArgs,
   NearWithdrawArgs,
   RemoveListingArgs,
+  RemoveOfferingArgs,
   UpdateListingArgs,
   UpdateOfferingArgs,
 } from '../types/args';
-import { Amount, BigNumber, Gas, MultiTransaction, StorageBalance, Stringifier } from 'multi-transaction';
+import { Amount, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
 
 export type MarketplaceContractOptions = BaseContractOptions & {
@@ -237,8 +240,6 @@ export class MarketplaceContract extends BaseContract {
 
   // ------------------------------------------------- Change -----------------------------------------------------
 
-  // This function is wrap of `storage_deposit`, used when a user doesn't
-  // create any offering or listing in marketplace, but want to have an account
   async createMarketAccount({ callbackUrl }: CreateMarketAccountOption): Promise<StorageBalance> {
     const mTx = MultiTransaction.batch(this.contractId).storageManagement.storage_deposit({
       attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
@@ -294,7 +295,6 @@ export class MarketplaceContract extends BaseContract {
         attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
-    // call `nft_approve` to create listing
     mTx.batch(this.coreContractId).nonFungibleToken.nft_approve({
       args: {
         account_id: this.contractId,
@@ -308,7 +308,6 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async updateListing({ tokenId, newPrice, newExpireTime, callbackUrl }: UpdateListingOptions) {
-    // call `nft_approve` to update listing
     const mTx = MultiTransaction.batch(this.coreContractId).nonFungibleToken.nft_approve({
       args: {
         account_id: this.contractId,
@@ -331,60 +330,64 @@ export class MarketplaceContract extends BaseContract {
         nft_token_id: tokenId,
       },
       attachedDeposit: Amount.ONE_YOCTO,
+      gas: Gas.parse(50, 'T'),
     });
 
     return this.signer.send<ListingView>(mTx, { callbackUrl });
   }
 
-  async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
-    const mTx = MultiTransaction.batch(args.nft_contract_id)
+  async acceptOffering({ tokenId, buyerId, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
+    const mTx = MultiTransaction.batch(this.coreContractId)
       .nonFungibleToken.nft_approve({
         args: {
-          token_id: args.nft_token_id,
+          token_id: tokenId,
           account_id: this.contractId,
           msg: '',
         },
+        gas: Gas.parse(50, 'T'),
       })
       .batch(this.contractId)
-      .functionCall({
+      .functionCall<AcceptOfferingArgs>({
         methodName: 'accept_offering',
-        args,
+        args: {
+          nft_contract_id: this.coreContractId,
+          nft_token_id: tokenId,
+          buyer_id: buyerId,
+        },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: gas ?? Gas.parse(100, 'T'),
+        gas: Gas.parse(100, 'T'),
       });
 
     return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
-  // We have two type of offerings, Simple Offering & Pro Offering
-  // If Simple Offering, user needs to deposit with the same price
-  // If Pro Offering, we recommend user to deposit insufficient balance
-  async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions) {
+  async createOffering({ tokenId, price, expireTime, isSimpleOffering = true, callbackUrl }: CreateOfferingOptions) {
     const mTx = MultiTransaction.batch(this.contractId)
-      // first user needs to deposit for storage of new offering
+      // first user needs to deposit storage fee for new offering
       .storageManagement.storage_deposit({
-        attachedDeposit: offeringStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
+        attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
-    // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
-    mTx.batch(this.contractId);
-
-    args.is_simple_offering = args.is_simple_offering ?? true;
-
-    if (args.is_simple_offering) {
-      // create new offer and deposit with the same price
-      mTx.functionCall({
+    if (isSimpleOffering) {
+      // create new offering and deposit with the same price
+      mTx.functionCall<CreateOfferingArgs>({
         methodName: 'create_offering',
-        args,
-        attachedDeposit: args.price === '0' ? Amount.ONE_YOCTO : args.price,
-        gas,
+        args: {
+          nft_contract_id: this.coreContractId,
+          nft_token_id: tokenId,
+          price,
+          expire_time: expireTime,
+          is_simple_offering: isSimpleOffering,
+        },
+        attachedDeposit: price === '0' ? Amount.ONE_YOCTO : price,
+        gas: Gas.parse(50, 'T'),
       });
     } else {
       const accountView = await this.getAccountViewOf({
         accountId: this.signer.accountId,
       });
 
-      const insufficientBalance = BigNumber.max(BigNumber(args.price).minus(accountView?.near_balance ?? 0), 0);
+      const insufficientBalance = calcInsufficientBalance(accountView?.near_balance ?? 0, price);
 
       if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
@@ -394,20 +397,24 @@ export class MarketplaceContract extends BaseContract {
         });
       }
 
-      // create new offer
-      mTx.functionCall({
+      // create new offering
+      mTx.functionCall<CreateOfferingArgs>({
         methodName: 'create_offering',
-        args,
+        args: {
+          nft_contract_id: this.coreContractId,
+          nft_token_id: tokenId,
+          price,
+          expire_time: expireTime,
+          is_simple_offering: isSimpleOffering,
+        },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas,
+        gas: Gas.parse(50, 'T'),
       });
     }
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  // if simple offering, user must make up the insufficient part
-  // if pro offering, we recommend user to make up the insufficient part
   async updateOffering({ tokenId, newPrice, newExpireTime, callbackUrl }: UpdateOfferingOptions) {
     if (!newPrice && !newExpireTime) {
       throw Error('Must provide `newPrice` or `newExpireTime`');
@@ -438,6 +445,7 @@ export class MarketplaceContract extends BaseContract {
             new_expire_time: newExpireTime,
           },
           attachedDeposit: insufficientBalance.gt(0) ? insufficientBalance.toFixed() : Amount.ONE_YOCTO,
+          gas: Gas.parse(50, 'T'),
         });
       } else {
         // deposit insufficient balance
@@ -458,6 +466,7 @@ export class MarketplaceContract extends BaseContract {
             new_expire_time: newExpireTime,
           },
           attachedDeposit: Amount.ONE_YOCTO,
+          gas: Gas.parse(50, 'T'),
         });
       }
     } else {
@@ -470,18 +479,22 @@ export class MarketplaceContract extends BaseContract {
           new_expire_time: newExpireTime,
         },
         attachedDeposit: Amount.ONE_YOCTO,
+        gas: Gas.parse(50, 'T'),
       });
     }
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async removeOffering({ args, gas, callbackUrl }: RemoveOfferingOptions): Promise<OfferingView> {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async removeOffering({ tokenId, callbackUrl }: RemoveOfferingOptions): Promise<OfferingView> {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<RemoveOfferingArgs>({
       methodName: 'remove_offering',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+      },
       attachedDeposit: Amount.ONE_YOCTO,
-      gas,
+      gas: Gas.parse(50, 'T'),
     });
 
     return this.signer.send(mTx, { callbackUrl });

@@ -95,15 +95,15 @@ export type RemoveListingOptions = ChangeFunctionExtraOptions & {
 };
 
 export type AcceptOfferingOptions = ChangeFunctionExtraOptions & {
-  args: AcceptOfferingArgs;
-  approvalStorageDeposit?: string;
-  gas?: string;
+  tokenId: string;
+  buyerId: string;
 };
 
 export type CreateOfferingOptions = ChangeFunctionExtraOptions & {
-  args: CreateOfferingArgs;
-  offeringStorageDeposit?: string;
-  gas?: string;
+  tokenId: string;
+  price: string;
+  expireTime?: number;
+  isSimpleOffering?: boolean;
 };
 
 export type UpdateOfferingOptions = ChangeFunctionExtraOptions & {
@@ -113,8 +113,7 @@ export type UpdateOfferingOptions = ChangeFunctionExtraOptions & {
 };
 
 export type RemoveOfferingOptions = ChangeFunctionExtraOptions & {
-  args: RemoveOfferingArgs;
-  gas?: string;
+  tokenId: string;
 };
 
 // ---------------------------------------------- User Setting --------------------------------------------------
