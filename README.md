@@ -9,7 +9,7 @@ yarn add namesky-sdk
 ## Init
 Node
 ```ts
-import { initNameSky, NameSkySigner, MultiSendAccount } from 'namesky-sdk';
+import { initNameSky, NameSkySigner, Amount, MultiSendAccount } from 'namesky-sdk';
 ```
 
 ```ts
@@ -20,7 +20,7 @@ const namesky = await initNameSky({ signer: NameSkySigner.fromAccount(account) }
 
 Browser
 ```ts
-import { initNameSky, NameSkySigner, setupMultiSendWalletSelector } from 'namesky-sdk';
+import { initNameSky, NameSkySigner, Amount, setupMultiSendWalletSelector } from 'namesky-sdk';
 ```
 
 ```ts
@@ -45,18 +45,10 @@ await namesky.waitForMinting('star.near');
 ## Mange Listing
 * Create Listing
     ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
-    ```ts
     await namesky.marketplaceContract.createListing({ tokenId: 'star.near', price: Amount.parse(100, 'NEAR') });
     ```
 
 * Update Listing
-    ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
     ```ts
     await namesky.marketplaceContract.updateListing({ tokenId: 'star.near', newPrice: Amount.parse(200, 'NEAR') });
     ```
@@ -74,18 +66,10 @@ await namesky.waitForMinting('star.near');
 ## Mange Offering
 * Create Offering
     ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
-    ```ts
     await namesky.marketplaceContract.createOffering({ tokenId: 'moon.near', price: Amount.parse(30, 'NEAR') });
     ```
 
 * Update Offering
-    ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
     ```ts
     await namesky.marketplaceContract.updateOffering({ tokenId: 'moon.near', newPrice: Amount.parse(50, 'NEAR') });
     ```
