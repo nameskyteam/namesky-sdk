@@ -5,6 +5,7 @@
   "description": "NameSky SDK",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "type": "commonjs",
   "files": [
     "dist",
     "src"
@@ -20,7 +21,7 @@
     "@near-wallet-selector/core": "^8.9.2",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
-    "multi-transaction": "^6.1.0",
+    "multi-transaction": "^7.1.0",
     "near-api-js": "^2.1.4",
     "sha256": "^0.2.0"
   },
@@ -49,5 +50,11 @@
     "semi": true,
     "singleQuote": true,
     "printWidth": 120
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

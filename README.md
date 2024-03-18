@@ -7,9 +7,9 @@ yarn add namesky-sdk
 ```
 
 ## Init
-For Node
+Node
 ```ts
-import { initNameSky, MultiSendAccount, NameSkySigner } from 'namesky-sdk';
+import { initNameSky, NameSkySigner, Amount, MultiSendAccount } from 'namesky-sdk';
 ```
 
 ```ts
@@ -18,13 +18,13 @@ const account = MultiSendAccount.new(near.connection, 'alice.near');
 const namesky = await initNameSky({ signer: NameSkySigner.fromAccount(account) });
 ```
 
-For Browser
+Browser
 ```ts
-import { initNameSky, setupMultiSendWalletSelector, NameSkySigner } from 'namesky-sdk';
+import { initNameSky, NameSkySigner, Amount, setupMultiSendWalletSelector } from 'namesky-sdk';
 ```
 
 ```ts
-const selector = setupMultiSendWalletSelector({
+const selector = await setupMultiSendWalletSelector({
   network: 'mainnet',
   modules: [
     /* wallet modules */
@@ -35,124 +35,51 @@ const namesky = await initNameSky({ signer: NameSkySigner.fromWalletSelector(sel
 ```
 
 ## Mint
-Set registrant key
-
 ```ts
-// registrant is the account that you want to mint as NameSky NFT. (e.g. star.near)
+// Registrant is the account that you want to mint as NameSky NFT. (e.g. star.near)
 await namesky.setRegistrantKey('star.near', KeyPair.fromString('ed25519:<private key>'));
-```
-
-You can choose one click mint
-```ts
-await namesky.oneClickMint({ registrantId: 'star.near' });
-```
-
-or step by step mint
-```ts
-await namesky.register({ registrantId: 'star.near' });
-await namesky.setupController({ registrantId: 'star.near' });
-await namesky.waitForMinting({ registrantId: 'star.near' });
+await namesky.postMint('star.near');
+await namesky.waitForMinting('star.near');
 ```
 
 ## Mange Listing
 * Create Listing
     ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
-    ```ts
-    await namesky.marketplaceContract.createListing({
-      args: {
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'star.near',
-        price: Amount.parse(100, 'NEAR'),
-      },
-    });
+    await namesky.marketplaceContract.createListing({ tokenId: 'star.near', price: Amount.parse(100, 'NEAR') });
     ```
 
 * Update Listing
     ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
-    ```ts
-    await namesky.marketplaceContract.updateListing({
-      args: {
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'star.near',
-        new_price: Amount.parse(200, 'NEAR'),
-      },
-    });
+    await namesky.marketplaceContract.updateListing({ tokenId: 'star.near', newPrice: Amount.parse(200, 'NEAR') });
     ```
 
 * Remove Listing
     ```ts
-    await namesky.marketplaceContract.removeListing({
-      args: {
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'star.near',
-      },
-    });
+    await namesky.marketplaceContract.removeListing({ tokenId: 'star.near' });
     ```
 
 * Buy Listing
     ```ts
-    await namesky.marketplaceContract.buyListing({
-      args: {
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'moon.near',
-      },
-    });
+    await namesky.marketplaceContract.buyListing({ tokenId: 'star.near' });
     ```
 
 ## Mange Offering
 * Create Offering
     ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
-    ```ts
-    await namesky.marketplaceContract.createOffering({
-      args: {
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'moon.near',
-        price: Amount.parse(30, 'NEAR'),
-      },
-    });
+    await namesky.marketplaceContract.createOffering({ tokenId: 'moon.near', price: Amount.parse(30, 'NEAR') });
     ```
 
 * Update Offering
     ```ts
-    import { Amount } from 'namesky-sdk';
-    ```
-
-    ```ts
-    await namesky.marketplaceContract.updateOffering({
-      args: {
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'moon.near',
-        new_price: Amount.parse(40, 'NEAR'),
-      },
-    });
+    await namesky.marketplaceContract.updateOffering({ tokenId: 'moon.near', newPrice: Amount.parse(50, 'NEAR') });
     ```
 
 * Remove Offering
     ```ts
-    await namesky.marketplaceContract.removeOffering({
-      args: {
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'moon.near',
-      },
-    });
+    await namesky.marketplaceContract.removeOffering({ tokenId: 'moon.near' });
     ```
 
 * Accept Offering
     ```ts
-    await namesky.marketplaceContract.acceptOffering({
-      args: {
-        buyer_id: 'bob.near',
-        nft_contract_id: namesky.coreContractId,
-        nft_token_id: 'star.near',
-      },
-    });
+    await namesky.marketplaceContract.acceptOffering({ tokenId: 'star.near', buyerId: 'bob.near' });
     ```

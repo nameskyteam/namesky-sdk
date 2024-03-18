@@ -1,5 +1,5 @@
-import { BaseContract } from './BaseContract';
-import { DEFAULT_MARKET_STORAGE_DEPOSIT, DEFAULT_APPROVAL_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils';
+import { BaseContract, BaseContractOptions } from './BaseContract';
+import { calcInsufficientBalance, DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR, jsonSerialize } from '../../utils';
 import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
   AcceptOfferingOptions,
@@ -7,11 +7,14 @@ import {
   CreateListingOptions,
   CreateMarketAccountOption,
   CreateOfferingOptions,
-  GetAccountViewOfOptions,
-  GetListingUniqueIdOptions,
-  GetListingViewOptions,
-  GetListingViewsOfOptions,
-  GetListingViewsOptions,
+  NearDepositOptions,
+  NearWithdrawOptions,
+  RemoveListingOptions,
+  RemoveOfferingOptions,
+  UpdateListingOptions,
+  UpdateOfferingOptions,
+} from '../types/change-options';
+import {
   GetNftApprovalOptions,
   GetNftOfferingViewsOfOptions,
   GetOfferingUniqueIdOptions,
@@ -19,127 +22,210 @@ import {
   GetOfferingViewsOfOptions,
   GetOfferingViewsOptions,
   GetTradingFeeRateOptions,
-  NearDepositOptions,
-  NearWithdrawOptions,
-  RemoveListingOptions,
-  RemoveOfferingOptions,
-  UpdateListingOptions,
-  UpdateOfferingOptions,
-} from '../types/options';
-import { UpdateOfferingArgs } from '../types/args';
-import { Amount, BigNumber, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
+  GetAccountViewOfOptions,
+  GetListingUniqueIdOptions,
+  GetListingViewOptions,
+  GetListingViewsOfOptions,
+  GetListingViewsOptions,
+} from '../types/view-options';
+import {
+  AcceptOfferingArgs,
+  BuyListingArgs,
+  CreateListingArgs,
+  CreateOfferingArgs,
+  GetAccountViewOfArgs,
+  GetListingUniqueIdArgs,
+  GetListingViewArgs,
+  GetListingViewsArgs,
+  GetListingViewsOfArgs,
+  GetNftApprovalArgs,
+  GetNftOfferingViewsOfArgs,
+  GetOfferingUniqueIdArgs,
+  GetOfferingViewArgs,
+  GetOfferingViewsArgs,
+  GetOfferingViewsOfArgs,
+  NearWithdrawArgs,
+  RemoveListingArgs,
+  RemoveOfferingArgs,
+  UpdateListingArgs,
+  UpdateOfferingArgs,
+} from '../types/args';
+import { Amount, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
 
+export type MarketplaceContractOptions = BaseContractOptions & {
+  coreContractId: string;
+};
+
 export class MarketplaceContract extends BaseContract {
+  coreContractId: string;
+
+  constructor({ coreContractId, ...options }: MarketplaceContractOptions) {
+    super(options);
+    this.coreContractId = coreContractId;
+  }
+
   /**
    * Connect to new signer and return new instance
    */
   connect(signer: NameSkySigner): MarketplaceContract {
-    return new MarketplaceContract(this.contractId, signer);
+    return new MarketplaceContract({
+      coreContractId: this.coreContractId,
+      contractId: this.contractId,
+      signer,
+    });
   }
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async get_account_view_of({ args, blockQuery }: GetAccountViewOfOptions): Promise<AccountView | undefined> {
-    return this.signer.view({
+  async getAccountViewOf({ accountId, blockQuery }: GetAccountViewOfOptions): Promise<AccountView | undefined> {
+    return this.signer.view<AccountView | undefined, GetAccountViewOfArgs>({
       contractId: this.contractId,
       methodName: 'get_account_view_of',
-      args,
+      args: {
+        account_id: accountId,
+      },
       blockQuery,
     });
   }
 
-  async get_offering_view({ args, blockQuery }: GetOfferingViewOptions): Promise<OfferingView | undefined> {
-    return this.signer.view({
+  async getOfferingView({ tokenId, buyerId, blockQuery }: GetOfferingViewOptions): Promise<OfferingView | undefined> {
+    return this.signer.view<OfferingView | undefined, GetOfferingViewArgs>({
       contractId: this.contractId,
       methodName: 'get_offering_view',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+        buyer_id: buyerId,
+      },
       blockQuery,
     });
   }
 
-  async get_offering_views({ args, blockQuery }: GetOfferingViewsOptions): Promise<OfferingView[]> {
-    return this.signer.view({
+  async getOfferingViews({ offset, limit, blockQuery }: GetOfferingViewsOptions): Promise<OfferingView[]> {
+    return this.signer.view<OfferingView[], GetOfferingViewsArgs>({
       contractId: this.contractId,
       methodName: 'get_offering_views',
-      args,
+      args: {
+        offset,
+        limit,
+      },
       blockQuery,
     });
   }
 
-  async get_offering_views_of({ args, blockQuery }: GetOfferingViewsOfOptions): Promise<OfferingView[]> {
-    return this.signer.view({
+  async getOfferingViewsOf({
+    accountId,
+    offset,
+    limit,
+    blockQuery,
+  }: GetOfferingViewsOfOptions): Promise<OfferingView[]> {
+    return this.signer.view<OfferingView[], GetOfferingViewsOfArgs>({
       contractId: this.contractId,
       methodName: 'get_offering_views_of',
-      args,
+      args: {
+        account_id: accountId,
+        offset,
+        limit,
+      },
       blockQuery,
     });
   }
 
-  async get_nft_offering_views_of({ args, blockQuery }: GetNftOfferingViewsOfOptions): Promise<OfferingView[]> {
-    return this.signer.view({
+  async getNftOfferingViewsOf({
+    tokenId,
+    offset,
+    limit,
+    blockQuery,
+  }: GetNftOfferingViewsOfOptions): Promise<OfferingView[]> {
+    return this.signer.view<OfferingView[], GetNftOfferingViewsOfArgs>({
       contractId: this.contractId,
       methodName: 'get_nft_offering_views_of',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+        offset,
+        limit,
+      },
       blockQuery,
     });
   }
 
-  async get_offering_unique_id({ args, blockQuery }: GetOfferingUniqueIdOptions): Promise<string> {
-    return this.signer.view({
+  async getOfferingUniqueId({ tokenId, buyerId, blockQuery }: GetOfferingUniqueIdOptions): Promise<string> {
+    return this.signer.view<string, GetOfferingUniqueIdArgs>({
       contractId: this.contractId,
       methodName: 'get_offering_unique_id',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+        buyer_id: buyerId,
+      },
       blockQuery,
     });
   }
 
-  async get_listing_view({ args, blockQuery }: GetListingViewOptions): Promise<ListingView | undefined> {
-    return this.signer.view({
+  async getListingView({ tokenId, blockQuery }: GetListingViewOptions): Promise<ListingView | undefined> {
+    return this.signer.view<ListingView | undefined, GetListingViewArgs>({
       contractId: this.contractId,
       methodName: 'get_listing_view',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+      },
       blockQuery,
     });
   }
 
-  async get_listing_views({ args, blockQuery }: GetListingViewsOptions): Promise<ListingView[]> {
-    return this.signer.view({
+  async getListingViews({ offset, limit, blockQuery }: GetListingViewsOptions): Promise<ListingView[]> {
+    return this.signer.view<ListingView[], GetListingViewsArgs>({
       contractId: this.contractId,
       methodName: 'get_listing_views',
-      args,
+      args: {
+        offset,
+        limit,
+      },
       blockQuery,
     });
   }
 
-  async get_listing_views_of({ args, blockQuery }: GetListingViewsOfOptions): Promise<ListingView[]> {
-    return this.signer.view({
+  async getListingViewsOf({ accountId, offset, limit, blockQuery }: GetListingViewsOfOptions): Promise<ListingView[]> {
+    return this.signer.view<ListingView[], GetListingViewsOfArgs>({
       contractId: this.contractId,
       methodName: 'get_listing_views_of',
-      args,
+      args: {
+        account_id: accountId,
+        offset,
+        limit,
+      },
       blockQuery,
     });
   }
 
-  async get_listing_unique_id({ args, blockQuery }: GetListingUniqueIdOptions): Promise<string> {
-    return this.signer.view({
+  async getListingUniqueId({ tokenId, blockQuery }: GetListingUniqueIdOptions): Promise<string> {
+    return this.signer.view<string, GetListingUniqueIdArgs>({
       contractId: this.contractId,
       methodName: 'get_listing_unique_id',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+      },
       blockQuery,
     });
   }
 
-  async get_nft_approval({ args, blockQuery }: GetNftApprovalOptions): Promise<Approval | undefined> {
-    return this.signer.view({
+  async getNftApproval({ tokenId, blockQuery }: GetNftApprovalOptions): Promise<Approval | undefined> {
+    return this.signer.view<Approval | undefined, GetNftApprovalArgs>({
       contractId: this.contractId,
       methodName: 'get_nft_approval',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+      },
       blockQuery,
     });
   }
 
-  async get_trading_fee_rate({ blockQuery }: GetTradingFeeRateOptions): Promise<TradingFeeRate> {
+  async getTradingFeeRate({ blockQuery }: GetTradingFeeRateOptions): Promise<TradingFeeRate> {
     const { listing_trading_fee, offering_trading_fee } = await this.signer.view<MarketplaceConfig>({
       contractId: this.contractId,
       methodName: 'get_config',
@@ -152,163 +238,156 @@ export class MarketplaceContract extends BaseContract {
     };
   }
 
-  // ------------------------------------------------- Call -------------------------------------------------------
-  // This function is wrap of `storage_deposit`, used when a user doesn't
-  // create any offering or listing in marketplace, but want to have an account
-  async createMarketAccount({
-    args,
-    marketStorageDeposit,
-    gas,
-    callbackUrl,
-  }: CreateMarketAccountOption): Promise<StorageBalance> {
-    const mTx = MultiTransaction.batch(this.contractId).storageManagement.storageDeposit({
-      args,
-      attachedDeposit: marketStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
-      gas,
+  // ------------------------------------------------- Change -----------------------------------------------------
+
+  async createMarketAccount({ callbackUrl }: CreateMarketAccountOption): Promise<StorageBalance> {
+    const mTx = MultiTransaction.batch(this.contractId).storageManagement.storage_deposit({
+      attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
     });
 
     return this.signer.send(mTx, { callbackUrl });
   }
 
-  async nearDeposit({ args, attachedDeposit, gas, callbackUrl }: NearDepositOptions) {
+  async nearDeposit({ amount, callbackUrl }: NearDepositOptions) {
     const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'near_deposit',
-      args,
-      attachedDeposit,
-      gas,
+      attachedDeposit: amount,
     });
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async nearWithdraw({ args, gas, callbackUrl }: NearWithdrawOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async nearWithdraw({ amount, callbackUrl }: NearWithdrawOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<NearWithdrawArgs>({
       methodName: 'near_withdraw',
-      args,
+      args: {
+        amount,
+      },
       attachedDeposit: Amount.ONE_YOCTO,
-      gas,
     });
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async buyListing({ args, gas, callbackUrl }: BuyListingOptions): Promise<boolean> {
-    const listing = await this.get_listing_view({ args });
+  async buyListing({ tokenId, callbackUrl }: BuyListingOptions): Promise<boolean> {
+    const listing = await this.getListingView({ tokenId });
     if (!listing) {
       throw Error('Listing not found');
     }
 
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<BuyListingArgs>({
       methodName: 'buy_listing',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+      },
       attachedDeposit: listing.price,
-      gas: gas ?? Gas.parse(100, 'T'),
+      gas: Gas.parse(100, 'T'),
     });
 
     return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async createListing({ args, listingStorageDeposit, approvalStorageDeposit, gas, callbackUrl }: CreateListingOptions) {
-    const { nft_contract_id, nft_token_id, price, expire_time } = args;
+  async createListing({ tokenId, price, expireTime, callbackUrl }: CreateListingOptions) {
     const mTx = MultiTransaction.batch(this.contractId)
-      // first user needs to deposit for storage of new listing
-      .storageManagement.storageDeposit({
-        attachedDeposit: listingStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
+      // first user needs to deposit storage fee for new listing
+      .storageManagement.storage_deposit({
+        attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
-    // call `nft_approve` to create listing
-    mTx.batch(nft_contract_id).nonFungibleToken.nftApprove({
+    mTx.batch(this.coreContractId).nonFungibleToken.nft_approve({
       args: {
         account_id: this.contractId,
-        token_id: nft_token_id,
-        msg: JSON.stringify({ CreateListing: { price, expire_time } }),
+        token_id: tokenId,
+        msg: jsonSerialize<CreateListingArgs>({ CreateListing: { price, expire_time: expireTime } }),
       },
-      attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
-      gas,
+      gas: Gas.parse(50, 'T'),
     });
 
-    await this.signer.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async updateListing({ args, approvalStorageDeposit, gas, callbackUrl }: UpdateListingOptions) {
-    const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
-    // call `nft_approve` to update listing
-    const mTx = MultiTransaction.batch(nft_contract_id).nonFungibleToken.nftApprove({
+  async updateListing({ tokenId, newPrice, newExpireTime, callbackUrl }: UpdateListingOptions) {
+    const mTx = MultiTransaction.batch(this.coreContractId).nonFungibleToken.nft_approve({
       args: {
         account_id: this.contractId,
-        token_id: nft_token_id,
-        msg: JSON.stringify({ UpdateListing: { new_price, new_expire_time } }),
+        token_id: tokenId,
+        msg: jsonSerialize<UpdateListingArgs>({
+          UpdateListing: { new_price: newPrice, new_expire_time: newExpireTime },
+        }),
       },
-      attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
-      gas,
+      gas: Gas.parse(50, 'T'),
     });
 
-    await this.signer.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async removeListing({ args, gas, callbackUrl }: RemoveListingOptions): Promise<ListingView> {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async removeListing({ tokenId, callbackUrl }: RemoveListingOptions): Promise<ListingView> {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<RemoveListingArgs>({
       methodName: 'remove_listing',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+      },
       attachedDeposit: Amount.ONE_YOCTO,
-      gas,
+      gas: Gas.parse(50, 'T'),
     });
 
     return this.signer.send<ListingView>(mTx, { callbackUrl });
   }
 
-  async acceptOffering({ args, approvalStorageDeposit, gas, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
-    const mTx = MultiTransaction.batch(args.nft_contract_id)
-      .nonFungibleToken.nftApprove({
+  async acceptOffering({ tokenId, buyerId, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
+    const mTx = MultiTransaction.batch(this.coreContractId)
+      .nonFungibleToken.nft_approve({
         args: {
-          token_id: args.nft_token_id,
+          token_id: tokenId,
           account_id: this.contractId,
           msg: '',
         },
-        attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
+        gas: Gas.parse(50, 'T'),
       })
       .batch(this.contractId)
-      .functionCall({
+      .functionCall<AcceptOfferingArgs>({
         methodName: 'accept_offering',
-        args,
+        args: {
+          nft_contract_id: this.coreContractId,
+          nft_token_id: tokenId,
+          buyer_id: buyerId,
+        },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas: gas ?? Gas.parse(100, 'T'),
+        gas: Gas.parse(100, 'T'),
       });
 
     return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
-  // We have two type of offerings, Simple Offering & Pro Offering
-  // If Simple Offering, user needs to deposit with the same price
-  // If Pro Offering, we recommend user to deposit insufficient balance
-  async createOffering({ args, gas, offeringStorageDeposit, callbackUrl }: CreateOfferingOptions) {
+  async createOffering({ tokenId, price, expireTime, isSimpleOffering = true, callbackUrl }: CreateOfferingOptions) {
     const mTx = MultiTransaction.batch(this.contractId)
-      // first user needs to deposit for storage of new offering
-      .storageManagement.storageDeposit({
-        attachedDeposit: offeringStorageDeposit ?? DEFAULT_MARKET_STORAGE_DEPOSIT,
+      // first user needs to deposit storage fee for new offering
+      .storageManagement.storage_deposit({
+        attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
-    // In case of attached balance not enough, we don't use batch transaction here, we use two separate transactions
-    mTx.batch(this.contractId);
-
-    args.is_simple_offering = args.is_simple_offering ?? true;
-
-    if (args.is_simple_offering) {
-      // create new offer and deposit with the same price
-      mTx.functionCall({
+    if (isSimpleOffering) {
+      // create new offering and deposit with the same price
+      mTx.functionCall<CreateOfferingArgs>({
         methodName: 'create_offering',
-        args,
-        attachedDeposit: args.price === '0' ? Amount.ONE_YOCTO : args.price,
-        gas,
+        args: {
+          nft_contract_id: this.coreContractId,
+          nft_token_id: tokenId,
+          price,
+          expire_time: expireTime,
+          is_simple_offering: isSimpleOffering,
+        },
+        attachedDeposit: price === '0' ? Amount.ONE_YOCTO : price,
+        gas: Gas.parse(50, 'T'),
       });
     } else {
-      const accountView = await this.get_account_view_of({
-        args: {
-          account_id: this.signer.accountId,
-        },
+      const accountView = await this.getAccountViewOf({
+        accountId: this.signer.accountId,
       });
 
-      const insufficientBalance = BigNumber.max(BigNumber(args.price).minus(accountView?.near_balance ?? 0), 0);
+      const insufficientBalance = calcInsufficientBalance(accountView?.near_balance ?? 0, price);
 
       if (insufficientBalance.gt(0)) {
         // deposit insufficient balance
@@ -318,53 +397,55 @@ export class MarketplaceContract extends BaseContract {
         });
       }
 
-      // create new offer
-      mTx.functionCall({
+      // create new offering
+      mTx.functionCall<CreateOfferingArgs>({
         methodName: 'create_offering',
-        args,
+        args: {
+          nft_contract_id: this.coreContractId,
+          nft_token_id: tokenId,
+          price,
+          expire_time: expireTime,
+          is_simple_offering: isSimpleOffering,
+        },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas,
+        gas: Gas.parse(50, 'T'),
       });
     }
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  // if simple offering, user must make up the insufficient part
-  // if pro offering, we recommend user to make up the insufficient part
-  async updateOffering({ args, gas, callbackUrl }: UpdateOfferingOptions) {
-    const { nft_contract_id, nft_token_id, new_price, new_expire_time } = args;
+  async updateOffering({ tokenId, newPrice, newExpireTime, callbackUrl }: UpdateOfferingOptions) {
+    if (!newPrice && !newExpireTime) {
+      throw Error('Must provide `newPrice` or `newExpireTime`');
+    }
 
-    if (!new_price && !new_expire_time) {
-      throw Error('Must provide `new_price` or `new_expire_time`');
+    const offering = await this.getOfferingView({
+      tokenId,
+      buyerId: this.signer.accountId,
+    });
+
+    if (!offering) {
+      throw Error('Offering not found');
     }
 
     const mTx = MultiTransaction.batch(this.contractId);
 
-    if (new_price) {
-      // if price need to be updated
-
-      const offering = await this.get_offering_view({
-        args: {
-          buyer_id: this.signer.accountId,
-          nft_contract_id,
-          nft_token_id,
-        },
-      });
-
-      if (!offering) {
-        throw Error('Offering not found');
-      }
-
-      const insufficientBalance = BigNumber.max(BigNumber(new_price).minus(offering.price), 0);
+    if (newPrice) {
+      const insufficientBalance = calcInsufficientBalance(offering.price, newPrice);
 
       if (offering.is_simple_offering) {
         // update offering and deposit insufficient balance
         mTx.functionCall<UpdateOfferingArgs>({
           methodName: 'update_offering',
-          args,
+          args: {
+            nft_contract_id: this.coreContractId,
+            nft_token_id: tokenId,
+            new_price: newPrice,
+            new_expire_time: newExpireTime,
+          },
           attachedDeposit: insufficientBalance.gt(0) ? insufficientBalance.toFixed() : Amount.ONE_YOCTO,
-          gas,
+          gas: Gas.parse(50, 'T'),
         });
       } else {
         // deposit insufficient balance
@@ -378,31 +459,42 @@ export class MarketplaceContract extends BaseContract {
         // update offering
         mTx.functionCall({
           methodName: 'update_offering',
-          args,
+          args: {
+            nft_contract_id: this.coreContractId,
+            nft_token_id: tokenId,
+            new_price: newPrice,
+            new_expire_time: newExpireTime,
+          },
           attachedDeposit: Amount.ONE_YOCTO,
-          gas,
+          gas: Gas.parse(50, 'T'),
         });
       }
     } else {
-      // if price doesn't need to be updated.
-      // update offering
       mTx.functionCall({
         methodName: 'update_offering',
-        args,
+        args: {
+          nft_contract_id: this.coreContractId,
+          nft_token_id: tokenId,
+          new_price: newPrice,
+          new_expire_time: newExpireTime,
+        },
         attachedDeposit: Amount.ONE_YOCTO,
-        gas,
+        gas: Gas.parse(50, 'T'),
       });
     }
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async removeOffering({ args, gas, callbackUrl }: RemoveOfferingOptions): Promise<OfferingView> {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async removeOffering({ tokenId, callbackUrl }: RemoveOfferingOptions): Promise<OfferingView> {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<RemoveOfferingArgs>({
       methodName: 'remove_offering',
-      args,
+      args: {
+        nft_contract_id: this.coreContractId,
+        nft_token_id: tokenId,
+      },
       attachedDeposit: Amount.ONE_YOCTO,
-      gas,
+      gas: Gas.parse(50, 'T'),
     });
 
     return this.signer.send(mTx, { callbackUrl });
