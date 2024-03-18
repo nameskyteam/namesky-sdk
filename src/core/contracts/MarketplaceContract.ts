@@ -1,5 +1,5 @@
 import { BaseContract, BaseContractOptions } from './BaseContract';
-import { DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR, jsonSerialize } from '../../utils';
+import { calcInsufficientBalance, DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR, jsonSerialize } from '../../utils';
 import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
   AcceptOfferingOptions,
@@ -425,7 +425,7 @@ export class MarketplaceContract extends BaseContract {
     const mTx = MultiTransaction.batch(this.contractId);
 
     if (newPrice) {
-      const insufficientBalance = BigNumber.max(BigNumber(newPrice).minus(offering.price), 0);
+      const insufficientBalance = calcInsufficientBalance(offering.price, newPrice);
 
       if (offering.is_simple_offering) {
         // update offering and deposit insufficient balance

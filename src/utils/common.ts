@@ -1,4 +1,4 @@
-import { Amount, BigNumber } from 'multi-transaction';
+import { Amount, BigNumber, BigNumberLike } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
 import { PublicKey } from 'near-api-js/lib/utils';
 
@@ -17,6 +17,10 @@ export function jsonSerialize<T>(data: T): string {
 
 export function jsonDeserialize<T>(data: string): T {
   return JSON.parse(data);
+}
+
+export function calcInsufficientBalance(current: BigNumberLike, required: BigNumberLike): BigNumber {
+  return BigNumber.max(BigNumber(required).minus(current), 0);
 }
 
 export function isBrowser(): boolean {
