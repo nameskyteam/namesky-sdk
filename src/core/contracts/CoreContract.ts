@@ -184,7 +184,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftTransfer({ args, gas, callbackUrl }: NftTransferOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nftTransfer({
+    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_transfer({
       args,
       gas,
     });
@@ -193,7 +193,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftApprove({ args, approvalStorageDeposit, gas, callbackUrl }: NftApproveOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nftApprove({
+    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_approve({
       args,
       attachedDeposit: approvalStorageDeposit ?? DEFAULT_APPROVAL_STORAGE_DEPOSIT,
       gas,
@@ -203,7 +203,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftRevoke({ args, gas, callbackUrl }: NftRevokeOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nftRevoke({
+    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_revoke({
       args,
       gas,
     });

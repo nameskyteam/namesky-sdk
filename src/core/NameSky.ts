@@ -39,7 +39,7 @@ import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkySigner } from './NameSkySigner';
-import { State, StateList } from './types/common';
+import { StateList } from './types/common';
 
 export class NameSky {
   private near: Near;
@@ -217,7 +217,7 @@ export class NameSky {
       isControllerOwnerIdCorrect,
       state,
       accessKeys,
-    } = await this.getNftAccountSafety(registrantId);
+    } = await this.getNftAccountSafety(registrantId, true);
 
     if (isCodeHashCorrect && isStateCleaned && isAccessKeysDeleted && isControllerOwnerIdCorrect) {
       return;
@@ -310,21 +310,19 @@ export class NameSky {
     return this.waitForMinting({ registrantId });
   }
 
-  async getNftAccountSafety(accountId: string): Promise<NameSkyNftSafety> {
+  async getNftAccountSafety(accountId: string, strict = false): Promise<NameSkyNftSafety> {
     const block = await this.provider.block({ finality: 'optimistic' });
 
     const blockQuery: BlockQuery = { blockId: block.header.height };
 
-    const [codeHash, controllerCodeViews, { values: state }, { keys: accessKeys }] = await Promise.all([
-      this.provider
-        .query<AccountView>({
-          ...blockQuery,
-          request_type: 'view_account',
-          account_id: accountId,
-        })
-        .then((accountView) => accountView.code_hash),
-
+    const [controllerCodeViews, accountView, { values: state }, { keys: accessKeys }] = await Promise.all([
       this.coreContract.getControllerCodeViews({ blockQuery }),
+
+      this.provider.query<AccountView>({
+        ...blockQuery,
+        request_type: 'view_account',
+        account_id: accountId,
+      }),
 
       this.provider.query<StateList>({
         ...blockQuery,
@@ -340,7 +338,12 @@ export class NameSky {
       }),
     ]);
 
-    const isCodeHashCorrect = controllerCodeViews.some((view) => view.code_hash === codeHash);
+    const codeHash = accountView.code_hash;
+    const latestControllerCodeView = controllerCodeViews.reduce((pre, cur) => (pre.version > cur.version ? pre : cur));
+
+    const isCodeHashCorrect = strict
+      ? codeHash === latestControllerCodeView.code_hash
+      : controllerCodeViews.some((controllerCodeView) => controllerCodeView.code_hash === codeHash);
     const isStateCleaned = state.length === 1;
     const isAccessKeysDeleted = accessKeys.length === 0;
     let isControllerOwnerIdCorrect = false;

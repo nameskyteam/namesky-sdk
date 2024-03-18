@@ -9,29 +9,29 @@ export type InitArgs = Uint8Array;
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 
-export interface NftRegisterArgs {
+export type NftRegisterArgs = {
   minter_id: string;
-}
+};
 
-export interface NftUnregisterArgs {
+export type NftUnregisterArgs = {
   registrant_id: string;
   public_key: string;
   force?: boolean;
-}
+};
 
-export interface NftGetMinterIdArgs {
+export type NftGetMinterIdArgs = {
   registrant_id: string;
-}
+};
 
-export interface NftRegistrantIdsOfArgs {
+export type NftRegistrantIdsOfArgs = {
   minter_id: string;
   from_index?: string;
   limit?: number;
-}
+};
 
-export interface NftStateArgs {
+export type NftStateArgs = {
   token_id: string;
-}
+};
 
 export type NftNameSkyTokenArgs = NftTokenArgs;
 
@@ -39,190 +39,190 @@ export type NftNameSkyTokensArgs = NftTokensArgs;
 
 export type NftNameSkyTokensForOwnerArgs = NftTokensForOwnerArgs;
 
-export interface NftRedeemArgs {
+export type NftRedeemArgs = {
   token_id: string;
   public_key: string;
   force?: boolean;
   memo?: string;
-}
+};
 
-export interface GetMintNumArgs {
+export type GetMintNumArgs = {
   account_id: string;
-}
+};
 
 // ---------------------------------------------- Marketplace -----------------------------------------------------
 
-export interface CreateMarketAccountArgs {
+export type CreateMarketAccountArgs = {
   account_id?: string;
   registration_only?: boolean;
-}
+};
 
-export interface NearDepositArgs {
+export type NearDepositArgs = {
   account_id?: string;
-}
+};
 
-export interface NearWithdrawArgs {
+export type NearWithdrawArgs = {
   amount?: string;
-}
+};
 
-export interface BuyListingArgs {
+export type BuyListingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface CreateListingArgs {
+export type CreateListingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
   price: string;
   expire_time?: number;
-}
+};
 
-export interface UpdateListingArgs {
+export type UpdateListingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
   new_price?: string;
   new_expire_time?: UpdateWrapper<number>;
-}
+};
 
-export interface RemoveListingArgs {
+export type RemoveListingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface AcceptOfferingArgs {
+export type AcceptOfferingArgs = {
   buyer_id: string;
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface CreateOfferingArgs {
+export type CreateOfferingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
   price: string;
   is_simple_offering?: boolean;
   expire_time?: number;
-}
+};
 
-export interface UpdateOfferingArgs {
+export type UpdateOfferingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
   new_price?: string;
   new_expire_time?: UpdateWrapper<number>;
-}
+};
 
-export interface RemoveOfferingArgs {
+export type RemoveOfferingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface GetAccountViewOfArgs {
+export type GetAccountViewOfArgs = {
   account_id: string;
-}
+};
 
-export interface GetOfferingViewArgs {
+export type GetOfferingViewArgs = {
   buyer_id: string;
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface GetOfferingViewsArgs {
+export type GetOfferingViewsArgs = {
   offset?: number;
   limit?: number;
-}
+};
 
-export interface GetOfferingViewsOfArgs {
+export type GetOfferingViewsOfArgs = {
   account_id: string;
   offset?: number;
   limit?: number;
-}
+};
 
-export interface GetNftOfferingViewsOfArgs {
+export type GetNftOfferingViewsOfArgs = {
   nft_contract_id: string;
   nft_token_id: string;
   offset?: number;
   limit?: number;
-}
+};
 
-export interface getOfferingUniqueIdArgs {
+export type getOfferingUniqueIdArgs = {
   buyer_id: string;
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface GetListingViewArgs {
+export type GetListingViewArgs = {
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface GetListingViewsArgs {
+export type GetListingViewsArgs = {
   offset?: number;
   limit?: number;
-}
+};
 
-export interface GetListingViewsOfArgs {
+export type GetListingViewsOfArgs = {
   account_id: string;
   offset?: number;
   limit?: number;
-}
+};
 
-export interface GetListingUniqueIdArgs {
+export type GetListingUniqueIdArgs = {
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
-export interface GetNftApprovalArgs {
+export type GetNftApprovalArgs = {
   nft_contract_id: string;
   nft_token_id: string;
-}
+};
 
 // ---------------------------------------------- User Setting --------------------------------------------------
 
-export interface LikeArgs {
+export type LikeArgs = {
   token_id: string;
-}
+};
 
-export interface UnlikeArgs {
+export type UnlikeArgs = {
   token_id: string;
-}
+};
 
-export interface WatchArgs {
+export type WatchArgs = {
   token_id: string;
-}
+};
 
-export interface UnwatchArgs {
+export type UnwatchArgs = {
   token_id: string;
-}
+};
 
-export interface ReadNotificationAtArgs {
+export type ReadNotificationAtArgs = {
   timestamp?: string;
-}
+};
 
-export interface GetUserLikesArgs {
+export type GetUserLikesArgs = {
   account_id: string;
-}
+};
 
-export interface GetUserWatchListArgs {
+export type GetUserWatchListArgs = {
   account_id: string;
-}
+};
 
-export interface GetUserLastReadNotificationTimeArgs {
+export type GetUserLastReadNotificationTimeArgs = {
   account_id: string;
-}
+};
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
 
-export interface GetSpaceshipEngineArgs {
+export type GetSpaceshipEngineArgs = {
   account_id: string;
-}
+};
 
-export interface GetRewardsForAccountArgs {
+export type GetRewardsForAccountArgs = {
   account_id: string;
-}
+};
 
-export interface AddFuelArgs {
+export type AddFuelArgs = {
   quantity: string;
-}
+};
 
-export interface GetSpaceshipArgs {
+export type GetSpaceshipArgs = {
   account_id: string;
-}
+};

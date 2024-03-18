@@ -100,7 +100,7 @@ export class SpaceshipContract extends BaseContract {
         methodName: 'storage_balance_bounds',
       });
 
-      mTx.batch(skyTokenId).storageManagement.storageDeposit({
+      mTx.batch(skyTokenId).storageManagement.storage_deposit({
         attachedDeposit: storageBalanceBounds.min,
       });
     }

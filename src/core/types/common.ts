@@ -6,10 +6,11 @@ export type UpdateWrapper<T> =
     }
   | 'UpdateNone';
 
-export interface StateList extends QueryResponseKind {
+export type StateList = QueryResponseKind & {
   values: State[];
-}
-export interface State {
+};
+
+export type State = {
   key: string;
   value: string;
-}
+};

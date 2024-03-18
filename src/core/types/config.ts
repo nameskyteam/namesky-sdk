@@ -5,7 +5,7 @@ import { SpaceshipContract } from '../contracts/SpaceshipContract';
 import { keyStores } from 'near-api-js';
 import { NameSkySigner } from '../NameSkySigner';
 
-export interface NameSkyComponent {
+export type NameSkyComponent = {
   signer: NameSkySigner;
   keyStore: keyStores.KeyStore;
 
@@ -13,16 +13,16 @@ export interface NameSkyComponent {
   marketplaceContract: MarketplaceContract;
   userSettingContract: UserSettingContract;
   spaceshipContract: SpaceshipContract;
-}
+};
 
-export interface Network {
+export type Network = {
   networkId: NetworkId;
   nodeUrl: string;
-}
+};
 
 export type NetworkId = 'mainnet' | 'testnet' | string;
 
-export interface NameSkyOptions {
+export type NameSkyOptions = {
   signer: NameSkySigner;
   contracts?: {
     coreContractId?: string;
@@ -30,4 +30,4 @@ export interface NameSkyOptions {
     userSettingContractId?: string;
     spaceshipContractId?: string;
   };
-}
+};

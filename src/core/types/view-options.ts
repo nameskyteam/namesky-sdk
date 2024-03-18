@@ -26,136 +26,136 @@ import {
 } from './args';
 import { BlockQuery, NftSupplyForOwnerArgs } from 'multi-transaction';
 
-interface ViewFunctionExtraOptions {
+type ViewFunctionExtraOptions = {
   blockQuery?: BlockQuery;
-}
+};
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 
-export interface GetControllerOwnerIdOptions extends ViewFunctionExtraOptions {
+export type GetControllerOwnerIdOptions = ViewFunctionExtraOptions & {
   accountId: string;
-}
+};
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 
-export interface NftGetMinterIdOptions extends ViewFunctionExtraOptions {
+export type NftGetMinterIdOptions = ViewFunctionExtraOptions & {
   args: NftGetMinterIdArgs;
-}
+};
 
-export interface NftRegistrantIdsOfOptions extends ViewFunctionExtraOptions {
+export type NftRegistrantIdsOfOptions = ViewFunctionExtraOptions & {
   args: NftRegistrantIdsOfArgs;
-}
+};
 
-export interface NftStateOptions extends ViewFunctionExtraOptions {
+export type NftStateOptions = ViewFunctionExtraOptions & {
   args: NftStateArgs;
-}
+};
 
-export interface NftNameSkyTokenOptions extends ViewFunctionExtraOptions {
+export type NftNameSkyTokenOptions = ViewFunctionExtraOptions & {
   args: NftNameSkyTokenArgs;
-}
+};
 
-export interface NftNameSkyTokensOptions extends ViewFunctionExtraOptions {
+export type NftNameSkyTokensOptions = ViewFunctionExtraOptions & {
   args?: NftNameSkyTokensArgs;
-}
+};
 
-export interface NftNameSkyTokensForOwnerOptions extends ViewFunctionExtraOptions {
+export type NftNameSkyTokensForOwnerOptions = ViewFunctionExtraOptions & {
   args: NftNameSkyTokensForOwnerArgs;
-}
+};
 
-export interface NftTotalSupplyOptions extends ViewFunctionExtraOptions {}
+export type NftTotalSupplyOptions = ViewFunctionExtraOptions & {};
 
-export interface NftSupplyForOwnerOptions extends ViewFunctionExtraOptions {
+export type NftSupplyForOwnerOptions = ViewFunctionExtraOptions & {
   args: NftSupplyForOwnerArgs;
-}
+};
 
-export interface GetLatestControllerCodeOptions extends ViewFunctionExtraOptions {}
+export type GetLatestControllerCodeOptions = ViewFunctionExtraOptions & {};
 
-export interface GetLatestControllerCodeHashOptions extends ViewFunctionExtraOptions {}
+export type GetLatestControllerCodeHashOptions = ViewFunctionExtraOptions & {};
 
-export interface GetControllerCodeViewsOptions extends ViewFunctionExtraOptions {}
+export type GetControllerCodeViewsOptions = ViewFunctionExtraOptions & {};
 
-export interface GetMintFeeOptions extends ViewFunctionExtraOptions {}
+export type GetMintFeeOptions = ViewFunctionExtraOptions & {};
 
-export interface GetRoyaltyOptions extends ViewFunctionExtraOptions {}
+export type GetRoyaltyOptions = ViewFunctionExtraOptions & {};
 
-export interface GetMintNumOptions extends ViewFunctionExtraOptions {
+export type GetMintNumOptions = ViewFunctionExtraOptions & {
   args: GetMintNumArgs;
-}
+};
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 
-export interface GetAccountViewOfOptions extends ViewFunctionExtraOptions {
+export type GetAccountViewOfOptions = ViewFunctionExtraOptions & {
   args: GetAccountViewOfArgs;
-}
+};
 
-export interface GetOfferingViewOptions extends ViewFunctionExtraOptions {
+export type GetOfferingViewOptions = ViewFunctionExtraOptions & {
   args: GetOfferingViewArgs;
-}
+};
 
-export interface GetOfferingViewsOptions extends ViewFunctionExtraOptions {
+export type GetOfferingViewsOptions = ViewFunctionExtraOptions & {
   args?: GetOfferingViewsArgs;
-}
+};
 
-export interface GetOfferingViewsOfOptions extends ViewFunctionExtraOptions {
+export type GetOfferingViewsOfOptions = ViewFunctionExtraOptions & {
   args: GetOfferingViewsOfArgs;
-}
+};
 
-export interface GetNftOfferingViewsOfOptions extends ViewFunctionExtraOptions {
+export type GetNftOfferingViewsOfOptions = ViewFunctionExtraOptions & {
   args: GetNftOfferingViewsOfArgs;
-}
+};
 
-export interface GetOfferingUniqueIdOptions extends ViewFunctionExtraOptions {
+export type GetOfferingUniqueIdOptions = ViewFunctionExtraOptions & {
   args: getOfferingUniqueIdArgs;
-}
+};
 
-export interface GetListingViewOptions extends ViewFunctionExtraOptions {
+export type GetListingViewOptions = ViewFunctionExtraOptions & {
   args: GetListingViewArgs;
-}
+};
 
-export interface GetListingViewsOptions extends ViewFunctionExtraOptions {
+export type GetListingViewsOptions = ViewFunctionExtraOptions & {
   args?: GetListingViewsArgs;
-}
+};
 
-export interface GetListingViewsOfOptions extends ViewFunctionExtraOptions {
+export type GetListingViewsOfOptions = ViewFunctionExtraOptions & {
   args: GetListingViewsOfArgs;
-}
+};
 
-export interface GetListingUniqueIdOptions extends ViewFunctionExtraOptions {
+export type GetListingUniqueIdOptions = ViewFunctionExtraOptions & {
   args: GetListingUniqueIdArgs;
-}
+};
 
-export interface GetNftApprovalOptions extends ViewFunctionExtraOptions {
+export type GetNftApprovalOptions = ViewFunctionExtraOptions & {
   args: GetNftApprovalArgs;
-}
+};
 
-export interface GetTradingFeeRateOptions extends ViewFunctionExtraOptions {}
+export type GetTradingFeeRateOptions = ViewFunctionExtraOptions & {};
 
 // ---------------------------------------------- User Setting --------------------------------------------------
 
-export interface GetUserLikesOptions extends ViewFunctionExtraOptions {
+export type GetUserLikesOptions = ViewFunctionExtraOptions & {
   args: GetUserLikesArgs;
-}
+};
 
-export interface GetUserWatchListOptions extends ViewFunctionExtraOptions {
+export type GetUserWatchListOptions = ViewFunctionExtraOptions & {
   args: GetUserWatchListArgs;
-}
+};
 
-export interface GetUserLastReadNotificationTimeOptions extends ViewFunctionExtraOptions {
+export type GetUserLastReadNotificationTimeOptions = ViewFunctionExtraOptions & {
   args: GetUserLastReadNotificationTimeArgs;
-}
+};
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
 
-export interface GetSpaceshipEngineOptions extends ViewFunctionExtraOptions {
+export type GetSpaceshipEngineOptions = ViewFunctionExtraOptions & {
   args: GetSpaceshipEngineArgs;
-}
+};
 
-export interface GetRewardsForAccountOptions extends ViewFunctionExtraOptions {
+export type GetRewardsForAccountOptions = ViewFunctionExtraOptions & {
   args: GetRewardsForAccountArgs;
-}
+};
 
-export interface GetTotalAddedFuelNumOptions extends ViewFunctionExtraOptions {}
+export type GetTotalAddedFuelNumOptions = ViewFunctionExtraOptions & {};
 
-export interface GetSpaceshipOptions extends ViewFunctionExtraOptions {
+export type GetSpaceshipOptions = ViewFunctionExtraOptions & {
   args: GetSpaceshipArgs;
-}
+};

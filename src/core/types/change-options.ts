@@ -21,168 +21,168 @@ import {
   WatchArgs,
 } from './args';
 
-interface ChangeFunctionExtraOptions {
+type ChangeFunctionExtraOptions = {
   callbackUrl?: string;
-}
+};
 
 // ---------------------------------------------- Registrant ---------------------------------------------------
 
-export interface NftRegisterOptions {
+export type NftRegisterOptions = {
   registrantId: string;
   gasForRegister?: string;
-}
+};
 
-export interface SetupControllerOptions {
+export type SetupControllerOptions = {
   registrantId: string;
   gasForCleanState?: string;
   gasForInit?: string;
-}
+};
 
-export interface WaitForMintingOptions {
+export type WaitForMintingOptions = {
   registrantId: string;
   timeout?: number;
-}
+};
 
-export interface OneClickMintOptions {
+export type OneClickMintOptions = {
   registrantId: string;
   gasForRegister?: string;
   gasForCleanState?: string;
   gasForInit?: string;
-}
+};
 
 // ---------------------------------------------- Core ---------------------------------------------------------
 
-export interface NftUnregisterOptions extends ChangeFunctionExtraOptions {
+export type NftUnregisterOptions = ChangeFunctionExtraOptions & {
   args: NftUnregisterArgs;
   gas?: string;
-}
+};
 
-export interface NftRedeemOptions extends ChangeFunctionExtraOptions {
+export type NftRedeemOptions = ChangeFunctionExtraOptions & {
   args: NftRedeemArgs;
   gas?: string;
-}
+};
 
-export interface NftTransferOptions extends ChangeFunctionExtraOptions {
+export type NftTransferOptions = ChangeFunctionExtraOptions & {
   args: NftTransferArgs;
   gas?: string;
-}
+};
 
-export interface NftApproveOptions extends ChangeFunctionExtraOptions {
+export type NftApproveOptions = ChangeFunctionExtraOptions & {
   args: NftApproveArgs;
   approvalStorageDeposit?: string;
   gas?: string;
-}
+};
 
-export interface NftRevokeOptions extends ChangeFunctionExtraOptions {
+export type NftRevokeOptions = ChangeFunctionExtraOptions & {
   args: NftRevokeArgs;
   gas?: string;
-}
+};
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 
-export interface CreateMarketAccountOption extends ChangeFunctionExtraOptions {
+export type CreateMarketAccountOption = ChangeFunctionExtraOptions & {
   args?: CreateMarketAccountArgs;
   marketStorageDeposit?: string;
   gas?: string;
-}
+};
 
-export interface NearDepositOptions extends ChangeFunctionExtraOptions {
+export type NearDepositOptions = ChangeFunctionExtraOptions & {
   args?: NearDepositArgs;
   attachedDeposit: string;
   gas?: string;
-}
+};
 
-export interface NearWithdrawOptions extends ChangeFunctionExtraOptions {
+export type NearWithdrawOptions = ChangeFunctionExtraOptions & {
   args?: NearWithdrawArgs;
   gas?: string;
-}
+};
 
-export interface BuyListingOptions extends ChangeFunctionExtraOptions {
+export type BuyListingOptions = ChangeFunctionExtraOptions & {
   args: BuyListingArgs;
   gas?: string;
-}
+};
 
-export interface CreateListingOptions extends ChangeFunctionExtraOptions {
+export type CreateListingOptions = ChangeFunctionExtraOptions & {
   args: CreateListingArgs;
   listingStorageDeposit?: string;
   approvalStorageDeposit?: string;
   gas?: string;
-}
+};
 
-export interface UpdateListingOptions extends ChangeFunctionExtraOptions {
+export type UpdateListingOptions = ChangeFunctionExtraOptions & {
   args: UpdateListingArgs;
   approvalStorageDeposit?: string;
   gas?: string;
-}
+};
 
-export interface RemoveListingOptions extends ChangeFunctionExtraOptions {
+export type RemoveListingOptions = ChangeFunctionExtraOptions & {
   args: RemoveListingArgs;
   gas?: string;
-}
+};
 
-export interface AcceptOfferingOptions extends ChangeFunctionExtraOptions {
+export type AcceptOfferingOptions = ChangeFunctionExtraOptions & {
   args: AcceptOfferingArgs;
   approvalStorageDeposit?: string;
   gas?: string;
-}
+};
 
-export interface CreateOfferingOptions extends ChangeFunctionExtraOptions {
+export type CreateOfferingOptions = ChangeFunctionExtraOptions & {
   args: CreateOfferingArgs;
   offeringStorageDeposit?: string;
   gas?: string;
-}
+};
 
-export interface UpdateOfferingOptions extends ChangeFunctionExtraOptions {
+export type UpdateOfferingOptions = ChangeFunctionExtraOptions & {
   args: UpdateOfferingArgs;
   gas?: string;
-}
+};
 
-export interface RemoveOfferingOptions extends ChangeFunctionExtraOptions {
+export type RemoveOfferingOptions = ChangeFunctionExtraOptions & {
   args: RemoveOfferingArgs;
   gas?: string;
-}
+};
 
 // ---------------------------------------------- User Setting --------------------------------------------------
 
-export interface LikeOptions extends ChangeFunctionExtraOptions {
+export type LikeOptions = ChangeFunctionExtraOptions & {
   args: LikeArgs;
   gas?: string;
-}
+};
 
-export interface UnlikeOptions extends ChangeFunctionExtraOptions {
+export type UnlikeOptions = ChangeFunctionExtraOptions & {
   args: UnlikeArgs;
   gas?: string;
-}
+};
 
-export interface WatchOptions extends ChangeFunctionExtraOptions {
+export type WatchOptions = ChangeFunctionExtraOptions & {
   args: WatchArgs;
   gas?: string;
-}
+};
 
-export interface UnwatchOptions extends ChangeFunctionExtraOptions {
+export type UnwatchOptions = ChangeFunctionExtraOptions & {
   args: UnwatchArgs;
   gas?: string;
-}
+};
 
-export interface ReadNotificationAtOptions extends ChangeFunctionExtraOptions {
+export type ReadNotificationAtOptions = ChangeFunctionExtraOptions & {
   args?: ReadNotificationAtArgs;
   gas?: string;
-}
+};
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
 
-export interface MintSpaceshipOptions extends ChangeFunctionExtraOptions {
+export type MintSpaceshipOptions = ChangeFunctionExtraOptions & {
   spaceshipStorageDeposit?: string;
   gas?: string;
-}
+};
 
-export interface AddFuelOptions extends ChangeFunctionExtraOptions {
+export type AddFuelOptions = ChangeFunctionExtraOptions & {
   args: AddFuelArgs;
   gas?: string;
-}
+};
 
-export interface DistributeAndClaimRewardsOptions extends ChangeFunctionExtraOptions {
+export type DistributeAndClaimRewardsOptions = ChangeFunctionExtraOptions & {
   skyTokenId: string;
   gasForDistribute?: string;
   gasForClaim?: string;
-}
+};
