@@ -1,17 +1,4 @@
-import {
-  ACTION_MAX_NUM,
-  getPendingRegistrantId,
-  getDefaultCoreContractId,
-  getDefaultMarketplaceContractId,
-  getDefaultSpaceshipContractId,
-  getDefaultUserSettingContractId,
-  isBrowser,
-  moveRegistrantPublicKeyToEnd,
-  REGISTRANT_KEYSTORE_PREFIX,
-  sleep,
-  wait,
-  optimistic,
-} from '../utils';
+import { sleep, wait } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
@@ -27,6 +14,14 @@ import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkySigner } from './NameSkySigner';
 import { StateList } from './types/common';
+import { getPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd, optimistic } from '../utils/internal';
+import { ACTION_MAX_NUM, REGISTRANT_KEYSTORE_PREFIX } from '../utils/constants';
+import {
+  getDefaultCoreContractId,
+  getDefaultMarketplaceContractId,
+  getDefaultSpaceshipContractId,
+  getDefaultUserSettingContractId,
+} from '../utils/contracts';
 
 export class NameSky {
   private readonly near: Near;

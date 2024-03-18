@@ -8,9 +8,9 @@ import {
   GetTotalAddedFuelNumOptions,
 } from '../types/view-options';
 import { SpaceshipEngine } from '../types/data';
-import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
 import { NameSkySigner } from '../NameSkySigner';
 import { AddFuelArgs, DistributeRewardsArgs, GetRewardsForAccountArgs, GetSpaceshipArgs } from '../types/args';
+import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils/constants';
 
 export type SpaceshipContractOptions = BaseContractOptions & {};
 

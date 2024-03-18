@@ -1,42 +1,8 @@
-import { Amount, BigNumber, BigNumberLike, BlockQuery } from 'multi-transaction';
+import { BigNumber } from 'multi-transaction';
 import { SpaceshipEngine } from '../core/types/data';
-import { PublicKey } from 'near-api-js/lib/utils';
 import sha256 from 'sha256';
 import base58 from 'bs58';
-
-export const PENDING_REGISTRANT_ID_PREFIX = 'pending-registrant-id:';
-export const REGISTRANT_KEYSTORE_PREFIX = 'registrant:keystore:';
-export const DEFAULT_MARKET_STORAGE_DEPOSIT = Amount.parse(0.0125, 'NEAR');
-export const DEFAULT_SPACESHIP_STORAGE_DEPOSIT = Amount.parse(0.02, 'NEAR');
-export const FEE_DIVISOR = 10000;
-export const ACTION_MAX_NUM = 100;
-export const MAX_TIMEOUT = 2147483647;
-export const DAY_MS = 86400 * 1000;
-
-export function base58CodeHash(code: Buffer): string {
-  const hash = Buffer.from(sha256(code), 'hex');
-  return base58.encode(hash);
-}
-
-export function jsonSerialize<T>(data: T): string {
-  return JSON.stringify(data);
-}
-
-export function jsonDeserialize<T>(data: string): T {
-  return JSON.parse(data);
-}
-
-export function optimistic(): BlockQuery {
-  return { finality: 'optimistic' };
-}
-
-export function calcInsufficientBalance(current: BigNumberLike, required: BigNumberLike): BigNumber {
-  return BigNumber.max(BigNumber(required).minus(current), 0);
-}
-
-export function isBrowser(): boolean {
-  return typeof window !== 'undefined';
-}
+import { DAY_MS, MAX_TIMEOUT } from './constants';
 
 export async function sleep(ms: number) {
   await new Promise((resolve) => setTimeout(resolve, ms));
@@ -53,19 +19,17 @@ export async function wait<T>(f: () => Promise<T>, timeout: number = MAX_TIMEOUT
   return Promise.race([reject(), f()]).finally(() => clearTimeout(timeoutId));
 }
 
-export function getPendingRegistrantId(publicKey: string): string {
-  return PENDING_REGISTRANT_ID_PREFIX + PublicKey.fromString(publicKey).toString();
+export function base58CodeHash(code: Buffer): string {
+  const hash = Buffer.from(sha256(code), 'hex');
+  return base58.encode(hash);
 }
 
-export function moveRegistrantPublicKeyToEnd(registrantPublicKey: string, publicKeys: string[]): string[] {
-  const result: string[] = [];
-  for (const publicKey of publicKeys) {
-    if (publicKey !== registrantPublicKey) {
-      result.push(publicKey);
-    }
-  }
-  result.push(registrantPublicKey);
-  return result;
+export function jsonSerialize<T>(data: T): string {
+  return JSON.stringify(data);
+}
+
+export function jsonDeserialize<T>(data: string): T {
+  return JSON.parse(data);
 }
 
 export function simulateSettleEnergy(spaceshipEngine: SpaceshipEngine, settledAt: number): SpaceshipEngine {

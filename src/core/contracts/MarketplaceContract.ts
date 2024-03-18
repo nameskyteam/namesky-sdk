@@ -1,5 +1,5 @@
 import { BaseContract, BaseContractOptions } from './BaseContract';
-import { calcInsufficientBalance, DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR, jsonSerialize } from '../../utils';
+import { jsonSerialize } from '../../utils';
 import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
   AcceptOfferingOptions,
@@ -51,6 +51,8 @@ import {
 } from '../types/args';
 import { Amount, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
+import { DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils/constants';
+import { calcInsufficientBalance } from '../../utils/internal';
 
 export type MarketplaceContractOptions = BaseContractOptions & {
   coreContractId: string;
