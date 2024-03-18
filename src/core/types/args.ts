@@ -225,3 +225,7 @@ export type AddFuelArgs = {
 export type GetSpaceshipArgs = {
   account_id: string;
 };
+
+export type DistributeRewardsArgs = {
+  account_id: string;
+};

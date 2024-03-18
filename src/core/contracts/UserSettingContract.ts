@@ -13,6 +13,16 @@ import {
   GetUserWatchListOptions,
 } from '../types/view-options';
 import { NameSkySigner } from '../NameSkySigner';
+import {
+  GetUserLastReadNotificationTimeArgs,
+  GetUserLikesArgs,
+  GetUserWatchListArgs,
+  LikeArgs,
+  ReadNotificationAtArgs,
+  UnlikeArgs,
+  UnwatchArgs,
+  WatchArgs,
+} from '../types/args';
 
 export type UserSettingContractOptions = BaseContractOptions & {};
 
@@ -33,83 +43,94 @@ export class UserSettingContract extends BaseContract {
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async getUserLikes({ args, blockQuery }: GetUserLikesOptions): Promise<string[]> {
-    return this.signer.view({
+  async getUserLikes({ accountId, blockQuery }: GetUserLikesOptions): Promise<string[]> {
+    return this.signer.view<string[], GetUserLikesArgs>({
       contractId: this.contractId,
       methodName: 'get_user_likes',
-      args,
+      args: {
+        account_id: accountId,
+      },
       blockQuery,
     });
   }
 
-  async getUserWatchlist({ args, blockQuery }: GetUserWatchListOptions): Promise<string[]> {
-    return this.signer.view({
+  async getUserWatchlist({ accountId, blockQuery }: GetUserWatchListOptions): Promise<string[]> {
+    return this.signer.view<string[], GetUserWatchListArgs>({
       contractId: this.contractId,
       methodName: 'get_user_watchlist',
-      args,
+      args: {
+        account_id: accountId,
+      },
       blockQuery,
     });
   }
 
   async getUserLastReadNotificationTime({
-    args,
+    accountId,
     blockQuery,
   }: GetUserLastReadNotificationTimeOptions): Promise<string[]> {
-    return this.signer.view({
+    return this.signer.view<string[], GetUserLastReadNotificationTimeArgs>({
       contractId: this.contractId,
       methodName: 'get_user_last_read_notification_time',
-      args,
+      args: {
+        account_id: accountId,
+      },
       blockQuery,
     });
   }
 
   // -------------------------------------------------- Change -----------------------------------------------------
 
-  async like({ args, gas, callbackUrl }: LikeOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async like({ tokenId, callbackUrl }: LikeOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<LikeArgs>({
       methodName: 'like',
-      args,
-      gas,
+      args: {
+        token_id: tokenId,
+      },
     });
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async unlike({ args, gas, callbackUrl }: UnlikeOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async unlike({ tokenId, callbackUrl }: UnlikeOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<UnlikeArgs>({
       methodName: 'unlike',
-      args,
-      gas,
+      args: {
+        token_id: tokenId,
+      },
     });
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async watch({ args, gas, callbackUrl }: WatchOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async watch({ tokenId, callbackUrl }: WatchOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<WatchArgs>({
       methodName: 'watch',
-      args,
-      gas,
+      args: {
+        token_id: tokenId,
+      },
     });
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async unwatch({ args, gas, callbackUrl }: UnwatchOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async unwatch({ tokenId, callbackUrl }: UnwatchOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<UnwatchArgs>({
       methodName: 'unwatch',
-      args,
-      gas,
+      args: {
+        token_id: tokenId,
+      },
     });
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async readNotificationAt({ args, gas, callbackUrl }: ReadNotificationAtOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async readNotificationAt({ timestamp, callbackUrl }: ReadNotificationAtOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<ReadNotificationAtArgs>({
       methodName: 'read_notification_at',
-      args,
-      gas,
+      args: {
+        timestamp,
+      },
     });
 
     await this.signer.send(mTx, { callbackUrl });

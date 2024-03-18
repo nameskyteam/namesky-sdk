@@ -148,15 +148,15 @@ export type GetTradingFeeRateOptions = ViewFunctionExtraOptions & {};
 // ---------------------------------------------- User Setting --------------------------------------------------
 
 export type GetUserLikesOptions = ViewFunctionExtraOptions & {
-  args: GetUserLikesArgs;
+  accountId: string;
 };
 
 export type GetUserWatchListOptions = ViewFunctionExtraOptions & {
-  args: GetUserWatchListArgs;
+  accountId: string;
 };
 
 export type GetUserLastReadNotificationTimeOptions = ViewFunctionExtraOptions & {
-  args: GetUserLastReadNotificationTimeArgs;
+  accountId: string;
 };
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------

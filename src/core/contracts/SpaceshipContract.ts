@@ -1,6 +1,6 @@
 import { BaseContract, BaseContractOptions } from './BaseContract';
-import { MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
-import { AddFuelOptions, DistributeAndClaimRewardsOptions, MintSpaceshipOptions } from '../types/change-options';
+import { Gas, MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
+import { AddFuelOptions, ClaimRewardsOptions, MintSpaceshipOptions } from '../types/change-options';
 import {
   GetRewardsForAccountOptions,
   GetSpaceshipEngineOptions,
@@ -10,6 +10,7 @@ import {
 import { SpaceshipEngine } from '../types/data';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils';
 import { NameSkySigner } from '../NameSkySigner';
+import { AddFuelArgs, DistributeRewardsArgs } from '../types/args';
 
 export type SpaceshipContractOptions = BaseContractOptions & {};
 
@@ -67,32 +68,29 @@ export class SpaceshipContract extends BaseContract {
 
   // -------------------------------------------------- Change -----------------------------------------------------
 
-  async mintSpaceship({ spaceshipStorageDeposit, gas, callbackUrl }: MintSpaceshipOptions) {
+  async mintSpaceship({ callbackUrl }: MintSpaceshipOptions) {
     const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'mint_spaceship',
-      attachedDeposit: spaceshipStorageDeposit ?? DEFAULT_SPACESHIP_STORAGE_DEPOSIT,
-      gas,
+      attachedDeposit: DEFAULT_SPACESHIP_STORAGE_DEPOSIT,
+      gas: Gas.parse(50, 'T'),
     });
 
     await this.signer.send(mTx, { callbackUrl });
   }
 
-  async addFuel({ args, gas, callbackUrl }: AddFuelOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async addFuel({ quantity, callbackUrl }: AddFuelOptions) {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<AddFuelArgs>({
       methodName: 'add_fuel',
-      args,
-      gas,
+      args: {
+        quantity,
+      },
+      gas: Gas.parse(50, 'T'),
     });
 
-    await this.signer.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async distributeAndClaimRewards({
-    skyTokenId,
-    gasForDistribute,
-    gasForClaim,
-    callbackUrl,
-  }: DistributeAndClaimRewardsOptions): Promise<string> {
+  async claimRewards({ skyTokenId, callbackUrl }: ClaimRewardsOptions): Promise<string> {
     const mTx = MultiTransaction.new();
 
     const storageBalance = await this.signer.view<StorageBalance | undefined>({
@@ -116,18 +114,17 @@ export class SpaceshipContract extends BaseContract {
 
     mTx
       .batch(this.contractId)
-      .functionCall({
+      .functionCall<DistributeRewardsArgs>({
         methodName: 'distribute_rewards',
-        gas: gasForDistribute,
         args: {
           account_id: this.signer.accountId,
         },
       })
       .functionCall({
         methodName: 'claim_rewards',
-        gas: gasForClaim,
+        gas: Gas.parse(50, 'T'),
       });
 
-    return this.signer.send(mTx, { callbackUrl });
+    return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 }

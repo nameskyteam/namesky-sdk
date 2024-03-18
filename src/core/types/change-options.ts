@@ -119,44 +119,33 @@ export type RemoveOfferingOptions = ChangeFunctionExtraOptions & {
 // ---------------------------------------------- User Setting --------------------------------------------------
 
 export type LikeOptions = ChangeFunctionExtraOptions & {
-  args: LikeArgs;
-  gas?: string;
+  tokenId: string;
 };
 
 export type UnlikeOptions = ChangeFunctionExtraOptions & {
-  args: UnlikeArgs;
-  gas?: string;
+  tokenId: string;
 };
 
 export type WatchOptions = ChangeFunctionExtraOptions & {
-  args: WatchArgs;
-  gas?: string;
+  tokenId: string;
 };
 
 export type UnwatchOptions = ChangeFunctionExtraOptions & {
-  args: UnwatchArgs;
-  gas?: string;
+  tokenId: string;
 };
 
 export type ReadNotificationAtOptions = ChangeFunctionExtraOptions & {
-  args?: ReadNotificationAtArgs;
-  gas?: string;
+  timestamp?: string;
 };
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
 
-export type MintSpaceshipOptions = ChangeFunctionExtraOptions & {
-  spaceshipStorageDeposit?: string;
-  gas?: string;
-};
+export type MintSpaceshipOptions = ChangeFunctionExtraOptions & {};
 
 export type AddFuelOptions = ChangeFunctionExtraOptions & {
-  args: AddFuelArgs;
-  gas?: string;
+  quantity: string;
 };
 
-export type DistributeAndClaimRewardsOptions = ChangeFunctionExtraOptions & {
+export type ClaimRewardsOptions = ChangeFunctionExtraOptions & {
   skyTokenId: string;
-  gasForDistribute?: string;
-  gasForClaim?: string;
 };

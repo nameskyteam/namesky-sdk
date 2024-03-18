@@ -304,7 +304,7 @@ export class MarketplaceContract extends BaseContract {
       gas: Gas.parse(50, 'T'),
     });
 
-    await this.signer.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async updateListing({ tokenId, newPrice, newExpireTime, callbackUrl }: UpdateListingOptions) {
@@ -319,7 +319,7 @@ export class MarketplaceContract extends BaseContract {
       gas: Gas.parse(50, 'T'),
     });
 
-    await this.signer.send(mTx, { callbackUrl });
+    await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async removeListing({ tokenId, callbackUrl }: RemoveListingOptions): Promise<ListingView> {
