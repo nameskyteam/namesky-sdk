@@ -57,7 +57,7 @@ export type MarketplaceContractOptions = BaseContractOptions & {
 };
 
 export class MarketplaceContract extends BaseContract {
-  coreContractId: string;
+  private readonly coreContractId: string;
 
   constructor({ coreContractId, ...options }: MarketplaceContractOptions) {
     super(options);

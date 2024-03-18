@@ -37,10 +37,10 @@ import { NameSkySigner } from './NameSkySigner';
 import { StateList } from './types/common';
 
 export class NameSky {
-  private near: Near;
+  private readonly near: Near;
+  private readonly keyStore: keyStores.KeyStore;
 
   signer: NameSkySigner;
-  keyStore: keyStores.KeyStore;
 
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
