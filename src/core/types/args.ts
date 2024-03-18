@@ -4,6 +4,20 @@ export type UpdateWrapper<T> =
     }
   | 'UpdateNone';
 
+export type NonFungibleTokenReceiverMsg =
+  | {
+      CreateListing: {
+        price: string;
+        expire_time?: number;
+      };
+    }
+  | {
+      UpdateListing: {
+        new_price?: string;
+        new_expire_time?: UpdateWrapper<number>;
+      };
+    };
+
 // ---------------------------------------------- Controller ---------------------------------------------------
 
 export type CleanStateArgs = Uint8Array[];
@@ -71,20 +85,6 @@ export type NearWithdrawArgs = {
 export type BuyListingArgs = {
   nft_contract_id: string;
   nft_token_id: string;
-};
-
-export type CreateListingArgs = {
-  CreateListing: {
-    price: string;
-    expire_time?: number;
-  };
-};
-
-export type UpdateListingArgs = {
-  UpdateListing: {
-    new_price?: string;
-    new_expire_time?: UpdateWrapper<number>;
-  };
 };
 
 export type RemoveListingArgs = {

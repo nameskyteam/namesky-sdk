@@ -31,7 +31,6 @@ import {
 import {
   AcceptOfferingArgs,
   BuyListingArgs,
-  CreateListingArgs,
   CreateOfferingArgs,
   GetAccountViewOfArgs,
   GetListingUniqueIdArgs,
@@ -47,8 +46,8 @@ import {
   NearWithdrawArgs,
   RemoveListingArgs,
   RemoveOfferingArgs,
-  UpdateListingArgs,
   UpdateOfferingArgs,
+  NonFungibleTokenReceiverMsg,
 } from '../types/args';
 import { Amount, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
@@ -299,7 +298,7 @@ export class MarketplaceContract extends BaseContract {
       args: {
         account_id: this.contractId,
         token_id: tokenId,
-        msg: jsonSerialize<CreateListingArgs>({ CreateListing: { price, expire_time: expireTime } }),
+        msg: jsonSerialize<NonFungibleTokenReceiverMsg>({ CreateListing: { price, expire_time: expireTime } }),
       },
       gas: Gas.parse(50, 'T'),
     });
@@ -312,7 +311,7 @@ export class MarketplaceContract extends BaseContract {
       args: {
         account_id: this.contractId,
         token_id: tokenId,
-        msg: jsonSerialize<UpdateListingArgs>({
+        msg: jsonSerialize<NonFungibleTokenReceiverMsg>({
           UpdateListing: { new_price: newPrice, new_expire_time: newExpireTime },
         }),
       },
@@ -457,7 +456,7 @@ export class MarketplaceContract extends BaseContract {
         }
 
         // update offering
-        mTx.functionCall({
+        mTx.functionCall<UpdateOfferingArgs>({
           methodName: 'update_offering',
           args: {
             nft_contract_id: this.coreContractId,
@@ -470,7 +469,7 @@ export class MarketplaceContract extends BaseContract {
         });
       }
     } else {
-      mTx.functionCall({
+      mTx.functionCall<UpdateOfferingArgs>({
         methodName: 'update_offering',
         args: {
           nft_contract_id: this.coreContractId,
