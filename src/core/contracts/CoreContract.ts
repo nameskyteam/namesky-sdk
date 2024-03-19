@@ -22,6 +22,7 @@ import {
   NftStateOptions,
   NftSupplyForOwnerOptions,
   NftTotalSupplyOptions,
+  NftRegistrantIdsOptions,
 } from '../types/view-options';
 import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../types/data';
 import { NameSkySigner } from '../NameSkySigner';
@@ -32,6 +33,7 @@ import {
   NftNameSkyTokensArgs,
   NftNameSkyTokensForOwnerArgs,
   NftRedeemArgs,
+  NftRegistrantIdsArgs,
   NftRegistrantIdsOfArgs,
   NftStateArgs,
   NftUnregisterArgs,
@@ -73,6 +75,18 @@ export class CoreContract extends BaseContract {
       methodName: 'nft_registrant_ids_of',
       args: {
         minter_id: minterId,
+        from_index: fromIndex,
+        limit,
+      },
+      blockQuery,
+    });
+  }
+
+  async nftRegistrantIds({ fromIndex, limit, blockQuery }: NftRegistrantIdsOptions): Promise<string[]> {
+    return this.signer.view<string[], NftRegistrantIdsArgs>({
+      contractId: this.contractId,
+      methodName: 'nft_registrant_ids',
+      args: {
         from_index: fromIndex,
         limit,
       },

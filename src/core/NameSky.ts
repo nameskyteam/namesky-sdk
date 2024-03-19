@@ -6,7 +6,16 @@ import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
 import { CleanStateArgs, InitArgs, NftRegisterArgs } from './types/args';
 import { GetControllerOwnerIdOptions, GetNftAccountSafetyOptions } from './types/view-options';
 import { UserSettingContract } from './contracts/UserSettingContract';
-import { Amount, BorshSchema, endless, Gas, MultiSendAccount, MultiTransaction, Stringifier } from 'multi-transaction';
+import {
+  Amount,
+  BlockQuery,
+  BorshSchema,
+  endless,
+  Gas,
+  MultiSendAccount,
+  MultiTransaction,
+  Stringifier,
+} from 'multi-transaction';
 import { AccessKeyList, AccountView, Provider } from 'near-api-js/lib/providers/provider';
 import { NftAccountSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
@@ -14,7 +23,7 @@ import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkySigner } from './NameSkySigner';
 import { StateList } from './types/common';
-import { getPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd, optimistic } from '../utils/internal';
+import { getPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd } from '../utils/internal';
 import { ACTION_MAX_NUM, REGISTRANT_KEYSTORE_PREFIX } from '../utils/constants';
 import {
   getDefaultCoreContractId,
@@ -283,30 +292,29 @@ export class NameSky {
   async getNftAccountSafety({
     accountId,
     strict = false,
-    blockQuery = optimistic(),
+    blockQuery = BlockQuery.optimistic,
   }: GetNftAccountSafetyOptions): Promise<NftAccountSafety> {
-    const block = await this.provider.block(blockQuery);
-    const blockHeight = block.header.height;
-    blockQuery = { blockId: blockHeight };
+    const block = await this.provider.block(blockQuery.into());
+    blockQuery = BlockQuery.height(block.header.height);
 
     const [controllerCodeViews, accountView, { values: state }, { keys: accessKeys }] = await Promise.all([
       this.coreContract.getControllerCodeViews({ blockQuery }),
 
       this.provider.query<AccountView>({
-        ...blockQuery,
+        ...blockQuery.into(),
         request_type: 'view_account',
         account_id: accountId,
       }),
 
       this.provider.query<StateList>({
-        ...blockQuery,
+        ...blockQuery.into(),
         request_type: 'view_state',
         account_id: accountId,
         prefix_base64: '',
       }),
 
       this.provider.query<AccessKeyList>({
-        ...blockQuery,
+        ...blockQuery.into(),
         request_type: 'view_access_key_list',
         account_id: accountId,
       }),

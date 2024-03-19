@@ -1,17 +1,13 @@
-import { BigNumber, BigNumberLike, BlockQuery } from 'multi-transaction';
+import { BigNumber, BigNumberLike } from 'multi-transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { PENDING_REGISTRANT_ID_PREFIX } from './constants';
 
-export function optimistic(): BlockQuery {
-  return { finality: 'optimistic' };
-}
-
-export function calcInsufficientBalance(current: BigNumberLike, required: BigNumberLike): BigNumber {
-  return BigNumber.max(BigNumber(required).minus(current), 0);
-}
-
 export function isBrowser(): boolean {
   return typeof window !== 'undefined';
+}
+
+export function calcInsufficientBalance(current: BigNumberLike, target: BigNumberLike): BigNumber {
+  return BigNumber.max(BigNumber(target).minus(current), 0);
 }
 
 export function getPendingRegistrantId(publicKey: string): string {

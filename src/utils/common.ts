@@ -4,6 +4,11 @@ import sha256 from 'sha256';
 import base58 from 'bs58';
 import { DAY_MS, MAX_TIMEOUT } from './constants';
 
+export function base58CodeHash(code: Buffer): string {
+  const hash = Buffer.from(sha256(code), 'hex');
+  return base58.encode(hash);
+}
+
 export async function sleep(ms: number) {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -17,11 +22,6 @@ export async function wait<T>(f: () => Promise<T>, timeout: number = MAX_TIMEOUT
     });
 
   return Promise.race([reject(), f()]).finally(() => clearTimeout(timeoutId));
-}
-
-export function base58CodeHash(code: Buffer): string {
-  const hash = Buffer.from(sha256(code), 'hex');
-  return base58.encode(hash);
 }
 
 export function jsonSerialize<T>(data: T): string {

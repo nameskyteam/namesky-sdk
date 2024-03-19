@@ -3,6 +3,7 @@ import { Gas, MultiTransaction, StorageBalance, StorageBalanceBounds, Token } fr
 import { AddFuelOptions, ClaimRewardsOptions, MintSpaceshipOptions } from '../types/change-options';
 import {
   GetRewardsForAccountOptions,
+  GetRewardTokenIdOptions,
   GetSpaceshipEngineOptions,
   GetSpaceshipOptions,
   GetTotalAddedFuelNumOptions,
@@ -53,6 +54,14 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
+  async getRewardTokenId({ blockQuery }: GetRewardTokenIdOptions): Promise<string> {
+    return this.signer.view<string>({
+      contractId: this.contractId,
+      methodName: 'get_reward_token_id',
+      blockQuery,
+    });
+  }
+
   async getRewardsForAccount({ accountId, blockQuery }: GetRewardsForAccountOptions): Promise<string> {
     return this.signer.view<string, GetRewardsForAccountArgs>({
       contractId: this.contractId,
@@ -96,11 +105,13 @@ export class SpaceshipContract extends BaseContract {
     await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async claimRewards({ skyTokenId, callbackUrl }: ClaimRewardsOptions): Promise<string> {
+  async claimRewards({ callbackUrl }: ClaimRewardsOptions): Promise<string> {
+    const rewardTokenId = await this.getRewardTokenId({});
+
     const mTx = MultiTransaction.new();
 
     const storageBalance = await this.signer.view<StorageBalance | undefined>({
-      contractId: skyTokenId,
+      contractId: rewardTokenId,
       methodName: 'storage_balance_of',
       args: {
         account_id: this.signer.accountId,
@@ -109,11 +120,11 @@ export class SpaceshipContract extends BaseContract {
 
     if (!storageBalance) {
       const storageBalanceBounds = await this.signer.view<StorageBalanceBounds>({
-        contractId: skyTokenId,
+        contractId: rewardTokenId,
         methodName: 'storage_balance_bounds',
       });
 
-      mTx.batch(skyTokenId).storageManagement.storage_deposit({
+      mTx.batch(rewardTokenId).storageManagement.storage_deposit({
         attachedDeposit: storageBalanceBounds.min,
       });
     }

@@ -121,6 +121,4 @@ export type AddFuelOptions = ChangeFunctionExtraOptions & {
   quantity: string;
 };
 
-export type ClaimRewardsOptions = ChangeFunctionExtraOptions & {
-  skyTokenId: string;
-};
+export type ClaimRewardsOptions = ChangeFunctionExtraOptions & {};

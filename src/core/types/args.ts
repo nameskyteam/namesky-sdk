@@ -46,6 +46,11 @@ export type NftRegistrantIdsOfArgs = {
   limit?: number;
 };
 
+export type NftRegistrantIdsArgs = {
+  from_index?: string;
+  limit?: number;
+};
+
 export type NftStateArgs = {
   token_id: string;
 };

@@ -27,6 +27,11 @@ export type NftRegistrantIdsOfOptions = ViewFunctionExtraOptions & {
   limit?: number;
 };
 
+export type NftRegistrantIdsOptions = ViewFunctionExtraOptions & {
+  fromIndex?: string;
+  limit?: number;
+};
+
 export type NftStateOptions = ViewFunctionExtraOptions & {
   tokenId: string;
 };
@@ -147,6 +152,8 @@ export type GetSpaceshipOptions = ViewFunctionExtraOptions & {
 export type GetSpaceshipEngineOptions = ViewFunctionExtraOptions & {
   accountId: string;
 };
+
+export type GetRewardTokenIdOptions = ViewFunctionExtraOptions & {};
 
 export type GetRewardsForAccountOptions = ViewFunctionExtraOptions & {
   accountId: string;
