@@ -271,9 +271,10 @@ export class NameSky {
   }
 
   /**
-   * Wait for minting
+   * Wait mint completed.
+   * Mint process is handled by NameSky mint service
    */
-  async waitForMinting(registrantId: string, timeout?: number): Promise<NameSkyToken> {
+  async waitMintCompleted(registrantId: string, timeout?: number): Promise<NameSkyToken> {
     return wait(async () => {
       while (true) {
         const token = await this.coreContract.nftNameSkyToken({ tokenId: registrantId });
