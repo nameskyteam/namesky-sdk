@@ -294,8 +294,7 @@ export class NameSky {
     strict = false,
     blockQuery = BlockQuery.optimistic,
   }: GetNftAccountSafetyOptions): Promise<NftAccountSafety> {
-    const block = await this.provider.block(blockQuery.into());
-    blockQuery = BlockQuery.height(block.header.height);
+    blockQuery = await blockQuery.height(this.provider);
 
     const [controllerCodeViews, accountView, { values: state }, { keys: accessKeys }] = await Promise.all([
       this.coreContract.getControllerCodeViews({ blockQuery }),
