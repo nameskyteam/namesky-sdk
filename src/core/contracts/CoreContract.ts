@@ -2,6 +2,7 @@ import { BaseContract, BaseContractOptions } from './BaseContract';
 import { Amount, Gas, MultiTransaction, NftSupplyForOwnerArgs } from 'multi-transaction';
 import {
   NftApproveOptions,
+  NftMintOptions,
   NftRedeemOptions,
   NftRevokeOptions,
   NftTransferOptions,
@@ -29,6 +30,7 @@ import { NameSkySigner } from '../NameSkySigner';
 import {
   GetMintNumArgs,
   NftGetMinterIdArgs,
+  NftMintArgs,
   NftNameSkyTokenArgs,
   NftNameSkyTokensArgs,
   NftNameSkyTokensForOwnerArgs,
@@ -219,6 +221,23 @@ export class CoreContract extends BaseContract {
   }
 
   // -------------------------------------------------- Change -----------------------------------------------------
+
+  /**
+   * Mint is ONLY available for operator account
+   */
+  async nftMint({ tokenId, metadata, controllerCodeHash }: NftMintOptions): Promise<boolean> {
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<NftMintArgs>({
+      methodName: 'nft_mint',
+      args: {
+        token_id: tokenId,
+        metadata,
+        controller_code_hash: controllerCodeHash,
+      },
+      gas: Gas.parse(100, 'T'),
+    });
+
+    return this.signer.send(mTx, { throwReceiptErrors: true });
+  }
 
   async nftUnregister({ registrantId, publicKey, force, callbackUrl }: NftUnregisterOptions): Promise<boolean> {
     const mTx = MultiTransaction.batch(this.contractId).functionCall<NftUnregisterArgs>({

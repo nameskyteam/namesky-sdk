@@ -10,7 +10,13 @@ import {
 } from '../types/view-options';
 import { SpaceshipEngine } from '../types/data';
 import { NameSkySigner } from '../NameSkySigner';
-import { AddFuelArgs, DistributeRewardsArgs, GetRewardsForAccountArgs, GetSpaceshipArgs } from '../types/args';
+import {
+  AddFuelArgs,
+  DistributeRewardsArgs,
+  GetRewardsForAccountArgs,
+  GetSpaceshipArgs,
+  GetSpaceshipEngineArgs,
+} from '../types/args';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils/constants';
 
 export type SpaceshipContractOptions = BaseContractOptions & {};
@@ -44,7 +50,7 @@ export class SpaceshipContract extends BaseContract {
   }
 
   async getSpaceshipEngine({ accountId, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
-    return this.signer.view<SpaceshipEngine | undefined, GetSpaceshipArgs>({
+    return this.signer.view<SpaceshipEngine | undefined, GetSpaceshipEngineArgs>({
       contractId: this.contractId,
       methodName: 'get_spaceship_engine',
       args: {

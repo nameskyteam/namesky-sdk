@@ -1,3 +1,5 @@
+import { TokenMetadata } from 'multi-transaction';
+
 export type UpdateWrapper<T> =
   | {
       UpdateSome: T;
@@ -25,6 +27,12 @@ export type CleanStateArgs = Uint8Array[];
 export type InitArgs = Uint8Array;
 
 // ---------------------------------------------- Core ---------------------------------------------------------
+
+export type NftMintArgs = {
+  token_id: string;
+  metadata: TokenMetadata;
+  controller_code_hash: string;
+};
 
 export type NftRegisterArgs = {
   minter_id: string;

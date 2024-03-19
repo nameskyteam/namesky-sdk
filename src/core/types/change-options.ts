@@ -1,10 +1,17 @@
 import { UpdateWrapper } from './args';
+import { TokenMetadata } from 'multi-transaction';
 
 type ChangeFunctionExtraOptions = {
   callbackUrl?: string;
 };
 
 // ---------------------------------------------- Core ---------------------------------------------------------
+
+export type NftMintOptions = {
+  tokenId: string;
+  metadata: TokenMetadata;
+  controllerCodeHash: string;
+};
 
 export type NftUnregisterOptions = ChangeFunctionExtraOptions & {
   registrantId: string;
