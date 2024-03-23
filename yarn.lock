@@ -1197,10 +1197,10 @@ borsh@^2.0.0:
   resolved "https://registry.yarnpkg.com/borsh/-/borsh-2.0.0.tgz#042a9f109565caac3c6a21297cd8c0ae8db3149d"
   integrity sha512-kc9+BgR3zz9+cjbwM8ODoUB4fs3X3I5A/HtX7LZKxCLaMrEeDFoBpnhZY//DTS1VZBSs6S5v46RZRbZjRFspEg==
 
-borsher@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/borsher/-/borsher-2.2.0.tgz#717039258a245f80ce7f98175b258c241033263e"
-  integrity sha512-C5k1f6uWvG+R+Ga8KC5/xWnT+o2iUsFdfEXSLzw/YtOhufNTcGMihGh/ygm26lUS1OVYuq9njBR/wJBpwQW/yA==
+borsher@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/borsher/-/borsher-2.2.1.tgz#6735131b53b0d1023f1c689beb52f1e9e3a59dea"
+  integrity sha512-deweKP3oZDmmLccx9K+7fNzfjS4xi5n6X7YY9Nx8fjjX/v84qtQfkGTW7RLZj+yK+Swbsz+TiJJbqtXq1dcI8w==
   dependencies:
     borsh "^2.0.0"
     buffer "^6.0.3"
@@ -2889,15 +2889,15 @@ ms@2.1.2:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-multi-transaction@8.3.1:
-  version "8.3.1"
-  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-8.3.1.tgz#e1b43d6e2dc194f31c5953a5cc6f0521c3806a63"
-  integrity sha512-y/LvbVyudRvcxAed6XQWlV9Evt3BSK00fQv4gqSak4NOoQGvAl6FBXgY4AHDQWP741O5e1b6v2+6m1CkEnQF3w==
+multi-transaction@8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/multi-transaction/-/multi-transaction-8.4.0.tgz#36999ea1072e9003a17303f4e5d02f0c19843703"
+  integrity sha512-gVrxginN4UlGxGfIO+/b58efpN0QV6ATY+QSk7LBI1BicZW2Vys/LGL8/LMtv3apfJpt8/Yh80/p1ROcElqyvw==
   dependencies:
     "@near-wallet-selector/core" "^8.9.2"
     bignumber.js "^9.1.1"
     bn.js "^5.2.1"
-    borsher "^2.2.0"
+    borsher "^2.2.1"
     buffer "^6.0.3"
     near-api-js "^2.1.4"
 
