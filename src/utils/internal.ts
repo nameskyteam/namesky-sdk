@@ -2,6 +2,12 @@ import { BigNumber, BigNumberLike } from 'multi-transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { PENDING_REGISTRANT_ID_PREFIX } from './constants';
 
+export function endless(): never {
+  while (true) {
+    // endless loop
+  }
+}
+
 export function isBrowser(): boolean {
   return typeof window !== 'undefined';
 }

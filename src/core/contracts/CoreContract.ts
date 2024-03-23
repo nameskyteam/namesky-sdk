@@ -1,5 +1,5 @@
 import { BaseContract, BaseContractOptions } from './BaseContract';
-import { Amount, Gas, MultiTransaction, NftSupplyForOwnerArgs } from 'multi-transaction';
+import { Amount, Gas, MultiTransaction } from 'multi-transaction';
 import {
   NftApproveOptions,
   NftMintOptions,
@@ -7,8 +7,6 @@ import {
   NftRevokeOptions,
   NftTransferOptions,
   NftUnregisterOptions,
-} from '../types/change-options';
-import {
   GetControllerCodeViewsOptions,
   GetLatestControllerCodeHashOptions,
   GetLatestControllerCodeOptions,
@@ -24,10 +22,10 @@ import {
   NftSupplyForOwnerOptions,
   NftTotalSupplyOptions,
   NftRegistrantIdsOptions,
-} from '../types/view-options';
-import { ControllerCodeView, NameSkyToken, RoyaltyView, TokenState } from '../types/data';
-import { NameSkySigner } from '../NameSkySigner';
-import {
+  ControllerCodeView,
+  NameSkyToken,
+  RoyaltyView,
+  TokenState,
   GetMintNumArgs,
   NftGetMinterIdArgs,
   NftMintArgs,
@@ -39,7 +37,9 @@ import {
   NftRegistrantIdsOfArgs,
   NftStateArgs,
   NftUnregisterArgs,
-} from '../types/args';
+} from '../types';
+import { NameSkySigner } from '../NameSkySigner';
+import { NftSupplyForOwnerArgs } from 'multi-transaction/src/types/nonFungibleToken';
 
 export type CoreContractOptions = BaseContractOptions & {};
 

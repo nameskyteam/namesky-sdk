@@ -6,14 +6,9 @@ import {
   UnlikeOptions,
   UnwatchOptions,
   WatchOptions,
-} from '../types/change-options';
-import {
   GetUserLastReadNotificationTimeOptions,
   GetUserLikesOptions,
   GetUserWatchListOptions,
-} from '../types/view-options';
-import { NameSkySigner } from '../NameSkySigner';
-import {
   GetUserLastReadNotificationTimeArgs,
   GetUserLikesArgs,
   GetUserWatchListArgs,
@@ -22,7 +17,8 @@ import {
   UnlikeArgs,
   UnwatchArgs,
   WatchArgs,
-} from '../types/args';
+} from '../types';
+import { NameSkySigner } from '../NameSkySigner';
 
 export type UserSettingContractOptions = BaseContractOptions & {};
 

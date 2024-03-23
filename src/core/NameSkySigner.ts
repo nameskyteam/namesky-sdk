@@ -1,5 +1,5 @@
 import {
-  MultiSend,
+  Send,
   View,
   MultiSendAccount,
   MultiTransaction,
@@ -19,10 +19,10 @@ import {
   MultiSendAccountSendOptions,
   MultiSendAccountSendRawOptions,
 } from 'multi-transaction/dist/core/MultiSendAccount';
-import { Network } from './types/config';
+import { Network } from './types';
 import { JsonRpcProvider } from 'near-api-js/lib/providers/json-rpc-provider';
 
-export class NameSkySigner implements View, Call, MultiSend {
+export class NameSkySigner implements View, Call, Send {
   multiSender: MultiSendAccount | MultiSendWalletSelector;
 
   private constructor(multiSender: MultiSendAccount | MultiSendWalletSelector) {

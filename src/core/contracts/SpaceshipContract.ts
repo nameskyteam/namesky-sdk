@@ -1,22 +1,29 @@
 import { BaseContract, BaseContractOptions } from './BaseContract';
-import { Gas, MultiTransaction, StorageBalance, StorageBalanceBounds, Token } from 'multi-transaction';
-import { AddFuelOptions, ClaimRewardsOptions, MintSpaceshipOptions } from '../types/change-options';
 import {
+  Gas,
+  MultiTransaction,
+  StorageBalance,
+  StorageBalanceBounds,
+  StorageBalanceOfArgs,
+  Token,
+} from 'multi-transaction';
+import {
+  AddFuelOptions,
+  ClaimRewardsOptions,
+  MintSpaceshipOptions,
   GetRewardsForAccountOptions,
   GetRewardTokenIdOptions,
   GetSpaceshipEngineOptions,
   GetSpaceshipOptions,
   GetTotalAddedFuelNumOptions,
-} from '../types/view-options';
-import { SpaceshipEngine } from '../types/data';
-import { NameSkySigner } from '../NameSkySigner';
-import {
   AddFuelArgs,
   DistributeRewardsArgs,
   GetRewardsForAccountArgs,
   GetSpaceshipArgs,
   GetSpaceshipEngineArgs,
-} from '../types/args';
+  SpaceshipEngine,
+} from '../types';
+import { NameSkySigner } from '../NameSkySigner';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils/constants';
 
 export type SpaceshipContractOptions = BaseContractOptions & {};
@@ -116,7 +123,7 @@ export class SpaceshipContract extends BaseContract {
 
     const mTx = MultiTransaction.new();
 
-    const storageBalance = await this.signer.view<StorageBalance | undefined>({
+    const storageBalance = await this.signer.view<StorageBalance | undefined, StorageBalanceOfArgs>({
       contractId: rewardTokenId,
       methodName: 'storage_balance_of',
       args: {

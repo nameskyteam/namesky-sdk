@@ -1,7 +1,12 @@
 import { BaseContract, BaseContractOptions } from './BaseContract';
 import { jsonSerialize } from '../../utils';
-import { AccountView, Approval, ListingView, MarketplaceConfig, OfferingView, TradingFeeRate } from '../types/data';
 import {
+  AccountView,
+  Approval,
+  ListingView,
+  MarketplaceConfig,
+  OfferingView,
+  TradingFeeRate,
   AcceptOfferingOptions,
   BuyListingOptions,
   CreateListingOptions,
@@ -13,8 +18,6 @@ import {
   RemoveOfferingOptions,
   UpdateListingOptions,
   UpdateOfferingOptions,
-} from '../types/change-options';
-import {
   GetNftApprovalOptions,
   GetNftOfferingViewsOfOptions,
   GetOfferingUniqueIdOptions,
@@ -27,8 +30,6 @@ import {
   GetListingViewOptions,
   GetListingViewsOfOptions,
   GetListingViewsOptions,
-} from '../types/view-options';
-import {
   AcceptOfferingArgs,
   BuyListingArgs,
   CreateOfferingArgs,
@@ -48,7 +49,7 @@ import {
   RemoveOfferingArgs,
   UpdateOfferingArgs,
   NonFungibleTokenReceiverMsg,
-} from '../types/args';
+} from '../types';
 import { Amount, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
 import { DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils/constants';

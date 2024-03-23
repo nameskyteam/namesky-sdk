@@ -1,5 +1,5 @@
 import { BigNumber } from 'multi-transaction';
-import { SpaceshipEngine } from '../core/types/data';
+import { SpaceshipEngine } from '../core';
 import sha256 from 'sha256';
 import base58 from 'bs58';
 import { DAY_MS, MAX_TIMEOUT } from './constants';

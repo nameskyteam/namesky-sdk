@@ -2,28 +2,35 @@ import { sleep, wait } from '../utils';
 import { CoreContract } from './contracts';
 import { MarketplaceContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
-import { NameSkyComponent, NameSkyOptions, Network } from './types/config';
-import { CleanStateArgs, InitArgs, NftRegisterArgs } from './types/args';
-import { GetControllerOwnerIdOptions, GetNftAccountSafetyOptions } from './types/view-options';
+import {
+  CleanStateArgs,
+  InitArgs,
+  NftRegisterArgs,
+  NameSkyComponent,
+  NameSkyOptions,
+  Network,
+  GetControllerOwnerIdOptions,
+  GetNftAccountSafetyOptions,
+  NftAccountSafety,
+  NameSkyToken,
+  StateList,
+} from './types';
 import { UserSettingContract } from './contracts/UserSettingContract';
 import {
   Amount,
   BlockQuery,
   BorshSchema,
-  endless,
   Gas,
   MultiSendAccount,
   MultiTransaction,
   Stringifier,
 } from 'multi-transaction';
 import { AccessKeyList, AccountView, Provider } from 'near-api-js/lib/providers/provider';
-import { NftAccountSafety, NameSkyToken } from './types/data';
 import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkySigner } from './NameSkySigner';
-import { StateList } from './types/common';
-import { getPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd } from '../utils/internal';
+import { getPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd, endless } from '../utils/internal';
 import { ACTION_MAX_NUM, REGISTRANT_KEYSTORE_PREFIX } from '../utils/constants';
 import {
   getDefaultCoreContractId,
