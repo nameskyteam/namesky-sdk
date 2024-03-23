@@ -39,7 +39,7 @@ import {
   NftUnregisterArgs,
 } from '../types';
 import { NameSkySigner } from '../NameSkySigner';
-import { NftSupplyForOwnerArgs } from 'multi-transaction/src/types/nonFungibleToken';
+import { NftSupplyForOwnerArgs } from 'multi-transaction';
 
 export type CoreContractOptions = BaseContractOptions & {};
 

@@ -18,7 +18,7 @@ import {
   MultiSendAccountCallRawOptions,
   MultiSendAccountSendOptions,
   MultiSendAccountSendRawOptions,
-} from 'multi-transaction/dist/core/MultiSendAccount';
+} from 'multi-transaction';
 import { Network } from './types';
 import { JsonRpcProvider } from 'near-api-js/lib/providers/json-rpc-provider';
 
