@@ -46,7 +46,7 @@ export type NftRevokeOptions = ChangeFunctionExtraOptions & {
 
 // ---------------------------------------------- Marketplace --------------------------------------------------
 
-export type CreateMarketAccountOption = ChangeFunctionExtraOptions & {};
+export type CreateMarketAccountOption = ChangeFunctionExtraOptions;
 
 export type NearDepositOptions = ChangeFunctionExtraOptions & {
   amount: string;
@@ -122,10 +122,10 @@ export type ReadNotificationAtOptions = ChangeFunctionExtraOptions & {
 
 // ---------------------------------------------- Spaceship -----------------------------------------------------
 
-export type MintSpaceshipOptions = ChangeFunctionExtraOptions & {};
+export type MintSpaceshipOptions = ChangeFunctionExtraOptions;
 
 export type AddFuelOptions = ChangeFunctionExtraOptions & {
   quantity: string;
 };
 
-export type ClaimRewardsOptions = ChangeFunctionExtraOptions & {};
+export type ClaimRewardsOptions = ChangeFunctionExtraOptions;

@@ -26,7 +26,7 @@ import {
 import { NameSkySigner } from '../NameSkySigner';
 import { DEFAULT_SPACESHIP_STORAGE_DEPOSIT } from '../../utils/constants';
 
-export type SpaceshipContractOptions = BaseContractOptions & {};
+export type SpaceshipContractOptions = BaseContractOptions;
 
 export class SpaceshipContract extends BaseContract {
   constructor(options: SpaceshipContractOptions) {

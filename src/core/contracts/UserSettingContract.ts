@@ -20,7 +20,7 @@ import {
 } from '../types';
 import { NameSkySigner } from '../NameSkySigner';
 
-export type UserSettingContractOptions = BaseContractOptions & {};
+export type UserSettingContractOptions = BaseContractOptions;
 
 export class UserSettingContract extends BaseContract {
   constructor(options: UserSettingContractOptions) {

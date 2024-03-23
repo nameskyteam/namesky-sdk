@@ -41,7 +41,7 @@ import {
 import { NameSkySigner } from '../NameSkySigner';
 import { NftSupplyForOwnerArgs } from 'multi-transaction';
 
-export type CoreContractOptions = BaseContractOptions & {};
+export type CoreContractOptions = BaseContractOptions;
 
 export class CoreContract extends BaseContract {
   constructor(options: CoreContractOptions) {

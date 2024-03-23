@@ -55,17 +55,17 @@ export type NftSupplyForOwnerOptions = ViewFunctionExtraOptions & {
   accountId: string;
 };
 
-export type NftTotalSupplyOptions = ViewFunctionExtraOptions & {};
+export type NftTotalSupplyOptions = ViewFunctionExtraOptions;
 
-export type GetLatestControllerCodeOptions = ViewFunctionExtraOptions & {};
+export type GetLatestControllerCodeOptions = ViewFunctionExtraOptions;
 
-export type GetLatestControllerCodeHashOptions = ViewFunctionExtraOptions & {};
+export type GetLatestControllerCodeHashOptions = ViewFunctionExtraOptions;
 
-export type GetControllerCodeViewsOptions = ViewFunctionExtraOptions & {};
+export type GetControllerCodeViewsOptions = ViewFunctionExtraOptions;
 
-export type GetMintFeeOptions = ViewFunctionExtraOptions & {};
+export type GetMintFeeOptions = ViewFunctionExtraOptions;
 
-export type GetRoyaltyOptions = ViewFunctionExtraOptions & {};
+export type GetRoyaltyOptions = ViewFunctionExtraOptions;
 
 export type GetMintNumOptions = ViewFunctionExtraOptions & {
   accountId: string;
@@ -127,7 +127,7 @@ export type GetNftApprovalOptions = ViewFunctionExtraOptions & {
   tokenId: string;
 };
 
-export type GetTradingFeeRateOptions = ViewFunctionExtraOptions & {};
+export type GetTradingFeeRateOptions = ViewFunctionExtraOptions;
 
 // ---------------------------------------------- User Setting --------------------------------------------------
 
@@ -153,10 +153,10 @@ export type GetSpaceshipEngineOptions = ViewFunctionExtraOptions & {
   accountId: string;
 };
 
-export type GetRewardTokenIdOptions = ViewFunctionExtraOptions & {};
+export type GetRewardTokenIdOptions = ViewFunctionExtraOptions;
 
 export type GetRewardsForAccountOptions = ViewFunctionExtraOptions & {
   accountId: string;
 };
 
-export type GetTotalAddedFuelNumOptions = ViewFunctionExtraOptions & {};
+export type GetTotalAddedFuelNumOptions = ViewFunctionExtraOptions;
