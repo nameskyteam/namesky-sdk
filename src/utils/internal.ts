@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberLike, BlockQuery } from 'multi-transaction';
+import { BigNumber, BigNumberLike } from 'multi-transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { PENDING_REGISTRANT_ID_PREFIX } from './constants';
 
