@@ -1,6 +1,6 @@
 {
   "name": "namesky-sdk",
-  "version": "4.9.2",
+  "version": "5.0.0",
   "license": "MIT",
   "description": "NameSky SDK",
   "main": "dist/index.js",
