@@ -242,7 +242,7 @@ export class MarketplaceContract extends BaseContract {
   // ------------------------------------------------- Change -----------------------------------------------------
 
   async createMarketAccount({ callbackUrl }: CreateMarketAccountOption): Promise<StorageBalance> {
-    const mTx = MultiTransaction.batch(this.contractId).storageManagement.storage_deposit({
+    const mTx = MultiTransaction.batch(this.contractId).storage.deposit({
       attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
     });
 
@@ -292,11 +292,11 @@ export class MarketplaceContract extends BaseContract {
   async createListing({ tokenId, price, expireTime, callbackUrl }: CreateListingOptions) {
     const mTx = MultiTransaction.batch(this.contractId)
       // first user needs to deposit storage fee for new listing
-      .storageManagement.storage_deposit({
+      .storage.deposit({
         attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
-    mTx.batch(this.coreContractId).nonFungibleToken.nft_approve({
+    mTx.batch(this.coreContractId).nft.approve({
       args: {
         account_id: this.contractId,
         token_id: tokenId,
@@ -309,7 +309,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async updateListing({ tokenId, newPrice, newExpireTime, callbackUrl }: UpdateListingOptions) {
-    const mTx = MultiTransaction.batch(this.coreContractId).nonFungibleToken.nft_approve({
+    const mTx = MultiTransaction.batch(this.coreContractId).nft.approve({
       args: {
         account_id: this.contractId,
         token_id: tokenId,
@@ -339,7 +339,7 @@ export class MarketplaceContract extends BaseContract {
 
   async acceptOffering({ tokenId, buyerId, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
     const mTx = MultiTransaction.batch(this.coreContractId)
-      .nonFungibleToken.nft_approve({
+      .nft.approve({
         args: {
           token_id: tokenId,
           account_id: this.contractId,
@@ -365,7 +365,7 @@ export class MarketplaceContract extends BaseContract {
   async createOffering({ tokenId, price, expireTime, isSimpleOffering = true, callbackUrl }: CreateOfferingOptions) {
     const mTx = MultiTransaction.batch(this.contractId)
       // first user needs to deposit storage fee for new offering
-      .storageManagement.storage_deposit({
+      .storage.deposit({
         attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 

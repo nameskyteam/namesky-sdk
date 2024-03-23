@@ -271,7 +271,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftTransfer({ tokenId, receiverId, approvalId, memo, callbackUrl }: NftTransferOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_transfer({
+    const mTx = MultiTransaction.batch(this.contractId).nft.transfer({
       args: {
         token_id: tokenId,
         receiver_id: receiverId,
@@ -284,7 +284,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftApprove({ tokenId, accountId, msg, callbackUrl }: NftApproveOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_approve({
+    const mTx = MultiTransaction.batch(this.contractId).nft.approve({
       args: {
         token_id: tokenId,
         account_id: accountId,
@@ -296,7 +296,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftRevoke({ tokenId, accountId, callbackUrl }: NftRevokeOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).nonFungibleToken.nft_revoke({
+    const mTx = MultiTransaction.batch(this.contractId).nft.revoke({
       args: {
         token_id: tokenId,
         account_id: accountId,

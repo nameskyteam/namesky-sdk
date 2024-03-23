@@ -293,7 +293,7 @@ export class NameSky {
   async getNftAccountSafety({
     accountId,
     strict = false,
-    blockQuery = BlockQuery.optimistic,
+    blockQuery = BlockQuery.OPTIMISTIC,
   }: GetNftAccountSafetyOptions): Promise<NftAccountSafety> {
     blockQuery = await blockQuery.height(this.provider);
 
@@ -301,20 +301,20 @@ export class NameSky {
       this.coreContract.getControllerCodeViews({ blockQuery }),
 
       this.provider.query<AccountView>({
-        ...blockQuery.into(),
+        ...blockQuery.toReference(),
         request_type: 'view_account',
         account_id: accountId,
       }),
 
       this.provider.query<StateList>({
-        ...blockQuery.into(),
+        ...blockQuery.toReference(),
         request_type: 'view_state',
         account_id: accountId,
         prefix_base64: '',
       }),
 
       this.provider.query<AccessKeyList>({
-        ...blockQuery.into(),
+        ...blockQuery.toReference(),
         request_type: 'view_access_key_list',
         account_id: accountId,
       }),
