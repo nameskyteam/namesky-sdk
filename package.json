@@ -15,7 +15,7 @@
     "lint": "eslint src/**/*.ts --fix",
     "prettier": "prettier src/**/*.ts --write",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@near-wallet-selector/core": "^8.9.2",
