@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "NameSky SDK",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "type": "commonjs",
   "files": [
     "dist",
