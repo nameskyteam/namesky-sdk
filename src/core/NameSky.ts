@@ -198,7 +198,7 @@ export class NameSky {
       return;
     }
 
-    const mTx = MultiTransaction.batch(this.coreContractId).functionCall<NftRegisterArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.coreContractId }).functionCall<NftRegisterArgs>({
       methodName: 'nft_register',
       args: {
         minter_id: minterId,
@@ -222,7 +222,7 @@ export class NameSky {
 
     const code = await this.coreContract.getLatestControllerCode({});
 
-    const mTx = MultiTransaction.batch(registrantId);
+    const mTx = MultiTransaction.batch({ receiverId: registrantId });
 
     // deploy controller contract
     mTx.deployContract(Buffer.from(code, 'base64'));
@@ -262,7 +262,7 @@ export class NameSky {
       if (mTx.countActions() < ACTION_MAX_NUM) {
         mTx.deleteKey(publicKey);
       } else {
-        mTx.batch(registrantId).deleteKey(publicKey);
+        mTx.batch({ receiverId: registrantId }).deleteKey(publicKey);
       }
     }
 

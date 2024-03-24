@@ -78,7 +78,7 @@ export class UserSettingContract extends BaseContract {
   // -------------------------------------------------- Change -----------------------------------------------------
 
   async like({ tokenId, callbackUrl }: LikeOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<LikeArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<LikeArgs>({
       methodName: 'like',
       args: {
         token_id: tokenId,
@@ -89,7 +89,7 @@ export class UserSettingContract extends BaseContract {
   }
 
   async unlike({ tokenId, callbackUrl }: UnlikeOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<UnlikeArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<UnlikeArgs>({
       methodName: 'unlike',
       args: {
         token_id: tokenId,
@@ -100,7 +100,7 @@ export class UserSettingContract extends BaseContract {
   }
 
   async watch({ tokenId, callbackUrl }: WatchOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<WatchArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<WatchArgs>({
       methodName: 'watch',
       args: {
         token_id: tokenId,
@@ -111,7 +111,7 @@ export class UserSettingContract extends BaseContract {
   }
 
   async unwatch({ tokenId, callbackUrl }: UnwatchOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<UnwatchArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<UnwatchArgs>({
       methodName: 'unwatch',
       args: {
         token_id: tokenId,
@@ -122,7 +122,7 @@ export class UserSettingContract extends BaseContract {
   }
 
   async readNotificationAt({ timestamp, callbackUrl }: ReadNotificationAtOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<ReadNotificationAtArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<ReadNotificationAtArgs>({
       methodName: 'read_notification_at',
       args: {
         timestamp,

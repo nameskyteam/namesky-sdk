@@ -243,7 +243,7 @@ export class MarketplaceContract extends BaseContract {
   // ------------------------------------------------- Change -----------------------------------------------------
 
   async createMarketAccount({ callbackUrl }: CreateMarketAccountOption): Promise<StorageBalance> {
-    const mTx = MultiTransaction.batch(this.contractId).storage.deposit({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).storage.deposit({
       attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
     });
 
@@ -251,7 +251,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async nearDeposit({ amount, callbackUrl }: NearDepositOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall({
       methodName: 'near_deposit',
       attachedDeposit: amount,
     });
@@ -260,7 +260,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async nearWithdraw({ amount, callbackUrl }: NearWithdrawOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<NearWithdrawArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<NearWithdrawArgs>({
       methodName: 'near_withdraw',
       args: {
         amount,
@@ -277,7 +277,7 @@ export class MarketplaceContract extends BaseContract {
       throw Error('Listing not found');
     }
 
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<BuyListingArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<BuyListingArgs>({
       methodName: 'buy_listing',
       args: {
         nft_contract_id: this.coreContractId,
@@ -291,26 +291,26 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async createListing({ tokenId, price, expireTime, callbackUrl }: CreateListingOptions) {
-    const mTx = MultiTransaction.batch(this.contractId)
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId })
       // first user needs to deposit storage fee for new listing
       .storage.deposit({
         attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
+      })
+      .batch({ receiverId: this.coreContractId })
+      .nft.approve({
+        args: {
+          account_id: this.contractId,
+          token_id: tokenId,
+          msg: jsonSerialize<NonFungibleTokenReceiverMsg>({ CreateListing: { price, expire_time: expireTime } }),
+        },
+        gas: Gas.parse(50, 'T'),
       });
-
-    mTx.batch(this.coreContractId).nft.approve({
-      args: {
-        account_id: this.contractId,
-        token_id: tokenId,
-        msg: jsonSerialize<NonFungibleTokenReceiverMsg>({ CreateListing: { price, expire_time: expireTime } }),
-      },
-      gas: Gas.parse(50, 'T'),
-    });
 
     await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
   }
 
   async updateListing({ tokenId, newPrice, newExpireTime, callbackUrl }: UpdateListingOptions) {
-    const mTx = MultiTransaction.batch(this.coreContractId).nft.approve({
+    const mTx = MultiTransaction.batch({ receiverId: this.coreContractId }).nft.approve({
       args: {
         account_id: this.contractId,
         token_id: tokenId,
@@ -325,7 +325,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async removeListing({ tokenId, callbackUrl }: RemoveListingOptions): Promise<ListingView> {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<RemoveListingArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<RemoveListingArgs>({
       methodName: 'remove_listing',
       args: {
         nft_contract_id: this.coreContractId,
@@ -339,7 +339,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async acceptOffering({ tokenId, buyerId, callbackUrl }: AcceptOfferingOptions): Promise<boolean> {
-    const mTx = MultiTransaction.batch(this.coreContractId)
+    const mTx = MultiTransaction.batch({ receiverId: this.coreContractId })
       .nft.approve({
         args: {
           token_id: tokenId,
@@ -348,7 +348,7 @@ export class MarketplaceContract extends BaseContract {
         },
         gas: Gas.parse(50, 'T'),
       })
-      .batch(this.contractId)
+      .batch({ receiverId: this.contractId })
       .functionCall<AcceptOfferingArgs>({
         methodName: 'accept_offering',
         args: {
@@ -364,7 +364,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async createOffering({ tokenId, price, expireTime, isSimpleOffering = true, callbackUrl }: CreateOfferingOptions) {
-    const mTx = MultiTransaction.batch(this.contractId)
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId })
       // first user needs to deposit storage fee for new offering
       .storage.deposit({
         attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
@@ -431,7 +431,7 @@ export class MarketplaceContract extends BaseContract {
       throw Error('Offering not found');
     }
 
-    const mTx = MultiTransaction.batch(this.contractId);
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId });
 
     if (newPrice) {
       const insufficientBalance = calcInsufficientBalance(offering.price, newPrice);
@@ -489,7 +489,7 @@ export class MarketplaceContract extends BaseContract {
   }
 
   async removeOffering({ tokenId, callbackUrl }: RemoveOfferingOptions): Promise<OfferingView> {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<RemoveOfferingArgs>({
+    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<RemoveOfferingArgs>({
       methodName: 'remove_offering',
       args: {
         nft_contract_id: this.coreContractId,
