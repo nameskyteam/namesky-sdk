@@ -23,10 +23,10 @@ import { Network } from './types';
 import { JsonRpcProvider } from 'near-api-js/lib/providers/json-rpc-provider';
 
 export class NameSkySigner implements View, Call, Send {
-  multiSender: MultiSendAccount | MultiSendWalletSelector;
+  sender: MultiSendAccount | MultiSendWalletSelector;
 
-  private constructor(multiSender: MultiSendAccount | MultiSendWalletSelector) {
-    this.multiSender = multiSender;
+  private constructor(sender: MultiSendAccount | MultiSendWalletSelector) {
+    this.sender = sender;
   }
 
   static fromAccount(account: MultiSendAccount): NameSkySigner {
@@ -38,24 +38,24 @@ export class NameSkySigner implements View, Call, Send {
   }
 
   get network(): Network {
-    if ('accountId' in this.multiSender) {
+    if ('accountId' in this.sender) {
       return {
-        networkId: this.multiSender.connection.networkId,
-        nodeUrl: (this.multiSender.connection.provider as JsonRpcProvider).connection.url,
+        networkId: this.sender.connection.networkId,
+        nodeUrl: (this.sender.connection.provider as JsonRpcProvider).connection.url,
       };
     } else {
       return {
-        networkId: this.multiSender.options.network.networkId,
-        nodeUrl: this.multiSender.options.network.nodeUrl,
+        networkId: this.sender.options.network.networkId,
+        nodeUrl: this.sender.options.network.nodeUrl,
       };
     }
   }
 
   get accountId(): string {
-    if ('accountId' in this.multiSender) {
-      return this.multiSender.accountId;
+    if ('accountId' in this.sender) {
+      return this.sender.accountId;
     } else {
-      const accountId = this.multiSender.getActiveAccountId();
+      const accountId = this.sender.getActiveAccount()?.accountId;
       if (!accountId) {
         throw Error(`Active account id not found`);
       }
@@ -64,32 +64,32 @@ export class NameSkySigner implements View, Call, Send {
   }
 
   view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value> {
-    return this.multiSender.view(options);
+    return this.sender.view(options);
   }
 
   call<Value, Args = EmptyArgs>(
-    options: MultiSendAccountCallOptions<Value, Args> | MultiSendWalletSelectorCallOptions<Value, Args>
+    options: MultiSendAccountCallOptions<Value, Args> | MultiSendWalletSelectorCallOptions<Value, Args>,
   ): Promise<Value> {
-    return this.multiSender.call(options);
+    return this.sender.call(options);
   }
 
   callRaw<Args = EmptyArgs>(
-    options: MultiSendAccountCallRawOptions<Args> | MultiSendWalletSelectorCallRawOptions<Args>
+    options: MultiSendAccountCallRawOptions<Args> | MultiSendWalletSelectorCallRawOptions<Args>,
   ): Promise<FinalExecutionOutcome> {
-    return this.multiSender.callRaw(options);
+    return this.sender.callRaw(options);
   }
 
   send<Value>(
     mTx: MultiTransaction,
-    options?: MultiSendAccountSendOptions<Value> | MultiSendWalletSelectorSendOptions<Value>
+    options?: MultiSendAccountSendOptions<Value> | MultiSendWalletSelectorSendOptions<Value>,
   ): Promise<Value> {
-    return this.multiSender.send(mTx, options);
+    return this.sender.send(mTx, options);
   }
 
   sendRaw(
     mTx: MultiTransaction,
-    options?: MultiSendAccountSendRawOptions | MultiSendWalletSelectorSendRawOptions
+    options?: MultiSendAccountSendRawOptions | MultiSendWalletSelectorSendRawOptions,
   ): Promise<FinalExecutionOutcome[]> {
-    return this.multiSender.sendRaw(mTx, options);
+    return this.sender.sendRaw(mTx, options);
   }
 }

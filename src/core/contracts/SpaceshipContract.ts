@@ -97,7 +97,7 @@ export class SpaceshipContract extends BaseContract {
   // -------------------------------------------------- Change -----------------------------------------------------
 
   async mintSpaceship({ callbackUrl }: MintSpaceshipOptions) {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'mint_spaceship',
       attachedDeposit: DEFAULT_SPACESHIP_STORAGE_DEPOSIT,
       gas: Gas.parse(50, 'T'),
@@ -107,7 +107,7 @@ export class SpaceshipContract extends BaseContract {
   }
 
   async addFuel({ quantity, callbackUrl }: AddFuelOptions) {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<AddFuelArgs>({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<AddFuelArgs>({
       methodName: 'add_fuel',
       args: {
         quantity,
@@ -137,13 +137,13 @@ export class SpaceshipContract extends BaseContract {
         methodName: 'storage_balance_bounds',
       });
 
-      mTx.batch({ receiverId: rewardTokenId }).storage.deposit({
+      mTx.batch(rewardTokenId).storage.deposit({
         attachedDeposit: storageBalanceBounds.min,
       });
     }
 
     mTx
-      .batch({ receiverId: this.contractId })
+      .batch(this.contractId)
       .functionCall<DistributeRewardsArgs>({
         methodName: 'distribute_rewards',
         args: {

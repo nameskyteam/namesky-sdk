@@ -198,7 +198,7 @@ export class NameSky {
       return;
     }
 
-    const mTx = MultiTransaction.batch({ receiverId: this.coreContractId }).functionCall<NftRegisterArgs>({
+    const mTx = MultiTransaction.batch(this.coreContractId).functionCall<NftRegisterArgs>({
       methodName: 'nft_register',
       args: {
         minter_id: minterId,
@@ -222,10 +222,13 @@ export class NameSky {
 
     const code = await this.coreContract.getLatestControllerCode({});
 
-    const mTx = MultiTransaction.batch({ receiverId: registrantId });
+    const mTx = MultiTransaction.batch(registrantId);
+
+    let numActions = 0;
 
     // deploy controller contract
     mTx.deployContract(Buffer.from(code, 'base64'));
+    numActions += 1;
 
     // clean account state if needed
     if (state.length !== 0) {
@@ -237,6 +240,7 @@ export class NameSky {
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
+      numActions += 1;
     }
 
     // init controller contract
@@ -246,6 +250,7 @@ export class NameSky {
       attachedDeposit: Amount.ONE_YOCTO,
       gas: Gas.parse(10, 'T'),
     });
+    numActions += 1;
 
     // delete all access keys
     const keyPair = await this.getRegistrantKey(registrantId);
@@ -259,11 +264,12 @@ export class NameSky {
     publicKeys = moveRegistrantPublicKeyToEnd(registrantPublicKey, publicKeys);
 
     for (const publicKey of publicKeys) {
-      if (mTx.countActions() < ACTION_MAX_NUM) {
-        mTx.deleteKey(publicKey);
-      } else {
-        mTx.batch({ receiverId: registrantId }).deleteKey(publicKey);
+      if (numActions === ACTION_MAX_NUM) {
+        mTx.batch(registrantId);
+        numActions = 0;
       }
+      mTx.deleteKey(publicKey);
+      numActions += 1;
     }
 
     await this.account(registrantId).send(mTx);

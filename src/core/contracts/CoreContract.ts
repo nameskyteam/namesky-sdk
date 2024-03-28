@@ -226,7 +226,7 @@ export class CoreContract extends BaseContract {
    * Mint is ONLY available for operator account
    */
   async nftMint({ tokenId, metadata, controllerCodeHash }: NftMintOptions): Promise<boolean> {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<NftMintArgs>({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<NftMintArgs>({
       methodName: 'nft_mint',
       args: {
         token_id: tokenId,
@@ -240,7 +240,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftUnregister({ registrantId, publicKey, force, callbackUrl }: NftUnregisterOptions): Promise<boolean> {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<NftUnregisterArgs>({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<NftUnregisterArgs>({
       methodName: 'nft_unregister',
       args: {
         registrant_id: registrantId,
@@ -255,7 +255,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftRedeem({ tokenId, publicKey, force, memo, callbackUrl }: NftRedeemOptions): Promise<boolean> {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).functionCall<NftRedeemArgs>({
+    const mTx = MultiTransaction.batch(this.contractId).functionCall<NftRedeemArgs>({
       methodName: 'nft_redeem',
       args: {
         token_id: tokenId,
@@ -271,7 +271,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftTransfer({ tokenId, receiverId, approvalId, memo, callbackUrl }: NftTransferOptions) {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).nft.transfer({
+    const mTx = MultiTransaction.batch(this.contractId).nft.transfer({
       args: {
         token_id: tokenId,
         receiver_id: receiverId,
@@ -284,7 +284,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftApprove({ tokenId, accountId, msg, callbackUrl }: NftApproveOptions) {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).nft.approve({
+    const mTx = MultiTransaction.batch(this.contractId).nft.approve({
       args: {
         token_id: tokenId,
         account_id: accountId,
@@ -296,7 +296,7 @@ export class CoreContract extends BaseContract {
   }
 
   async nftRevoke({ tokenId, accountId, callbackUrl }: NftRevokeOptions) {
-    const mTx = MultiTransaction.batch({ receiverId: this.contractId }).nft.revoke({
+    const mTx = MultiTransaction.batch(this.contractId).nft.revoke({
       args: {
         token_id: tokenId,
         account_id: accountId,

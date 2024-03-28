@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberLike } from 'multi-transaction';
+import { BigNumber, Numeric } from 'multi-transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { PENDING_REGISTRANT_ID_PREFIX } from './constants';
 
@@ -12,7 +12,7 @@ export function isBrowser(): boolean {
   return typeof window !== 'undefined';
 }
 
-export function calcInsufficientBalance(current: BigNumberLike, target: BigNumberLike): BigNumber {
+export function calcInsufficientBalance(current: Numeric, target: Numeric): BigNumber {
   return BigNumber.max(BigNumber(target).minus(current), 0);
 }
 
