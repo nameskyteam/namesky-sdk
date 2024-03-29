@@ -21,6 +21,7 @@ import {
 } from 'multi-transaction';
 import { Network } from './types';
 import { JsonRpcProvider } from 'near-api-js/lib/providers/json-rpc-provider';
+import { NameSkySignerError } from '../errors';
 
 export class NameSkySigner implements View, Call, Send {
   sender: MultiSendAccount | MultiSendWalletSelector;
@@ -57,7 +58,7 @@ export class NameSkySigner implements View, Call, Send {
     } else {
       const accountId = this.sender.getActiveAccount()?.accountId;
       if (!accountId) {
-        throw Error(`Active account id not found`);
+        throw new NameSkySignerError(`Active account id not found`);
       }
       return accountId;
     }

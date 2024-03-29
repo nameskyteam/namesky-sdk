@@ -38,6 +38,7 @@ import {
   getDefaultSpaceshipContractId,
   getDefaultUserSettingContractId,
 } from '../utils/contracts';
+import { NameSkyError } from '../errors';
 
 export class NameSky {
   private readonly near: Near;
@@ -125,7 +126,7 @@ export class NameSky {
     const { walletBaseUrl, successUrl, failureUrl } = options;
 
     if (!isBrowser()) {
-      throw Error('requestFullAccess only available on browser environment');
+      throw new NameSkyError('requestFullAccess only available on browser environment');
     }
 
     const keyPair = KeyPairEd25519.fromRandom();
@@ -258,7 +259,7 @@ export class NameSky {
     const keyPair = await this.getRegistrantKey(registrantId);
 
     if (!keyPair) {
-      throw Error(`No access key found for Account(${registrantId}) to setup controller`);
+      throw new NameSkyError(`No access key found for Account(${registrantId}) to setup controller`);
     }
 
     const registrantPublicKey = keyPair.getPublicKey().toString();
@@ -375,7 +376,8 @@ export class NameSky {
 }
 
 export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
-  const { signer, contracts } = options;
+  const { signer, contracts = {} } = options;
+  const { coreContractId, marketplaceContractId, userSettingContractId, spaceshipContractId } = contracts;
 
   let keyStore: keyStores.KeyStore;
 
@@ -388,23 +390,23 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
   const networkId = signer.network.networkId;
 
   const coreContract = new CoreContract({
-    contractId: contracts?.coreContractId ?? getDefaultCoreContractId(networkId),
+    contractId: coreContractId ?? getDefaultCoreContractId(networkId),
     signer,
   });
 
   const marketplaceContract = new MarketplaceContract({
     coreContractId: coreContract.contractId,
-    contractId: contracts?.marketplaceContractId ?? getDefaultMarketplaceContractId(networkId),
+    contractId: marketplaceContractId ?? getDefaultMarketplaceContractId(networkId),
     signer,
   });
 
   const userSettingContract = new UserSettingContract({
-    contractId: contracts?.userSettingContractId ?? getDefaultUserSettingContractId(networkId),
+    contractId: userSettingContractId ?? getDefaultUserSettingContractId(networkId),
     signer,
   });
 
   const spaceshipContract = new SpaceshipContract({
-    contractId: contracts?.spaceshipContractId ?? getDefaultSpaceshipContractId(networkId),
+    contractId: spaceshipContractId ?? getDefaultSpaceshipContractId(networkId),
     signer,
   });
 

@@ -54,6 +54,7 @@ import { Amount, Gas, MultiTransaction, StorageBalance } from 'multi-transaction
 import { NameSkySigner } from '../NameSkySigner';
 import { DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils/constants';
 import { calcInsufficientBalance } from '../../utils/internal';
+import { NameSkyMarketplaceError } from '../../errors';
 
 export type MarketplaceContractOptions = BaseContractOptions & {
   coreContractId: string;
@@ -281,7 +282,7 @@ export class MarketplaceContract extends BaseContract {
     const { tokenId, callbackUrl } = options;
     const listing = await this.getListingView({ tokenId });
     if (!listing) {
-      throw Error('Listing not found');
+      throw new NameSkyMarketplaceError('Listing not found');
     }
 
     const mTransaction = MultiTransaction.batch(this.contractId).functionCall<BuyListingArgs>({
@@ -432,7 +433,7 @@ export class MarketplaceContract extends BaseContract {
   async updateOffering(options: UpdateOfferingOptions) {
     const { tokenId, newPrice, newExpireTime, callbackUrl } = options;
     if (!newPrice && !newExpireTime) {
-      throw Error('Must provide `newPrice` or `newExpireTime`');
+      throw new NameSkyMarketplaceError('Must provide `newPrice` or `newExpireTime`');
     }
 
     const offering = await this.getOfferingView({
@@ -441,7 +442,7 @@ export class MarketplaceContract extends BaseContract {
     });
 
     if (!offering) {
-      throw Error('Offering not found');
+      throw new NameSkyMarketplaceError('Offering not found');
     }
 
     const mTransaction = MultiTransaction.batch(this.contractId);

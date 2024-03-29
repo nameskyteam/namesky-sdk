@@ -3,6 +3,7 @@ import { SpaceshipEngine } from '../core';
 import sha256 from 'sha256';
 import base58 from 'bs58';
 import { DAY_MS, MAX_TIMEOUT } from './constants';
+import { NameSkySpaceshipError } from '../errors';
 
 export function base58CodeHash(code: Buffer): string {
   const hash = Buffer.from(sha256(code), 'hex');
@@ -34,7 +35,7 @@ export function jsonDeserialize<T>(data: string): T {
 
 export function simulateSettleEnergy(spaceshipEngine: SpaceshipEngine, settledAt: number): SpaceshipEngine {
   if (settledAt < spaceshipEngine.settled_at) {
-    throw Error('Invalid settled timestamp');
+    throw new NameSkySpaceshipError('Invalid settled timestamp');
   }
 
   const consumedEnergy = BigNumber.min(
@@ -42,7 +43,7 @@ export function simulateSettleEnergy(spaceshipEngine: SpaceshipEngine, settledAt
       .multipliedBy(spaceshipEngine.speed)
       .div(DAY_MS)
       .decimalPlaces(0),
-    BigNumber(spaceshipEngine.energy)
+    BigNumber(spaceshipEngine.energy),
   );
 
   spaceshipEngine = {

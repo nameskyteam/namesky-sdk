@@ -1,4 +1,5 @@
 import { NetworkId } from '../core';
+import { NameSkyConfigurationError } from '../errors';
 
 export function getDefaultCoreContractId(networkId: NetworkId): string {
   switch (networkId) {
@@ -7,7 +8,7 @@ export function getDefaultCoreContractId(networkId: NetworkId): string {
     case 'testnet':
       return 'core.namesky.testnet';
     default:
-      throw Error(`Default core contract id not found for network: ${networkId}`);
+      throw new NameSkyConfigurationError(`Default core contract id not found for network: ${networkId}`);
   }
 }
 
@@ -18,7 +19,7 @@ export function getDefaultMarketplaceContractId(networkId: NetworkId): string {
     case 'testnet':
       return 'marketplace.namesky.testnet';
     default:
-      throw Error(`Default marketplace contract id not found for network: ${networkId}`);
+      throw new NameSkyConfigurationError(`Default marketplace contract id not found for network: ${networkId}`);
   }
 }
 
@@ -29,7 +30,7 @@ export function getDefaultUserSettingContractId(networkId: NetworkId): string {
     case 'testnet':
       return 'login.namesky.testnet';
     default:
-      throw Error(`Default user setting contract id not found for network: ${networkId}`);
+      throw new NameSkyConfigurationError(`Default user setting contract id not found for network: ${networkId}`);
   }
 }
 
@@ -40,6 +41,6 @@ export function getDefaultSpaceshipContractId(networkId: NetworkId): string {
     case 'testnet':
       return 'namesky_spaceship.testnet';
     default:
-      throw Error(`Default spaceship contract id not found for network: ${networkId}`);
+      throw new NameSkyConfigurationError(`Default spaceship contract id not found for network: ${networkId}`);
   }
 }
