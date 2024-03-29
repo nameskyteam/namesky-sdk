@@ -227,11 +227,8 @@ export class NameSky {
 
     const mTransaction = MultiTransaction.batch(registrantId);
 
-    let numActions = 0;
-
     // deploy controller contract
     mTransaction.deployContract(Buffer.from(code, 'base64'));
-    numActions += 1;
 
     // clean account state if needed
     if (state.length !== 0) {
@@ -243,7 +240,6 @@ export class NameSky {
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
       });
-      numActions += 1;
     }
 
     // init controller contract
@@ -253,7 +249,6 @@ export class NameSky {
       attachedDeposit: Amount.ONE_YOCTO,
       gas: Gas.parse(10, 'T'),
     });
-    numActions += 1;
 
     // delete all access keys
     const keyPair = await this.getRegistrantKey(registrantId);
@@ -267,12 +262,10 @@ export class NameSky {
     publicKeys = moveRegistrantPublicKeyToEnd(registrantPublicKey, publicKeys);
 
     for (const publicKey of publicKeys) {
-      if (numActions === ACTION_MAX_NUM) {
+      if (mTransaction.countActions() === ACTION_MAX_NUM) {
         mTransaction.batch(registrantId);
-        numActions = 0;
       }
       mTransaction.deleteKey(publicKey);
-      numActions += 1;
     }
 
     await this.account(registrantId).send(mTransaction);
