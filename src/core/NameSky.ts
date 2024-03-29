@@ -121,9 +121,11 @@ export class NameSky {
   /**
    * Request Full Access Key via web wallet (e.g. MyNearWallet)
    */
-  async requestFullAccess(webWalletBaseUrl: string, successUrl?: string, failureUrl?: string): Promise<never> {
+  async requestFullAccess(options: RequestFullAccessOptions): Promise<never> {
+    const { walletBaseUrl, successUrl, failureUrl } = options;
+
     if (!isBrowser()) {
-      throw Error('requestFullAccess only available in browser environment');
+      throw Error('requestFullAccess only available on browser environment');
     }
 
     const keyPair = KeyPairEd25519.fromRandom();
@@ -131,7 +133,7 @@ export class NameSky {
     const pendingRegistrantId = getPendingRegistrantId(publicKey);
     await this.setRegistrantKey(pendingRegistrantId, keyPair);
 
-    const newUrl = new URL(webWalletBaseUrl + '/login/');
+    const newUrl = new URL(walletBaseUrl + '/login/');
     newUrl.searchParams.set('public_key', publicKey);
     newUrl.searchParams.set('success_url', successUrl ?? window.location.href);
     newUrl.searchParams.set('failure_url', failureUrl ?? window.location.href);
@@ -198,7 +200,7 @@ export class NameSky {
       return;
     }
 
-    const mTx = MultiTransaction.batch(this.coreContractId).functionCall<NftRegisterArgs>({
+    const mTransaction = MultiTransaction.batch(this.coreContractId).functionCall<NftRegisterArgs>({
       methodName: 'nft_register',
       args: {
         minter_id: minterId,
@@ -206,7 +208,7 @@ export class NameSky {
       attachedDeposit: oldMinterId ? Amount.ONE_YOCTO : mintFee,
     });
 
-    await this.account(registrantId).send(mTx);
+    await this.account(registrantId).send(mTransaction);
   }
 
   /**
@@ -222,18 +224,18 @@ export class NameSky {
 
     const code = await this.coreContract.getLatestControllerCode({});
 
-    const mTx = MultiTransaction.batch(registrantId);
+    const mTransaction = MultiTransaction.batch(registrantId);
 
     let numActions = 0;
 
     // deploy controller contract
-    mTx.deployContract(Buffer.from(code, 'base64'));
+    mTransaction.deployContract(Buffer.from(code, 'base64'));
     numActions += 1;
 
     // clean account state if needed
     if (state.length !== 0) {
       const stateKeys = state.map(({ key }) => Buffer.from(key, 'base64'));
-      mTx.functionCall<CleanStateArgs>({
+      mTransaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
         args: stateKeys,
         stringifier: Stringifier.borsh(BorshSchema.Array(BorshSchema.Vec(BorshSchema.u8), stateKeys.length)),
@@ -244,7 +246,7 @@ export class NameSky {
     }
 
     // init controller contract
-    mTx.functionCall<InitArgs>({
+    mTransaction.functionCall<InitArgs>({
       methodName: 'init',
       args: Buffer.from(this.coreContractId),
       attachedDeposit: Amount.ONE_YOCTO,
@@ -265,14 +267,14 @@ export class NameSky {
 
     for (const publicKey of publicKeys) {
       if (numActions === ACTION_MAX_NUM) {
-        mTx.batch(registrantId);
+        mTransaction.batch(registrantId);
         numActions = 0;
       }
-      mTx.deleteKey(publicKey);
+      mTransaction.deleteKey(publicKey);
       numActions += 1;
     }
 
-    await this.account(registrantId).send(mTx);
+    await this.account(registrantId).send(mTransaction);
   }
 
   /**
@@ -303,12 +305,8 @@ export class NameSky {
     }, timeout);
   }
 
-  async getNftAccountSafety({
-    accountId,
-    strict = false,
-    blockQuery = BlockQuery.OPTIMISTIC,
-  }: GetNftAccountSafetyOptions): Promise<NftAccountSafety> {
-    blockQuery = await blockQuery.height(this.provider);
+  async getNftAccountSafety(options: GetNftAccountSafetyOptions): Promise<NftAccountSafety> {
+    const { accountId, strict = false, blockQuery = await BlockQuery.OPTIMISTIC.height(this.provider) } = options;
 
     const [controllerCodeViews, accountView, { values: state }, { keys: accessKeys }] = await Promise.all([
       this.coreContract.getControllerCodeViews({ blockQuery }),
@@ -365,7 +363,8 @@ export class NameSky {
     };
   }
 
-  private async getControllerOwnerId({ accountId, blockQuery }: GetControllerOwnerIdOptions): Promise<string> {
+  private async getControllerOwnerId(options: GetControllerOwnerIdOptions): Promise<string> {
+    const { accountId, blockQuery } = options;
     const account = this.account();
     return account.view({
       contractId: accountId,
@@ -411,3 +410,9 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
 
   return new NameSky({ signer, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
 }
+
+export type RequestFullAccessOptions = {
+  walletBaseUrl: string;
+  successUrl?: string;
+  failureUrl?: string;
+};

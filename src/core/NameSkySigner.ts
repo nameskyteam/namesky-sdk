@@ -80,16 +80,16 @@ export class NameSkySigner implements View, Call, Send {
   }
 
   send<Value>(
-    mTx: MultiTransaction,
+    mTransaction: MultiTransaction,
     options?: MultiSendAccountSendOptions<Value> | MultiSendWalletSelectorSendOptions<Value>,
   ): Promise<Value> {
-    return this.sender.send(mTx, options);
+    return this.sender.send(mTransaction, options);
   }
 
   sendRaw(
-    mTx: MultiTransaction,
+    mTransaction: MultiTransaction,
     options?: MultiSendAccountSendRawOptions | MultiSendWalletSelectorSendRawOptions,
   ): Promise<FinalExecutionOutcome[]> {
-    return this.sender.sendRaw(mTx, options);
+    return this.sender.sendRaw(mTransaction, options);
   }
 }

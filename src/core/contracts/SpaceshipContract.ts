@@ -45,7 +45,8 @@ export class SpaceshipContract extends BaseContract {
 
   // ------------------------------------------------- View -------------------------------------------------------
 
-  async getSpaceship({ accountId, blockQuery }: GetSpaceshipOptions): Promise<Token | undefined> {
+  async getSpaceship(options: GetSpaceshipOptions): Promise<Token | undefined> {
+    const { accountId, blockQuery } = options;
     return this.signer.view<Token | undefined, GetSpaceshipArgs>({
       contractId: this.contractId,
       methodName: 'get_spaceship',
@@ -56,7 +57,8 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  async getSpaceshipEngine({ accountId, blockQuery }: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
+  async getSpaceshipEngine(options: GetSpaceshipEngineOptions): Promise<SpaceshipEngine | undefined> {
+    const { accountId, blockQuery } = options;
     return this.signer.view<SpaceshipEngine | undefined, GetSpaceshipEngineArgs>({
       contractId: this.contractId,
       methodName: 'get_spaceship_engine',
@@ -67,7 +69,8 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  async getRewardTokenId({ blockQuery }: GetRewardTokenIdOptions): Promise<string> {
+  async getRewardTokenId(options: GetRewardTokenIdOptions = {}): Promise<string> {
+    const { blockQuery } = options;
     return this.signer.view<string>({
       contractId: this.contractId,
       methodName: 'get_reward_token_id',
@@ -75,7 +78,8 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  async getRewardsForAccount({ accountId, blockQuery }: GetRewardsForAccountOptions): Promise<string> {
+  async getRewardsForAccount(options: GetRewardsForAccountOptions): Promise<string> {
+    const { accountId, blockQuery } = options;
     return this.signer.view<string, GetRewardsForAccountArgs>({
       contractId: this.contractId,
       methodName: 'get_rewards_for_account',
@@ -86,7 +90,8 @@ export class SpaceshipContract extends BaseContract {
     });
   }
 
-  async getTotalAddedFuelNum({ blockQuery }: GetTotalAddedFuelNumOptions): Promise<string> {
+  async getTotalAddedFuelNum(options: GetTotalAddedFuelNumOptions = {}): Promise<string> {
+    const { blockQuery } = options;
     return this.signer.view<string>({
       contractId: this.contractId,
       methodName: 'get_total_added_fuel_num',
@@ -96,18 +101,20 @@ export class SpaceshipContract extends BaseContract {
 
   // -------------------------------------------------- Change -----------------------------------------------------
 
-  async mintSpaceship({ callbackUrl }: MintSpaceshipOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall({
+  async mintSpaceship(options: MintSpaceshipOptions = {}) {
+    const { callbackUrl } = options;
+    const mTransaction = MultiTransaction.batch(this.contractId).functionCall({
       methodName: 'mint_spaceship',
       attachedDeposit: DEFAULT_SPACESHIP_STORAGE_DEPOSIT,
       gas: Gas.parse(50, 'T'),
     });
 
-    await this.signer.send(mTx, { callbackUrl });
+    await this.signer.send(mTransaction, { callbackUrl });
   }
 
-  async addFuel({ quantity, callbackUrl }: AddFuelOptions) {
-    const mTx = MultiTransaction.batch(this.contractId).functionCall<AddFuelArgs>({
+  async addFuel(options: AddFuelOptions) {
+    const { quantity, callbackUrl } = options;
+    const mTransaction = MultiTransaction.batch(this.contractId).functionCall<AddFuelArgs>({
       methodName: 'add_fuel',
       args: {
         quantity,
@@ -115,13 +122,14 @@ export class SpaceshipContract extends BaseContract {
       gas: Gas.parse(50, 'T'),
     });
 
-    await this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
+    await this.signer.send(mTransaction, { callbackUrl, throwReceiptErrors: true });
   }
 
-  async claimRewards({ callbackUrl }: ClaimRewardsOptions): Promise<string> {
+  async claimRewards(options: ClaimRewardsOptions = {}): Promise<string> {
+    const { callbackUrl } = options;
     const rewardTokenId = await this.getRewardTokenId({});
 
-    const mTx = MultiTransaction.new();
+    const mTransaction = MultiTransaction.new();
 
     const storageBalance = await this.signer.view<StorageBalance | undefined, StorageBalanceOfArgs>({
       contractId: rewardTokenId,
@@ -137,12 +145,12 @@ export class SpaceshipContract extends BaseContract {
         methodName: 'storage_balance_bounds',
       });
 
-      mTx.batch(rewardTokenId).storage.deposit({
+      mTransaction.batch(rewardTokenId).storage.deposit({
         attachedDeposit: storageBalanceBounds.min,
       });
     }
 
-    mTx
+    mTransaction
       .batch(this.contractId)
       .functionCall<DistributeRewardsArgs>({
         methodName: 'distribute_rewards',
@@ -155,6 +163,6 @@ export class SpaceshipContract extends BaseContract {
         gas: Gas.parse(50, 'T'),
       });
 
-    return this.signer.send(mTx, { callbackUrl, throwReceiptErrors: true });
+    return this.signer.send(mTransaction, { callbackUrl, throwReceiptErrors: true });
   }
 }

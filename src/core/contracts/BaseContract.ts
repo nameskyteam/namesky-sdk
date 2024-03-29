@@ -9,7 +9,8 @@ export abstract class BaseContract {
   contractId: string;
   signer: NameSkySigner;
 
-  protected constructor({ contractId, signer }: BaseContractOptions) {
+  protected constructor(options: BaseContractOptions) {
+    const { contractId, signer } = options;
     this.contractId = contractId;
     this.signer = signer;
   }
