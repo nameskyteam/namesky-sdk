@@ -2,12 +2,6 @@ import { BigNumber, Numeric } from 'multi-transaction';
 import { PublicKey } from 'near-api-js/lib/utils';
 import { PENDING_REGISTRANT_ID_PREFIX } from './constants';
 
-export function endless(): never {
-  while (true) {
-    // endless loop
-  }
-}
-
 export function isBrowser(): boolean {
   return typeof window !== 'undefined';
 }
@@ -16,7 +10,7 @@ export function calcInsufficientBalance(current: Numeric, target: Numeric): BigN
   return BigNumber.max(BigNumber(target).minus(current), 0);
 }
 
-export function getPendingRegistrantId(publicKey: string): string {
+export function buildPendingRegistrantId(publicKey: string): string {
   return PENDING_REGISTRANT_ID_PREFIX + PublicKey.fromString(publicKey).toString();
 }
 

@@ -18,10 +18,11 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@near-js/types": "^0.0.4",
     "@near-wallet-selector/core": "^8.9.2",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
-    "multi-transaction": "10.4.0",
+    "multi-transaction": "10.6.0",
     "near-api-js": "^2.1.4",
     "sha256": "^0.2.0"
   },
@@ -36,6 +37,6 @@
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5",
     "ts-jest": "^29.1.2",
-    "typescript": "^5.4.3"
+    "typescript": "5.4.3"
   }
 }

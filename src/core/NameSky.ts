@@ -30,7 +30,7 @@ import { Buffer } from 'buffer';
 import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkySigner } from './NameSkySigner';
-import { getPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd, endless } from '../utils/internal';
+import { buildPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd } from '../utils/internal';
 import { ACTION_MAX_NUM, REGISTRANT_KEYSTORE_PREFIX } from '../utils/constants';
 import {
   getDefaultCoreContractId,
@@ -131,7 +131,7 @@ export class NameSky {
 
     const keyPair = KeyPairEd25519.fromRandom();
     const publicKey = keyPair.getPublicKey().toString();
-    const pendingRegistrantId = getPendingRegistrantId(publicKey);
+    const pendingRegistrantId = buildPendingRegistrantId(publicKey);
     await this.setRegistrantKey(pendingRegistrantId, keyPair);
 
     const newUrl = new URL(walletBaseUrl + '/login/');
@@ -140,8 +140,9 @@ export class NameSky {
     newUrl.searchParams.set('failure_url', failureUrl ?? window.location.href);
     window.location.assign(newUrl.toString());
 
-    // waiting for direction
-    endless();
+    while (true) {
+      // waiting for direction
+    }
   }
 
   private async onRequestFullAccess() {
@@ -153,7 +154,7 @@ export class NameSky {
       return;
     }
 
-    const pendingRegistrantId = getPendingRegistrantId(publicKey);
+    const pendingRegistrantId = buildPendingRegistrantId(publicKey);
     const keyPair = await this.getRegistrantKey(pendingRegistrantId);
 
     if (!keyPair) {
