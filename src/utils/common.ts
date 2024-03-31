@@ -4,6 +4,7 @@ import sha256 from 'sha256';
 import base58 from 'bs58';
 import { DAY_MS, MAX_TIMEOUT } from './constants';
 import { NameSkySpaceshipError } from '../errors';
+import { Buffer } from 'buffer';
 
 export function base58CodeHash(code: Buffer): string {
   const hash = Buffer.from(sha256(code), 'hex');

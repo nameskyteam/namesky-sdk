@@ -18,8 +18,8 @@ dependencies:
     specifier: ^6.0.3
     version: 6.0.3
   multi-transaction:
-    specifier: 11.0.0
-    version: 11.0.0(near-api-js@2.1.4)
+    specifier: 11.0.1
+    version: 11.0.1(near-api-js@2.1.4)
   near-api-js:
     specifier: ^2.1.4
     version: 2.1.4
@@ -724,25 +724,25 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@multi-transaction/account@1.2.0:
-    resolution: {integrity: sha512-L1NI+93zHUiel0dbZyM5NEosTrmiXLSSvV1cBaRc69Neh2NF5B6uU7qhmukwlXJ9SoEjhc3d8KJbnk744vuoDA==}
+  /@multi-transaction/account@1.2.1:
+    resolution: {integrity: sha512-XJYCIYgvH7dicpyvOzNZQ/ZRG4i3rH59dJHXLCjOxEhTPlJ3Uc6K6a6BA1VZ374R76/XPufqcQb1zqub9GaPBQ==}
     dependencies:
-      '@multi-transaction/core': 1.2.0
+      '@multi-transaction/core': 1.2.1
       bn.js: 5.2.1
     dev: false
 
-  /@multi-transaction/core@1.2.0:
-    resolution: {integrity: sha512-oKec1f3oBtQZuKvrCnPNGcOdHLjnBwJD49nwuTAbYGYxZLfvA1guzWINRxN+5MaFn4f1ZcU+jIfrvTR0jhmTkg==}
+  /@multi-transaction/core@1.2.1:
+    resolution: {integrity: sha512-6DVEbDW0N/Xs3pQp3igvOhpFJC13PTSEqfVxbq0oHR30CzFYUUdoatfBpNj2wZBXCqnJI26n+4s3seGVEw4WdQ==}
     dependencies:
       bignumber.js: 9.1.2
       borsher: 3.4.0
       buffer: 6.0.3
     dev: false
 
-  /@multi-transaction/wallet-selector@1.2.0(near-api-js@2.1.4):
-    resolution: {integrity: sha512-h8Xyi3u2079keWKGHXso7pOKtFBjn4hDWeZavQCmYG5jQHfBsot1R6wSSEgX64TGM3s/JL++e8zBvW95YU1gXA==}
+  /@multi-transaction/wallet-selector@1.2.1(near-api-js@2.1.4):
+    resolution: {integrity: sha512-lcRhMt4po5ovoiQHZ9biAdMcqfxI9QF2oDfxGrcjzud6eR73MBdYJhuZIqxpKIZwBUuufuOoZIZa7BzWAUQ2cQ==}
     dependencies:
-      '@multi-transaction/core': 1.2.0
+      '@multi-transaction/core': 1.2.1
       '@near-wallet-selector/core': 8.9.5(near-api-js@2.1.4)
     transitivePeerDependencies:
       - near-api-js
@@ -2902,12 +2902,12 @@ packages:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
 
-  /multi-transaction@11.0.0(near-api-js@2.1.4):
-    resolution: {integrity: sha512-2itABzyjqGAhVibgYia1MFMXqCVay7VklX145awbDJ2s60xLZsZAi3fqoX54WXEKBBO1GnojZF2scYFFkkGinA==}
+  /multi-transaction@11.0.1(near-api-js@2.1.4):
+    resolution: {integrity: sha512-+UAjDouXu56s4uXxGHkUTG1FQeNdtn9Jg/cpK3J8IXeEMDdUAEk8Vn+QI37JyCWhFPwqFc8ZMH2Flb2TvPUnAQ==}
     dependencies:
-      '@multi-transaction/account': 1.2.0
-      '@multi-transaction/core': 1.2.0
-      '@multi-transaction/wallet-selector': 1.2.0(near-api-js@2.1.4)
+      '@multi-transaction/account': 1.2.1
+      '@multi-transaction/core': 1.2.1
+      '@multi-transaction/wallet-selector': 1.2.1(near-api-js@2.1.4)
     transitivePeerDependencies:
       - near-api-js
     dev: false
