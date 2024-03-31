@@ -14,7 +14,7 @@ import { initNameSky, NameSkySigner, Amount, MultiSendAccount } from 'namesky-sd
 ```
 
 ```ts
-const account = MultiSendAccount.new(near.connection, 'alice.near');
+const account = MultiSendAccount.new(connection, 'alice.near');
 const namesky = await initNameSky({ signer: NameSkySigner.fromAccount(account) });
 ```
 
