@@ -7,7 +7,7 @@ import { NameSkySigner } from '../NameSkySigner';
 
 export type NameSkyComponent = {
   signer: NameSkySigner;
-  keyStore: keyStores.KeyStore;
+  registrantKeyStore: keyStores.KeyStore;
 
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
@@ -24,6 +24,7 @@ export type NetworkId = 'mainnet' | 'testnet' | string;
 
 export type NameSkyOptions = {
   signer: NameSkySigner;
+  registrantKeyStore?: keyStores.KeyStore,
   contracts?: {
     coreContractId?: string;
     marketplaceContractId?: string;

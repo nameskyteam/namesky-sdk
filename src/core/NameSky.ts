@@ -42,7 +42,7 @@ import { NameSkyError } from '../errors';
 
 export class NameSky {
   private readonly near: Near;
-  private readonly keyStore: keyStores.KeyStore;
+  private readonly registrantKeyStore: keyStores.KeyStore;
 
   signer: NameSkySigner;
 
@@ -53,7 +53,7 @@ export class NameSky {
 
   constructor({
     signer,
-    keyStore,
+    registrantKeyStore,
     coreContract,
     marketplaceContract,
     userSettingContract,
@@ -61,11 +61,11 @@ export class NameSky {
   }: NameSkyComponent) {
     this.near = new Near({
       ...signer.network,
-      keyStore,
+      keyStore: registrantKeyStore,
     });
+    this.registrantKeyStore = registrantKeyStore;
 
     this.signer = signer;
-    this.keyStore = keyStore;
 
     this.coreContract = coreContract;
     this.marketplaceContract = marketplaceContract;
@@ -83,7 +83,7 @@ export class NameSky {
   connect(signer: NameSkySigner): NameSky {
     return new NameSky({
       signer,
-      keyStore: this.keyStore,
+      registrantKeyStore: this.registrantKeyStore,
       coreContract: this.coreContract.connect(signer),
       marketplaceContract: this.marketplaceContract.connect(signer),
       userSettingContract: this.userSettingContract.connect(signer),
@@ -169,21 +169,21 @@ export class NameSky {
    * Get registrant key
    */
   async getRegistrantKey(registrantId: string): Promise<KeyPair | undefined> {
-    return this.keyStore.getKey(this.network.networkId, registrantId);
+    return this.registrantKeyStore.getKey(this.network.networkId, registrantId);
   }
 
   /**
    * Set registrant key
    */
   async setRegistrantKey(registrantId: string, keyPair: KeyPair) {
-    await this.keyStore.setKey(this.network.networkId, registrantId, keyPair);
+    await this.registrantKeyStore.setKey(this.network.networkId, registrantId, keyPair);
   }
 
   /**
    * Remove registrant key
    */
   async removeRegistrantKey(registrantId: string) {
-    await this.keyStore.removeKey(this.network.networkId, registrantId);
+    await this.registrantKeyStore.removeKey(this.network.networkId, registrantId);
   }
 
   /**
@@ -373,12 +373,14 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
   const { signer, contracts = {} } = options;
   const { coreContractId, marketplaceContractId, userSettingContractId, spaceshipContractId } = contracts;
 
-  let keyStore: keyStores.KeyStore;
+  let registrantKeyStore = options.registrantKeyStore;
 
-  if ('accountId' in signer) {
-    keyStore = new keyStores.InMemoryKeyStore();
-  } else {
-    keyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
+  if (!registrantKeyStore) {
+    if ('accountId' in signer.sender) {
+      registrantKeyStore = new keyStores.InMemoryKeyStore();
+    } else {
+      registrantKeyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
+    }
   }
 
   const networkId = signer.network.networkId;
@@ -404,7 +406,14 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
     signer,
   });
 
-  return new NameSky({ signer, keyStore, coreContract, marketplaceContract, userSettingContract, spaceshipContract });
+  return new NameSky({
+    signer,
+    registrantKeyStore,
+    coreContract,
+    marketplaceContract,
+    userSettingContract,
+    spaceshipContract,
+  });
 }
 
 export type RequestFullAccessOptions = {
