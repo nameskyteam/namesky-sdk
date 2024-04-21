@@ -33,7 +33,7 @@ const selector = await setupMultiSendWalletSelector({
 const namesky = await initNameSky({ signer: NameSkySigner.fromWalletSelector(selector) });
 ```
 
-## Mint
+## Mint Account as NFT
 ```ts
 // Registrant is the account that you want to mint as NameSky NFT. (e.g. star.near)
 await namesky.setRegistrantKey('star.near', KeyPair.fromString('ed25519:<private key>'));
@@ -41,7 +41,12 @@ await namesky.postMint('star.near');
 await namesky.waitMintCompleted('star.near');
 ```
 
-## Mange Listing
+## Take Account Back
+```ts
+await namesky.coreContract.nftRedeem({ tokenId: 'star.near', publicKey: 'ed25519:<public key>' });
+```
+
+## Manage Listing
 
 ### Create Listing
 ```ts
@@ -63,7 +68,7 @@ await namesky.marketplaceContract.removeListing({ tokenId: 'star.near' });
 await namesky.marketplaceContract.buyListing({ tokenId: 'star.near' });
 ```
 
-## Mange Offering
+## Manage Offering
 
 ### Create Offering
 ```ts
