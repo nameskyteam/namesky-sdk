@@ -383,6 +383,8 @@ export class MarketplaceContract extends BaseContract {
         attachedDeposit: DEFAULT_MARKET_STORAGE_DEPOSIT,
       });
 
+    mTransaction.batch(this.contractId);
+
     if (isSimpleOffering) {
       // create new offering and deposit with the same price
       mTransaction.functionCall<CreateOfferingArgs>({
