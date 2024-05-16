@@ -37,7 +37,7 @@ import {
   NftRegistrantIdsOfArgs,
   NftStateArgs,
   NftUnregisterArgs,
-} from '../types';
+} from '../../types';
 import { NameSkySigner } from '../NameSkySigner';
 import { NftSupplyForOwnerArgs } from 'multi-transaction';
 

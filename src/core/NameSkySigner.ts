@@ -19,7 +19,7 @@ import {
   MultiSendAccountSendOptions,
   MultiSendAccountSendRawOptions,
 } from 'multi-transaction';
-import { Network } from './types';
+import { Network } from '../types';
 import { JsonRpcProvider } from 'near-api-js/lib/providers/json-rpc-provider';
 import { NameSkySignerError } from '../errors';
 

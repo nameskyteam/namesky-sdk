@@ -49,7 +49,7 @@ import {
   RemoveOfferingArgs,
   UpdateOfferingArgs,
   NonFungibleTokenReceiverMsg,
-} from '../types';
+} from '../../types';
 import { Amount, Gas, MultiTransaction, StorageBalance } from 'multi-transaction';
 import { NameSkySigner } from '../NameSkySigner';
 import { DEFAULT_MARKET_STORAGE_DEPOSIT, FEE_DIVISOR } from '../../utils/constants';

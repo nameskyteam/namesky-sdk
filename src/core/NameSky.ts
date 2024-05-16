@@ -1,6 +1,5 @@
 import { sleep, wait } from '../utils';
-import { CoreContract } from './contracts';
-import { MarketplaceContract } from './contracts';
+import { CoreContract, MarketplaceContract, UserSettingContract } from './contracts';
 import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import {
   CleanStateArgs,
@@ -14,8 +13,7 @@ import {
   NftAccountSafety,
   NameSkyToken,
   StateList,
-} from './types';
-import { UserSettingContract } from './contracts/UserSettingContract';
+} from '../types';
 import {
   Amount,
   BlockQuery,
@@ -27,7 +25,6 @@ import {
 } from 'multi-transaction';
 import { AccessKeyList, AccountView, Provider } from 'near-api-js/lib/providers/provider';
 import { Buffer } from 'buffer';
-import { SpaceshipContract } from './contracts/SpaceshipContract';
 import { KeyPair, keyStores, Near } from 'near-api-js';
 import { NameSkySigner } from './NameSkySigner';
 import { buildPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd } from '../utils/internal';
@@ -35,7 +32,6 @@ import { ACTION_MAX_NUM, REGISTRANT_KEYSTORE_PREFIX } from '../utils/constants';
 import {
   getDefaultCoreContractId,
   getDefaultMarketplaceContractId,
-  getDefaultSpaceshipContractId,
   getDefaultUserSettingContractId,
 } from '../utils/contracts';
 import { NameSkyError } from '../errors';
@@ -49,7 +45,6 @@ export class NameSky {
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
   userSettingContract: UserSettingContract;
-  spaceshipContract: SpaceshipContract;
 
   constructor({
     signer,
@@ -57,7 +52,6 @@ export class NameSky {
     coreContract,
     marketplaceContract,
     userSettingContract,
-    spaceshipContract,
   }: NameSkyComponent) {
     this.near = new Near({
       ...signer.network,
@@ -70,7 +64,6 @@ export class NameSky {
     this.coreContract = coreContract;
     this.marketplaceContract = marketplaceContract;
     this.userSettingContract = userSettingContract;
-    this.spaceshipContract = spaceshipContract;
 
     if (isBrowser()) {
       void this.onRequestFullAccess();
@@ -87,7 +80,6 @@ export class NameSky {
       coreContract: this.coreContract.connect(signer),
       marketplaceContract: this.marketplaceContract.connect(signer),
       userSettingContract: this.userSettingContract.connect(signer),
-      spaceshipContract: this.spaceshipContract.connect(signer),
     });
   }
 
@@ -101,10 +93,6 @@ export class NameSky {
 
   get userSettingContractId(): string {
     return this.userSettingContract.contractId;
-  }
-
-  get spaceshipContactId(): string {
-    return this.spaceshipContract.contractId;
   }
 
   get network(): Network {
@@ -371,7 +359,7 @@ export class NameSky {
 
 export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
   const { signer, contracts = {} } = options;
-  const { coreContractId, marketplaceContractId, userSettingContractId, spaceshipContractId } = contracts;
+  const { coreContractId, marketplaceContractId, userSettingContractId } = contracts;
 
   let registrantKeyStore = options.registrantKeyStore;
 
@@ -401,18 +389,12 @@ export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
     signer,
   });
 
-  const spaceshipContract = new SpaceshipContract({
-    contractId: spaceshipContractId ?? getDefaultSpaceshipContractId(networkId),
-    signer,
-  });
-
   return new NameSky({
     signer,
     registrantKeyStore,
     coreContract,
     marketplaceContract,
     userSettingContract,
-    spaceshipContract,
   });
 }
 

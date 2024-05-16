@@ -17,7 +17,7 @@ import {
   UnlikeArgs,
   UnwatchArgs,
   WatchArgs,
-} from '../types';
+} from '../../types';
 import { NameSkySigner } from '../NameSkySigner';
 
 export type UserSettingContractOptions = BaseContractOptions;
