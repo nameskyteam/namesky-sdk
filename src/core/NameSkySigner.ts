@@ -12,7 +12,7 @@ import {
   MultiSendWalletSelectorSendRawOptions,
   EmptyArgs,
 } from 'multi-transaction';
-import { FinalExecutionOutcome } from '@near-wallet-selector/core';
+import { FinalExecutionOutcome } from '@near-js/types';
 import {
   MultiSendAccountCallOptions,
   MultiSendAccountCallRawOptions,
