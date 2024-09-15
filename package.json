@@ -17,9 +17,6 @@
     "prettier": "prettier {src,test}/{**,}/*.ts --write",
     "prepare": "husky"
   },
-  "peerDependencies": {
-    "@near-js/providers": "latest"
-  },
   "dependencies": {
     "@near-js/types": "0.2.1",
     "bs58": "^5.0.0",
