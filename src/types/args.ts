@@ -22,7 +22,7 @@ export type NonFungibleTokenReceiverMsg =
 
 // ---------------------------------------------- Controller ---------------------------------------------------
 
-export type CleanStateArgs = Uint8Array[];
+export type CleanStateArgs = number[][];
 
 export type InitArgs = Uint8Array;
 
