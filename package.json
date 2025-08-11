@@ -1,6 +1,6 @@
 {
   "name": "namesky-sdk",
-  "version": "6.0.0-beta.1",
+  "version": "6.0.0",
   "license": "MIT",
   "description": "NameSky SDK",
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
     "@near-js/types": "=0.3.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
-    "multi-transaction": "=12.0.0-beta.3",
+    "multi-transaction": "=12.0.0",
     "near-api-js": "=5.0.0",
     "sha256": "^0.2.0"
   },

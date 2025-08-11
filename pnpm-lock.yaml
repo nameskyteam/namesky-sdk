@@ -18,8 +18,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       multi-transaction:
-        specifier: '=12.0.0-beta.3'
-        version: 12.0.0-beta.3(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0)
+        specifier: '=12.0.0'
+        version: 12.0.0(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0)
       near-api-js:
         specifier: '=5.0.0'
         version: 5.0.0
@@ -359,14 +359,14 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@multi-transaction/account@2.0.0-beta.3':
-    resolution: {integrity: sha512-GyTdfDDbr6D5EYby4sA/AQXeAxB2TbhdUpnDyDdm8hmHQooh2sSChfo2L9miqC3aBBqQH7dCcEVhzX0g35Hzyg==}
+  '@multi-transaction/account@2.0.0':
+    resolution: {integrity: sha512-U3AdEVp6xgqD5/uZ4JjCjYWYHXwgpEifl1jWOLi+bngE18uKxSKgp8IKPPaIAADZluwG2hPSt+Xj/uX22XEQ2A==}
 
-  '@multi-transaction/core@2.0.0-beta.3':
-    resolution: {integrity: sha512-fvgAgGc20sbj+bGjDD3X/hJonlYTSze8zVfBYE4WtoKw2tvlaBNtcCJ/sjjKhn7g4KF4Ro3EA9WXvWCvZ4KgFQ==}
+  '@multi-transaction/core@2.0.0':
+    resolution: {integrity: sha512-mXQn44i7RtuNpPM0x195IkuYJXmPDh3SS51kmfuhA8U9DL+swjy1slgdAF1gEKNwBdnHxdnyFyRy6CjJgAC3pw==}
 
-  '@multi-transaction/wallet-selector@2.0.0-beta.3':
-    resolution: {integrity: sha512-2oolPn6wZyC4DNPIDEzzaB2TWqGuKZHIhy1o8dSy0ewdoiTfF1OJPcS00ueNSDNQheOOblxKJpKsTD6R69Ropg==}
+  '@multi-transaction/wallet-selector@2.0.0':
+    resolution: {integrity: sha512-ArEUOGRXPMzF9vBOV/XuxEMnqRP6513q9vZ8mfmU9iDS8LF87kbrS5tGhhW9GHbfEorqWPmFVEIq6fPMeBNnsg==}
 
   '@near-js/accounts@1.3.0':
     resolution: {integrity: sha512-syUgc7EanfN2sX2UJsmJIcZ6OuQ5Ilr/GoVSD8MVOV7B5dT1HZSkMuIBdu+pKfmBbG3EGUOoT8Txxs8Nx96gGA==}
@@ -1515,8 +1515,8 @@ packages:
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  multi-transaction@12.0.0-beta.3:
-    resolution: {integrity: sha512-gWEHPa1GGTc82ivymAKsUIN0zT1pVjILpMBIjk2JPZI7M239MujYflJ6lacf202+L/tvn3FYEOMnB8lbfZxGvA==}
+  multi-transaction@12.0.0:
+    resolution: {integrity: sha512-tGENtGVYFYaX+kvwCaJa5e8jM0exu+no5msG05DCmmVi17+pb//B22aDrSSgDYe4gNQm3CB6rnaCRZMj1k7keg==}
 
   mustache@4.0.0:
     resolution: {integrity: sha512-FJgjyX/IVkbXBXYUwH+OYwQKqWpFPLaLVESd70yHjSDunwzV2hZOoTBvPf4KLoxesUzzyfTH6F784Uqd7Wm5yA==}
@@ -2447,9 +2447,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@multi-transaction/account@2.0.0-beta.3':
+  '@multi-transaction/account@2.0.0':
     dependencies:
-      '@multi-transaction/core': 2.0.0-beta.3
+      '@multi-transaction/core': 2.0.0
       '@near-js/accounts': 1.3.0
       '@near-js/crypto': 1.4.0
       '@near-js/transactions': 1.3.0
@@ -2457,7 +2457,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@multi-transaction/core@2.0.0-beta.3':
+  '@multi-transaction/core@2.0.0':
     dependencies:
       '@near-js/types': 0.3.0
       '@near-js/utils': 1.0.0
@@ -2465,9 +2465,9 @@ snapshots:
       borsher: 4.0.0
       buffer: 6.0.3
 
-  '@multi-transaction/wallet-selector@2.0.0-beta.3(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0)':
+  '@multi-transaction/wallet-selector@2.0.0(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0)':
     dependencies:
-      '@multi-transaction/core': 2.0.0-beta.3
+      '@multi-transaction/core': 2.0.0
       '@near-js/crypto': 1.4.0
       '@near-js/types': 0.3.0
       '@near-js/wallet-account': 1.3.0
@@ -3947,11 +3947,11 @@ snapshots:
 
   ms@2.1.2: {}
 
-  multi-transaction@12.0.0-beta.3(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0):
+  multi-transaction@12.0.0(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0):
     dependencies:
-      '@multi-transaction/account': 2.0.0-beta.3
-      '@multi-transaction/core': 2.0.0-beta.3
-      '@multi-transaction/wallet-selector': 2.0.0-beta.3(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0)
+      '@multi-transaction/account': 2.0.0
+      '@multi-transaction/core': 2.0.0
+      '@multi-transaction/wallet-selector': 2.0.0(@near-js/keystores@0.2.2)(@near-js/transactions@1.3.3)(near-api-js@5.0.0)
     transitivePeerDependencies:
       - '@near-js/keystores'
       - '@near-js/transactions'
