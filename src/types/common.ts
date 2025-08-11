@@ -1,4 +1,4 @@
-import { QueryResponseKind } from '@near-js/types/lib/provider/response';
+import { QueryResponseKind } from '@near-js/types';
 
 export type StateList = QueryResponseKind & {
   values: State[];

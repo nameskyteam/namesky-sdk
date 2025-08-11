@@ -224,7 +224,7 @@ export class NameSky {
       const stateKeys = state.map(({ key }) => Buffer.from(key, 'base64'));
       mTransaction.functionCall<CleanStateArgs>({
         methodName: 'clean_state',
-        args: stateKeys,
+        args: stateKeys.map((stateKey) => Array.from(stateKey)),
         stringifier: Stringifier.borsh(BorshSchema.Array(BorshSchema.Vec(BorshSchema.u8), stateKeys.length)),
         attachedDeposit: Amount.ONE_YOCTO,
         gas: gasForCleanState,
