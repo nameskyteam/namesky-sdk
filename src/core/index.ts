@@ -1,3 +1,3 @@
 export * from './NameSky';
-export * from './NameSkySigner';
+export * from './NameSkyUser';
 export * from './contracts';

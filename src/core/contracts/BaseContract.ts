@@ -1,17 +1,17 @@
-import { NameSkySigner } from '../NameSkySigner';
+import { NameSkyUser } from '../NameSkyUser';
 
 export type BaseContractOptions = {
   contractId: string;
-  signer: NameSkySigner;
+  user: NameSkyUser;
 };
 
 export abstract class BaseContract {
   contractId: string;
-  signer: NameSkySigner;
+  user: NameSkyUser;
 
   protected constructor(options: BaseContractOptions) {
-    const { contractId, signer } = options;
+    const { contractId, user } = options;
     this.contractId = contractId;
-    this.signer = signer;
+    this.user = user;
   }
 }

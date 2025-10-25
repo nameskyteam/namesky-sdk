@@ -1,9 +1,9 @@
-import { CoreContract, MarketplaceContract, UserSettingContract, NameSkySigner } from '../core';
-import { keyStores } from 'near-api-js';
+import { CoreContract, MarketplaceContract, UserSettingContract, NameSkyUser } from '../core';
+import { KeyStore } from '@near-js/keystores';
 
 export type NameSkyComponent = {
-  signer: NameSkySigner;
-  registrantKeyStore: keyStores.KeyStore;
+  user: NameSkyUser;
+  registrantKeyStore: KeyStore;
 
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
@@ -18,8 +18,8 @@ export type Network = {
 export type NetworkId = 'mainnet' | 'testnet' | string;
 
 export type NameSkyOptions = {
-  signer: NameSkySigner;
-  registrantKeyStore?: keyStores.KeyStore;
+  user: NameSkyUser;
+  registrantKeyStore?: KeyStore;
   contracts?: {
     coreContractId?: string;
     marketplaceContractId?: string;

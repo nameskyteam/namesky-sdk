@@ -10,12 +10,12 @@ pnpm add namesky-sdk
 
 ### Node
 ```ts
-import { initNameSky, NameSkySigner, Amount, MultiSendAccount } from 'namesky-sdk';
+import { initNameSky, NameSkyUser, Amount, MultiSendAccount } from 'namesky-sdk';
 ```
 
 ```ts
-const account = MultiSendAccount.new(connection, 'alice.near');
-const namesky = await initNameSky({ signer: NameSkySigner.fromAccount(account) });
+const account = MultiSendAccount.new(provider, 'alice.testnet', signer);
+const namesky = await initNameSky({ user: NameSkyUser.fromAccount(account, 'testnet') });
 ```
 
 ### Browser
@@ -25,19 +25,19 @@ import { initNameSky, NameSkySigner, Amount, setupMultiSendWalletSelector } from
 
 ```ts
 const selector = await setupMultiSendWalletSelector({
-  network: 'mainnet',
+  network: 'testnet',
   modules: [
     /* wallet modules */
   ],
 });
-const namesky = await initNameSky({ signer: NameSkySigner.fromWalletSelector(selector) });
+const namesky = await initNameSky({ user: NameSkyUser.fromWalletSelector(selector) });
 ```
 
 ## Mint Account as NFT
 ```ts
 // Registrant is the account that you want to mint as NameSky NFT. (e.g. star.near)
 await namesky.setRegistrantKey('star.near', KeyPair.fromString('ed25519:<private key>'));
-await namesky.postMint('star.near');
+await namesky.prepareMint('star.near');
 await namesky.waitMintCompleted('star.near');
 ```
 

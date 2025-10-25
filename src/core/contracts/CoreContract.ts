@@ -38,7 +38,7 @@ import {
   NftStateArgs,
   NftUnregisterArgs,
 } from '../../types';
-import { NameSkySigner } from '../NameSkySigner';
+import { NameSkyUser } from '../NameSkyUser';
 import { NftSupplyForOwnerArgs } from 'multi-transaction';
 
 export type CoreContractOptions = BaseContractOptions;
@@ -49,12 +49,12 @@ export class CoreContract extends BaseContract {
   }
 
   /**
-   * Connect to new signer and return new instance
+   * Connect to new user and return new instance
    */
-  connect(signer: NameSkySigner): CoreContract {
+  connect(user: NameSkyUser): CoreContract {
     return new CoreContract({
       contractId: this.contractId,
-      signer,
+      user,
     });
   }
 
@@ -62,7 +62,7 @@ export class CoreContract extends BaseContract {
 
   async nftGetMinterId(options: NftGetMinterIdOptions): Promise<string | undefined> {
     const { registrantId, blockQuery } = options;
-    return this.signer.view<string | undefined, NftGetMinterIdArgs>({
+    return this.user.view<string | undefined, NftGetMinterIdArgs>({
       contractId: this.contractId,
       methodName: 'nft_get_minter_id',
       args: {
@@ -74,7 +74,7 @@ export class CoreContract extends BaseContract {
 
   async nftRegistrantIdsOf(options: NftRegistrantIdsOfOptions): Promise<string[]> {
     const { minterId, fromIndex, limit, blockQuery } = options;
-    return this.signer.view<string[], NftRegistrantIdsOfArgs>({
+    return this.user.view<string[], NftRegistrantIdsOfArgs>({
       contractId: this.contractId,
       methodName: 'nft_registrant_ids_of',
       args: {
@@ -88,7 +88,7 @@ export class CoreContract extends BaseContract {
 
   async nftRegistrantIds(options: NftRegistrantIdsOptions = {}): Promise<string[]> {
     const { fromIndex, limit, blockQuery } = options;
-    return this.signer.view<string[], NftRegistrantIdsArgs>({
+    return this.user.view<string[], NftRegistrantIdsArgs>({
       contractId: this.contractId,
       methodName: 'nft_registrant_ids',
       args: {
@@ -101,7 +101,7 @@ export class CoreContract extends BaseContract {
 
   async nftState(options: NftStateOptions): Promise<TokenState | undefined> {
     const { tokenId, blockQuery } = options;
-    return this.signer.view<TokenState | undefined, NftStateArgs>({
+    return this.user.view<TokenState | undefined, NftStateArgs>({
       contractId: this.contractId,
       methodName: 'nft_state',
       args: {
@@ -113,7 +113,7 @@ export class CoreContract extends BaseContract {
 
   async nftNameSkyToken(options: NftNameSkyTokenOptions): Promise<NameSkyToken | undefined> {
     const { tokenId, blockQuery } = options;
-    return this.signer.view<NameSkyToken | undefined, NftNameSkyTokenArgs>({
+    return this.user.view<NameSkyToken | undefined, NftNameSkyTokenArgs>({
       contractId: this.contractId,
       methodName: 'nft_namesky_token',
       args: {
@@ -125,7 +125,7 @@ export class CoreContract extends BaseContract {
 
   async nftNameSkyTokens(options: NftNameSkyTokensOptions = {}): Promise<NameSkyToken[]> {
     const { fromIndex, limit, blockQuery } = options;
-    return this.signer.view<NameSkyToken[], NftNameSkyTokensArgs>({
+    return this.user.view<NameSkyToken[], NftNameSkyTokensArgs>({
       contractId: this.contractId,
       methodName: 'nft_namesky_tokens',
       args: {
@@ -138,7 +138,7 @@ export class CoreContract extends BaseContract {
 
   async nftNameSkyTokensForOwner(options: NftNameSkyTokensForOwnerOptions): Promise<NameSkyToken[]> {
     const { accountId, fromIndex, limit, blockQuery } = options;
-    return this.signer.view<NameSkyToken[], NftNameSkyTokensForOwnerArgs>({
+    return this.user.view<NameSkyToken[], NftNameSkyTokensForOwnerArgs>({
       contractId: this.contractId,
       methodName: 'nft_namesky_tokens_for_owner',
       args: {
@@ -152,7 +152,7 @@ export class CoreContract extends BaseContract {
 
   async nftSupplyForOwner(options: NftSupplyForOwnerOptions): Promise<string> {
     const { accountId, blockQuery } = options;
-    return this.signer.view<string, NftSupplyForOwnerArgs>({
+    return this.user.view<string, NftSupplyForOwnerArgs>({
       contractId: this.contractId,
       methodName: 'nft_supply_for_owner',
       args: {
@@ -164,7 +164,7 @@ export class CoreContract extends BaseContract {
 
   async nftTotalSupply(options: NftTotalSupplyOptions = {}): Promise<string> {
     const { blockQuery } = options;
-    return this.signer.view<string>({
+    return this.user.view<string>({
       contractId: this.contractId,
       methodName: 'nft_total_supply',
       blockQuery,
@@ -173,7 +173,7 @@ export class CoreContract extends BaseContract {
 
   async getLatestControllerCode(options: GetLatestControllerCodeOptions = {}): Promise<string> {
     const { blockQuery } = options;
-    return this.signer.view<string>({
+    return this.user.view<string>({
       contractId: this.contractId,
       methodName: 'get_latest_controller_code',
       blockQuery,
@@ -182,7 +182,7 @@ export class CoreContract extends BaseContract {
 
   async getLatestControllerCodeHash(options: GetLatestControllerCodeHashOptions = {}): Promise<string> {
     const { blockQuery } = options;
-    return this.signer.view<string>({
+    return this.user.view<string>({
       contractId: this.contractId,
       methodName: 'get_latest_controller_code_hash',
       blockQuery,
@@ -191,7 +191,7 @@ export class CoreContract extends BaseContract {
 
   async getControllerCodeViews(options: GetControllerCodeViewsOptions = {}): Promise<ControllerCodeView[]> {
     const { blockQuery } = options;
-    return this.signer.view<ControllerCodeView[]>({
+    return this.user.view<ControllerCodeView[]>({
       contractId: this.contractId,
       methodName: 'get_controller_code_views',
       blockQuery,
@@ -200,7 +200,7 @@ export class CoreContract extends BaseContract {
 
   async getMintFee(options: GetMintFeeOptions = {}): Promise<string> {
     const { blockQuery } = options;
-    return this.signer.view<string>({
+    return this.user.view<string>({
       contractId: this.contractId,
       methodName: 'get_mint_fee',
       blockQuery,
@@ -209,7 +209,7 @@ export class CoreContract extends BaseContract {
 
   async getRoyalty(options: GetRoyaltyOptions = {}): Promise<number> {
     const { blockQuery } = options;
-    const { royalty, divisor } = await this.signer.view<RoyaltyView>({
+    const { royalty, divisor } = await this.user.view<RoyaltyView>({
       contractId: this.contractId,
       methodName: 'get_royalty',
       blockQuery,
@@ -220,7 +220,7 @@ export class CoreContract extends BaseContract {
 
   async getMintNum(options: GetMintNumOptions): Promise<string> {
     const { accountId, blockQuery } = options;
-    return this.signer.view<string, GetMintNumArgs>({
+    return this.user.view<string, GetMintNumArgs>({
       contractId: this.contractId,
       methodName: 'get_mint_num',
       args: {
@@ -247,7 +247,7 @@ export class CoreContract extends BaseContract {
       gas: Gas.parse(100, 'T'),
     });
 
-    return this.signer.send(mTransaction, { throwReceiptErrors: true });
+    return this.user.send(mTransaction, { throwReceiptErrors: true });
   }
 
   async nftUnregister(options: NftUnregisterOptions): Promise<boolean> {
@@ -263,7 +263,7 @@ export class CoreContract extends BaseContract {
       gas: Gas.parse(100, 'T'),
     });
 
-    return this.signer.send(mTransaction, { callbackUrl, throwReceiptErrors: true });
+    return this.user.send(mTransaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftRedeem(options: NftRedeemOptions): Promise<boolean> {
@@ -280,7 +280,7 @@ export class CoreContract extends BaseContract {
       gas: Gas.parse(100, 'T'),
     });
 
-    return this.signer.send(mTransaction, { callbackUrl, throwReceiptErrors: true });
+    return this.user.send(mTransaction, { callbackUrl, throwReceiptErrors: true });
   }
 
   async nftTransfer(options: NftTransferOptions) {
@@ -294,7 +294,7 @@ export class CoreContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 
   async nftApprove(options: NftApproveOptions) {
@@ -307,7 +307,7 @@ export class CoreContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 
   async nftRevoke(options: NftRevokeOptions) {
@@ -319,6 +319,6 @@ export class CoreContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 }

@@ -18,11 +18,15 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@near-js/types": "=0.3.0",
+    "@near-js/accounts": "=2.3.0",
+    "@near-js/crypto": "=2.3.0",
+    "@near-js/keystores": "=2.3.0",
+    "@near-js/keystores-browser": "=2.3.0",
+    "@near-js/providers": "=2.3.0",
+    "@near-js/types": "=2.3.0",
     "bs58": "^5.0.0",
     "buffer": "^6.0.3",
-    "multi-transaction": "=12.0.0",
-    "near-api-js": "=5.0.0",
+    "multi-transaction": "=12.0.0-beta.4",
     "sha256": "^0.2.0"
   },
   "devDependencies": {

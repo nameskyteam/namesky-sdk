@@ -18,7 +18,7 @@ import {
   UnwatchArgs,
   WatchArgs,
 } from '../../types';
-import { NameSkySigner } from '../NameSkySigner';
+import { NameSkyUser } from '../NameSkyUser';
 
 export type UserSettingContractOptions = BaseContractOptions;
 
@@ -28,12 +28,12 @@ export class UserSettingContract extends BaseContract {
   }
 
   /**
-   * Connect to new signer and return new instance
+   * Connect to new user and return new instance
    */
-  connect(signer: NameSkySigner): UserSettingContract {
+  connect(user: NameSkyUser): UserSettingContract {
     return new UserSettingContract({
       contractId: this.contractId,
-      signer,
+      user,
     });
   }
 
@@ -41,7 +41,7 @@ export class UserSettingContract extends BaseContract {
 
   async getUserLikes(options: GetUserLikesOptions): Promise<string[]> {
     const { accountId, blockQuery } = options;
-    return this.signer.view<string[], GetUserLikesArgs>({
+    return this.user.view<string[], GetUserLikesArgs>({
       contractId: this.contractId,
       methodName: 'get_user_likes',
       args: {
@@ -53,7 +53,7 @@ export class UserSettingContract extends BaseContract {
 
   async getUserWatchlist(options: GetUserWatchListOptions): Promise<string[]> {
     const { accountId, blockQuery } = options;
-    return this.signer.view<string[], GetUserWatchListArgs>({
+    return this.user.view<string[], GetUserWatchListArgs>({
       contractId: this.contractId,
       methodName: 'get_user_watchlist',
       args: {
@@ -65,7 +65,7 @@ export class UserSettingContract extends BaseContract {
 
   async getUserLastReadNotificationTime(options: GetUserLastReadNotificationTimeOptions): Promise<string[]> {
     const { accountId, blockQuery } = options;
-    return this.signer.view<string[], GetUserLastReadNotificationTimeArgs>({
+    return this.user.view<string[], GetUserLastReadNotificationTimeArgs>({
       contractId: this.contractId,
       methodName: 'get_user_last_read_notification_time',
       args: {
@@ -86,7 +86,7 @@ export class UserSettingContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 
   async unlike(options: UnlikeOptions) {
@@ -98,7 +98,7 @@ export class UserSettingContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 
   async watch(options: WatchOptions) {
@@ -110,7 +110,7 @@ export class UserSettingContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 
   async unwatch(options: UnwatchOptions) {
@@ -122,7 +122,7 @@ export class UserSettingContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 
   async readNotificationAt(options: ReadNotificationAtOptions = {}) {
@@ -134,6 +134,6 @@ export class UserSettingContract extends BaseContract {
       },
     });
 
-    await this.signer.send(mTransaction, { callbackUrl });
+    await this.user.send(mTransaction, { callbackUrl });
   }
 }

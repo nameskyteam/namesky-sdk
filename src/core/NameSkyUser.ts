@@ -10,9 +10,10 @@ import {
   MultiSendWalletSelectorCallOptions,
   MultiSendWalletSelectorCallRawOptions,
   MultiSendWalletSelectorSendRawOptions,
-  EmptyArgs,
+  JsonArgs,
+  ViewRawOptions,
 } from 'multi-transaction';
-import { FinalExecutionOutcome } from '@near-js/types';
+import { CallContractViewFunctionResultRaw, FinalExecutionOutcome } from '@near-js/types';
 import {
   MultiSendAccountCallOptions,
   MultiSendAccountCallRawOptions,
@@ -20,33 +21,35 @@ import {
   MultiSendAccountSendRawOptions,
 } from 'multi-transaction';
 import { Network } from '../types';
-import { JsonRpcProvider } from 'near-api-js/lib/providers/json-rpc-provider';
+import { JsonRpcProvider } from '@near-js/providers';
 import { NameSkySignerError } from '../errors';
 
-export class NameSkySigner implements View, Call, Send {
+export class NameSkyUser implements View, Call, Send {
   sender: MultiSendAccount | MultiSendWalletSelector;
+  private readonly networkId: string;
 
-  private constructor(sender: MultiSendAccount | MultiSendWalletSelector) {
+  private constructor(sender: MultiSendAccount | MultiSendWalletSelector, networkId: string) {
     this.sender = sender;
+    this.networkId = networkId;
   }
 
-  static fromAccount(account: MultiSendAccount): NameSkySigner {
-    return new NameSkySigner(account);
+  static fromAccount(account: MultiSendAccount, networkId: string): NameSkyUser {
+    return new NameSkyUser(account, networkId);
   }
 
-  static fromWalletSelector(selector: MultiSendWalletSelector): NameSkySigner {
-    return new NameSkySigner(selector);
+  static fromWalletSelector(selector: MultiSendWalletSelector): NameSkyUser {
+    return new NameSkyUser(selector, selector.options.network.networkId);
   }
 
   get network(): Network {
     if ('accountId' in this.sender) {
       return {
-        networkId: this.sender.connection.networkId,
-        nodeUrl: (this.sender.connection.provider as JsonRpcProvider).connection.url,
+        networkId: this.networkId,
+        nodeUrl: (this.sender.provider as JsonRpcProvider).connection.url,
       };
     } else {
       return {
-        networkId: this.sender.options.network.networkId,
+        networkId: this.networkId,
         nodeUrl: this.sender.options.network.nodeUrl,
       };
     }
@@ -64,17 +67,21 @@ export class NameSkySigner implements View, Call, Send {
     }
   }
 
-  view<Value, Args = EmptyArgs>(options: ViewOptions<Value, Args>): Promise<Value> {
+  view<Value, Args = JsonArgs>(options: ViewOptions<Value, Args>): Promise<Value> {
     return this.sender.view(options);
   }
 
-  call<Value, Args = EmptyArgs>(
+  viewRaw<Args = JsonArgs>(options: ViewRawOptions<Args>): Promise<CallContractViewFunctionResultRaw> {
+    return this.sender.viewRaw(options);
+  }
+
+  call<Value, Args = JsonArgs>(
     options: MultiSendAccountCallOptions<Value, Args> | MultiSendWalletSelectorCallOptions<Value, Args>,
   ): Promise<Value> {
     return this.sender.call(options);
   }
 
-  callRaw<Args = EmptyArgs>(
+  callRaw<Args = JsonArgs>(
     options: MultiSendAccountCallRawOptions<Args> | MultiSendWalletSelectorCallRawOptions<Args>,
   ): Promise<FinalExecutionOutcome> {
     return this.sender.callRaw(options);

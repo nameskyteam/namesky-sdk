@@ -1,6 +1,5 @@
 import { sleep, wait } from '../utils';
 import { CoreContract, MarketplaceContract, UserSettingContract } from './contracts';
-import { KeyPairEd25519 } from 'near-api-js/lib/utils';
 import {
   CleanStateArgs,
   InitArgs,
@@ -23,10 +22,13 @@ import {
   MultiTransaction,
   Stringifier,
 } from 'multi-transaction';
-import { AccessKeyList, AccountView, Provider } from 'near-api-js/lib/providers/provider';
+import { JsonRpcProvider, Provider } from '@near-js/providers';
+import { KeyPairEd25519, KeyPair } from '@near-js/crypto';
+import { AccessKeyList, AccountView } from '@near-js/types';
+import { KeyStore, InMemoryKeyStore } from '@near-js/keystores';
+import { BrowserLocalStorageKeyStore } from '@near-js/keystores-browser';
 import { Buffer } from 'buffer';
-import { KeyPair, keyStores, Near } from 'near-api-js';
-import { NameSkySigner } from './NameSkySigner';
+import { NameSkyUser } from './NameSkyUser';
 import { buildPendingRegistrantId, isBrowser, moveRegistrantPublicKeyToEnd } from '../utils/internal';
 import { ACTION_MAX_NUM, REGISTRANT_KEYSTORE_PREFIX } from '../utils/constants';
 import {
@@ -37,29 +39,22 @@ import {
 import { NameSkyError } from '../errors';
 
 export class NameSky {
-  private readonly near: Near;
-  private readonly registrantKeyStore: keyStores.KeyStore;
+  private readonly provider: Provider;
+  private readonly registrantKeyStore: KeyStore;
 
-  signer: NameSkySigner;
+  user: NameSkyUser;
 
   coreContract: CoreContract;
   marketplaceContract: MarketplaceContract;
   userSettingContract: UserSettingContract;
 
-  constructor({
-    signer,
-    registrantKeyStore,
-    coreContract,
-    marketplaceContract,
-    userSettingContract,
-  }: NameSkyComponent) {
-    this.near = new Near({
-      ...signer.network,
-      keyStore: registrantKeyStore,
+  constructor({ user, registrantKeyStore, coreContract, marketplaceContract, userSettingContract }: NameSkyComponent) {
+    this.provider = new JsonRpcProvider({
+      url: user.network.nodeUrl,
     });
     this.registrantKeyStore = registrantKeyStore;
 
-    this.signer = signer;
+    this.user = user;
 
     this.coreContract = coreContract;
     this.marketplaceContract = marketplaceContract;
@@ -71,15 +66,15 @@ export class NameSky {
   }
 
   /**
-   * Connect to new signer and return new instance
+   * Connect to new user and return new instance
    */
-  connect(signer: NameSkySigner): NameSky {
+  connect(user: NameSkyUser): NameSky {
     return new NameSky({
-      signer,
+      user,
       registrantKeyStore: this.registrantKeyStore,
-      coreContract: this.coreContract.connect(signer),
-      marketplaceContract: this.marketplaceContract.connect(signer),
-      userSettingContract: this.userSettingContract.connect(signer),
+      coreContract: this.coreContract.connect(user),
+      marketplaceContract: this.marketplaceContract.connect(user),
+      userSettingContract: this.userSettingContract.connect(user),
     });
   }
 
@@ -96,15 +91,11 @@ export class NameSky {
   }
 
   get network(): Network {
-    return this.signer.network;
-  }
-
-  private get provider(): Provider {
-    return this.near.connection.provider;
+    return this.user.network;
   }
 
   private account(accountId?: string): MultiSendAccount {
-    return MultiSendAccount.new(this.near.connection, accountId);
+    return MultiSendAccount.new(this.provider, accountId);
   }
 
   /**
@@ -183,7 +174,7 @@ export class NameSky {
       this.coreContract.nftGetMinterId({ registrantId }),
     ]);
 
-    const minterId = this.signer.accountId;
+    const minterId = this.user.accountId;
 
     if (oldMinterId && oldMinterId === minterId) {
       console.log(`Registrant ${registrantId} is already registered with for minter ${minterId}`);
@@ -261,9 +252,9 @@ export class NameSky {
   }
 
   /**
-   * Mint NameSky NFT, this is wrap of `register` and `setupController`
+   * Preparation for minting NameSky NFT, this is wrap of `register` and `setupController`
    */
-  async postMint(registrantId: string, gasForCleanState?: string) {
+  async prepareMint(registrantId: string, gasForCleanState?: string) {
     await this.register(registrantId);
     await this.setupController(registrantId, gasForCleanState);
   }
@@ -358,39 +349,39 @@ export class NameSky {
 }
 
 export async function initNameSky(options: NameSkyOptions): Promise<NameSky> {
-  const { signer, contracts = {} } = options;
+  const { user, contracts = {} } = options;
   const { coreContractId, marketplaceContractId, userSettingContractId } = contracts;
 
   let registrantKeyStore = options.registrantKeyStore;
 
   if (!registrantKeyStore) {
-    if ('accountId' in signer.sender) {
-      registrantKeyStore = new keyStores.InMemoryKeyStore();
+    if ('accountId' in user.sender) {
+      registrantKeyStore = new InMemoryKeyStore();
     } else {
-      registrantKeyStore = new keyStores.BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
+      registrantKeyStore = new BrowserLocalStorageKeyStore(localStorage, REGISTRANT_KEYSTORE_PREFIX);
     }
   }
 
-  const networkId = signer.network.networkId;
+  const networkId = user.network.networkId;
 
   const coreContract = new CoreContract({
     contractId: coreContractId ?? getDefaultCoreContractId(networkId),
-    signer,
+    user,
   });
 
   const marketplaceContract = new MarketplaceContract({
     coreContractId: coreContract.contractId,
     contractId: marketplaceContractId ?? getDefaultMarketplaceContractId(networkId),
-    signer,
+    user,
   });
 
   const userSettingContract = new UserSettingContract({
     contractId: userSettingContractId ?? getDefaultUserSettingContractId(networkId),
-    signer,
+    user,
   });
 
   return new NameSky({
-    signer,
+    user,
     registrantKeyStore,
     coreContract,
     marketplaceContract,
