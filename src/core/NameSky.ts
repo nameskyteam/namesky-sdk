@@ -25,6 +25,7 @@ import {
 import { JsonRpcProvider, Provider } from '@near-js/providers';
 import { KeyPairEd25519, KeyPair } from '@near-js/crypto';
 import { AccessKeyList, AccountView } from '@near-js/types';
+import { KeyPairSigner } from '@near-js/signers';
 import { KeyStore, InMemoryKeyStore } from '@near-js/keystores';
 import { BrowserLocalStorageKeyStore } from '@near-js/keystores-browser';
 import { Buffer } from 'buffer';
@@ -94,8 +95,9 @@ export class NameSky {
     return this.user.network;
   }
 
-  private account(accountId?: string): MultiSendAccount {
-    return MultiSendAccount.new(this.provider, accountId);
+  private async account(accountId: string = ''): Promise<MultiSendAccount> {
+    const keyPair = await this.registrantKeyStore.getKey(this.network.networkId, accountId);
+    return MultiSendAccount.new(this.provider, accountId, new KeyPairSigner(keyPair));
   }
 
   /**
@@ -189,7 +191,9 @@ export class NameSky {
       attachedDeposit: oldMinterId ? Amount.ONE_YOCTO : mintFee,
     });
 
-    await this.account(registrantId).send(mTransaction);
+    const account = await this.account(registrantId);
+
+    await account.send(mTransaction);
   }
 
   /**
@@ -248,7 +252,9 @@ export class NameSky {
       mTransaction.deleteKey(publicKey);
     }
 
-    await this.account(registrantId).send(mTransaction);
+    const account = await this.account(registrantId);
+
+    await account.send(mTransaction);
   }
 
   /**
@@ -339,7 +345,7 @@ export class NameSky {
 
   private async getControllerOwnerId(options: GetControllerOwnerIdOptions): Promise<string> {
     const { accountId, blockQuery } = options;
-    const account = this.account();
+    const account = await this.account();
     return account.view({
       contractId: accountId,
       methodName: 'get_owner_id',
